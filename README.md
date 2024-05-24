@@ -89,9 +89,8 @@ http://localhost:3000/awesome
 ```cmd
 pnpm create vite . --template react
 ```
-## Refresher
 
-### 21. CSS Modules
+## 21. CSS Modules
 ```css
 /* Post.module.css */
 .post{
@@ -102,7 +101,7 @@ pnpm create vite . --template react
 - access the css: classes used in css can be accessed as properties of imported object ("classes") 
 `<div className={classes.post}></div>`
 
-### 25. state
+## 25. state
 - react components only refresh/reload with state updates eg. const [state, update state function] = useState() hooks
 - react components DO NOT UPDATE without state updates
 - OPTIMIZATION: when working with state and it depends on previous state, pass to the useState() set function a function that receives previous state (you can name this anything)
@@ -123,7 +122,7 @@ function PostList(){
 }
 ```
 
-### 30. react form buttons / 31. handling submit
+## 30. react form buttons / 31. handling submit
 - by default clicking button submits form
 - give button type=""button" so it doesnt trigger form submit or give type="submit" to submit (optional as it will by default submit)
 - form should have onSubmit handler that passes event and calls event.preventDefault();
@@ -162,7 +161,7 @@ function NewPost({onAddPost, onCancel}){
   }
 }
 ```
-### 35. sending a POST HTTP Request
+## 35. sending a POST HTTP Request
 - frontend to backend communication
 - use fetch(url, {}) to send and get data
 - fetch is not react only feature, it is in all browsers
@@ -185,10 +184,10 @@ function addPostHandler(postData){
 }
 ```
 
-### 36. Handling Side effects with useEffect()
+## 36. Handling Side effects with useEffect()
 - frontend sends a fetch request to /posts on backend which when done returns "posts"
 
-#### backend
+### backend
 ```js
 app.get('/posts', async (req, res)=>{
   const storedPosts = await getStoredPosts();
@@ -227,19 +226,19 @@ function PostList() {
 
 ```
 
-### 38. routing 
+## 38. routing 
 - react allows you to use your own routing.
 - have a look at https://github.com/clarklindev/react-router-6 the code is self explanatory
 - react router 6
 - routing happens on client side 
 
-### 40. layout routes and outlet
+## 40. layout routes and outlet
 - you can make layout routes by adding `<Route>` children to a `<Route>`
 - organize routing into its own folder 
 - you tell react where to render the content of the route in the layout via the `<Outlet/>` from react-router-dom
 - Outlet jsx element is a placeholder for where nested route can render their content in the RootLayout
 
-#### install latest react router
+### install latest react router
 
 ```cmd
 pnpm i react-router-dom    
@@ -265,7 +264,7 @@ export default RootLayout;
 - use createBrowserRouter to create a route config object
 - then pass it as a value to RouterProvider's router prop
 
-#### METHOD A (array) -> createBrowserRouter([]) array method 
+### METHOD A (array) -> createBrowserRouter([]) array method 
 - createBrowserRouter() takes an array as an value (a list of route definitions) 
 - a route definition is an object with a path and element that should be rendered when route is active `{path:"/", element:<App/> }`
 - can add more routes to array and use layout route with children prop (array)
@@ -292,7 +291,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 )
 ```
 
-#### METHOD B (JSX) -> createBrowserRouter(createRoutesFromElements()) method
+### METHOD B (JSX) -> createBrowserRouter(createRoutesFromElements()) method
 - OR you can pass to createBrowserRouter createRoutesFromElements(): `createBrowserRouter(createRoutesFromElements(<Route path='about' element={<About />} />))` and nest jsx of Route elements
 
 ```js
@@ -307,9 +306,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 )
 ```
 
-### 42 linking and navigation
+## 42 linking and navigation
 
-#### Link element
+### Link element
 - in react, use Link component: `import {Link} from 'react-router-dom';`
 - the right element for creating a link: `<a/>` that navigates a url BUT it creates a new request
 - Link renders an `<a/>` element but it prevents the browser default of sending a request
@@ -324,7 +323,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 import {Link} from 'react-router-dom';
 <Link to="/create-post">new post</Link>
 ```
-#### navigation with code (navigate programatically)
+### navigation with code (navigate programatically)
 - navigating using code
 - useNavigate hook: import {useNavigate} from 'react-router-dom'; 
 - can use .. to navigate to parent route
@@ -342,7 +341,7 @@ function closeHandler(){
 
 ## react-router 6.4: to handle data-fetching and submitting form data
 
-### 43. loader
+## 43. loader
 - instead of using useEffect(), go to route definition... to the route that needs loader for data...
 - add loader property, value is a function that will execute whenever the route gets activated (ie. when its about to render the route element)
 - convention is to go to the route's component file and add export an extra function: loader 
@@ -353,7 +352,7 @@ function closeHandler(){
 - then in main route definition file, import the loader: import Posts, {loader} from './Posts';
 - give loader an alias if there is more loaders from different routes: postsLoader
 
-#### consuming loader() data with useLoaderData hook
+### consuming loader() data with useLoaderData hook
 - import {useLoaderData} from 'react-router-dom'
 - to consume the loader() data for the route component (or any nested component), use the useLoaderData hook
 - here PostsList is nested in Posts but we will consume the loader data there...
@@ -423,7 +422,7 @@ const route = createBrowserRouter([
   ],
 ]); 
 ```
-### 44. action() functions for handling form submits
+## 44. action() functions for handling form submits
 - when you have a form on a page, you can handle the submits with action() handlers, you also put the function close into the route component code
 - it is triggered when form is submitted
 - move the submit request code from submitHandler() to action() handler
@@ -507,7 +506,7 @@ const route = createBrowserRouter([
 ]); 
 ```
 
-### 45. Dynamic Routes with react-router
+## 45. Dynamic Routes with react-router
 - use syntax: `{path:':id'}` in the router config 
 - note: absolute path has '/' eg. `{path:'/:id'}`
 - note: relative path is      eg. `{path:':id'}`
@@ -522,7 +521,155 @@ export async function loader({params}){
 }
 ```
 ---
-# Section 03 - NextJS essentials - App Router
+# Section 03 - NextJS essentials - App Router 
+- lessons 85 -> 133
+## NEXT.JS CORE ESSENTIALS
+- routing, pages, components
+- fetching and sending data
+- styling, images, metadata
+
+## 86. starting setup
+- project folder-> 03-nextjs-essentials-app-router/
+
+## 87. file based routing + react server components
+- app/ folder where you setup pages of website
+- page.js reserved filename -> Nextjs ensures its rendered on server (server component)
+
+## 88. Adding another route via the file system
+- Important: These filenames are only reserved when creating them inside of the app/
+
+- reserved filenames (1min42sec)
+  - page.js -> define page content
+  - layout.js -> wrap around pages
+  - not-found.js -> not-found fallback page
+  - error.js -> error fallback page
+  - loading.js -> Fallback page which is shown whilst sibling or nested pages (or layouts) are fetching data
+  - route.js -> Allows you to create an API route (i.e., a page which does NOT return JSX code but instead data, e.g., in the JSON format)
+
+- routes are created by adding folders to app/ (with name as anything you want for the route) AND ALSO NEED a page.js 
+- eg. app/about/page.js
+- page.js is just a default exported function
+- then you can access the url via http://localhost:3000/about
+
+```js
+//AboutPage.jsx
+export default function AboutPage(){
+  return <main><h1>about us</h1></main>
+}
+```
+## 89. Navigating between pages
+
+### WRONG WAY
+- using `<a>` elements causes page reload instead of single page app (SPA) environment where click just updates page with client javascript.
+
+```js
+<a></a>
+```
+
+### CORRECT WAY
+- use `<Link>` 
+- NOTE: import Link from 'next/link';
+- NOTE: NOT import {Link} from 'next/link';
+- import Link from 'next/link';
+- difference between react-router which uses "to" -> nextjs Link still uses "href" prop
+
+## 90. working with pages and layouts
+- a layout defines the "shell" around one or more pages
+- its the layout of how the page should be rendered
+- every project needs atleast one root layout: app/layout.js
+- you can have other layouts inside app/route folders
+- layout includes `<html>` and `<body>` 
+- layout DOES NOT have a `<head>` `but includes and an exported metadata object which includes all content that goes into head.
+- children is the content of the page
+
+```js
+//app/layout.js
+import './globals.css'
+
+export const metadata = {
+  title: 'NextJS Course App',
+  description: 'Your first NextJS app!',
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+
+```
+
+## 91. reserved file names, custom components, & how to organize a nextjs project
+- Important: These filenames are only reserved when creating them inside of the app/
+- https://nextjs.org/docs/app/api-reference/file-conventions
+
+### import css
+```js
+import './global.css';
+```
+### Favicon
+- if you add an image called "icon" to app/ it will use it as an favicon
+
+### components
+- convention is to create a components/ folder parrallel to app/
+- https://nextjs.org/docs/app/building-your-application/routing/colocation
+
+### import alias 
+- in nextjs you can target root in your imports to make absolute path
+- eg. import @/components/header
+- this is configured in jsconfig.json
+
+```js
+//jsconfig.json
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+```
+
+## 93. Dynamic Routes -> configuring dynamic routes, using route parameters
+
+- test links: http://localhost:3000/blog and http://localhost:3000/blog/post-1
+- nextjs uses square brackets to denote something is dynamic: `[name]` where name is any placeholder
+- so it will look like `app/blog/page.js` and `app/blog/[slug]/page.js` 
+- Nextjs passes a props to page components, and you can destruct this prop to retrieve "params".
+- params is an object where every placeholder in a dynamic route ([slug]) will be a key, and the value stored is the actual URL value.
+- eg. 
+  - if dir structure is `app/blog/[slug]/page.js` 
+  - url to access the page is: `localhost:3000/blog/page-1` 
+  - params.slug value is "page-1" 
+
+### Potential Blocker
+- NOTE CORRECT:   `import Link from 'next/link';` //no curly braces {} around Link 
+- NOTE INCORRECT: `import {Link} from 'next/link'`;
+
+
+```js
+//app/blog/page.js
+import {Link} from 'next/link';
+
+export default function BlogPage(){
+  return (<main>
+    <Link href="/blog/post-1">post1</Link>
+    <Link href="/blog/post-2">post2</Link>
+  </main>);
+}
+```
+
+```js
+//app/blog/[slug]/page.js
+export default function BlogPostPage({params}){
+  return (<main><h1>blog post</h1></main>);
+}
+```
+## 94. Onwards to the Main Project: The Foodies App
+
+---
 # Section 04 - Routing and Page Rendering - Deep Dive
 # Section 05 - Data Fetching - Deep Dive
 # Section 06 - Mutating Data - Deep Dive
