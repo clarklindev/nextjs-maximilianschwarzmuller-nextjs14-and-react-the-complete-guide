@@ -788,6 +788,7 @@ export default function ExampleLayout({children}){
 - if you import an image into a file, react auto creates the path
 - NextJS you have to access the imported file via .src
 - remember when importing if you use the alias @ in the import path (jsconfig.json) it is absolute path from root folder eg. @/assets/logo.png
+- NOTE: `<img>` element is standard html here... we will later use NextJs `<Image>` component see lesson 100
 
 ```js
 //app/components/main-header.js
@@ -860,6 +861,28 @@ export default function Test(){
 
 ```
 
+### 100. Optimizing Images with Nextjs <Image> component
+- https://nextjs.org/docs/app/api-reference/components/image
+- Nextjs has an Image component which assists with optimizing images
+- optimizations: eg. auto lazy loading under-the-hood -> only display image if really visible on page
+- note: the Image src prop is assigned the object imported... 
+- Image has loading="lazy" automatically added
+- width and height is inferred
+- srcset attribute added ensuring different sized images are loaded depending on viewport/device
+- serve in best image format eg. .webp when using chrome
+- priority property -> to tell nextjs to load image as quickly as possible
+
+### Image vs img
+- see lesson ## 98. adding a custom component -> Images where an `<img>` element is used
+- difference between using img element: using `<img>` you assign src="" the imported object.src 
+
+```js
+import Image from 'next/image';
+import logoImg from '@assets/logo.png';
+
+// ...
+<Image src={logoImg} priority/>    //note: assign the full object imported (and not the .src property (logoImg.src)
+```
 
 ---
 
