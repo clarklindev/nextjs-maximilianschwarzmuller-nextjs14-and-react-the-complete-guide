@@ -831,6 +831,36 @@ export default function ExampleLayout({children}){
 
 ```
 
+## 99. Styling Nextjs
+- options: tailwind or cssmodules
+- see lesson ## 21. CSS Modules
+- if you name your css .module.css (classes are scoped),
+- every class in the css file will be accessible via the import object as a property
+
+```css
+/* components/main-header.module.css */
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+```
+
+```js
+import classes from './main-header.module.css';
+
+export default function Test(){
+  return (
+    <>
+      <div className={classes.header}>Hi</div>
+    </>
+  );
+}
+
+```
+
+
 ---
 
 # Section 04 - Routing and Page Rendering - Deep Dive
