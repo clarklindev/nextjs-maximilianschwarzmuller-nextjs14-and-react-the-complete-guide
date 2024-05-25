@@ -765,6 +765,72 @@ export default function BlogPostPage({ params }) {
 - /meals/[slug]
 - dynamic url eg. http://localhost:3000/meals/pasta
 
+## 97. layouts
+
+- layouts wrap other pages
+- access the wrapped content via props' children attribute
+
+```js
+export default function ExampleLayout({children}){
+  return <>
+    {children}
+  <>
+}
+
+```
+
+## 98. adding a custom component
+
+- here we create our own header component with react
+
+### Images
+
+- if you import an image into a file, react auto creates the path
+- NextJS you have to access the imported file via .src
+- remember when importing if you use the alias @ in the import path (jsconfig.json) it is absolute path from root folder eg. @/assets/logo.png
+
+```js
+//app/components/main-header.js
+
+import Link from "next/link";
+import logoImg from "@/assets/logo.png";
+
+export default function MainHeader() {
+  return (
+    <header>
+      <Link href="/">
+        <img src={logoImg.src} alt="food" />
+        Food logo
+      </Link>
+
+      <nav>
+        <ul>
+          <li>
+            <Link href="/meals">Browse Meals</Link>
+          </li>
+          <li>
+            <Link href="/community">Food Community</Link>
+          </li>
+        </ul>
+      </nav>
+    </header>
+  );
+}
+```
+
+```js
+import MainHeader from '@components/main-header';
+
+//app/layout.js
+export default function ExampleLayout({children}){
+  return <>
+    <MainHeader/>
+    {children}
+  <>
+}
+
+```
+
 ---
 
 # Section 04 - Routing and Page Rendering - Deep Dive
