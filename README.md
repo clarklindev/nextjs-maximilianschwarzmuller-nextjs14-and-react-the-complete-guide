@@ -1,11 +1,12 @@
 - course: nextjs-maximilianschwarzmuller-nextjs14-and-react-the-complete-guide
-https://www.udemy.com/course/nextjs-react-the-complete-guide/
+  https://www.udemy.com/course/nextjs-react-the-complete-guide/
 
 - NOTE: this is the 2024 next14 update
 
 # Section 01 - getting started (22min)
 
 ## 02 What is nextjs?
+
 - framework ontop of reactjs
 - FEATURE: nextjs has route setup and handling
 - FEATURE: nextjs has form handling
@@ -13,6 +14,7 @@ https://www.udemy.com/course/nextjs-react-the-complete-guide/
 - FEATURE: nextjs has authentication
 
 ## 03 Key features
+
 - allows fullstack (front + backend)
 - file based routing
 - server side rendering (nextjs pre-renders on server)
@@ -28,7 +30,9 @@ iwr https://get.pnpm.io/install.ps1 -useb | iex
 ```
 
 or create a new project
+
 - asks questions from cli:
+
 1. typescript? no (course)
 2. eslint? yes
 3. tailwindcss? no
@@ -43,19 +47,23 @@ npx create-next-app@latest
 ### run project
 
 - see package.json commands
+
 ```
 pnpm run dev
 ```
 
 ## 05 nextjs vs just react - analyzing the nextjs project
+
 - nextjs -> html page content is rendered on server and sent from server to client
 - vanilla react -> single html file with client side js code -> generated and rendered client side
 
 ## 06 routing -> editing the starting-project
+
 - nextjs uses the "app" folder for routing
 
 ### creating a route
-- APP Router -> nextjs uses app/ folder 
+
+- APP Router -> nextjs uses app/ folder
 - CONVENTION: routing is done by creating folders inside app/ AND "page.js"
 - inside app/ add a new folder "awesome" (this will be the route) AND new pages are created by naming them "page.js"
 - the above can be accessed
@@ -69,6 +77,7 @@ http://localhost:3000/awesome
 - When you use export default, it allows Next.js to import the component without specifying the exact name of the import. default exports make it easier for Next.js to work with file-based routing and generate routes automatically.
 
 ## 07 page router vs app router (one framework, two approaches)
+
 - page router (older)
 - app router (course) -> introduced nextjs 13 -> supports react server components and server actions
 
@@ -81,48 +90,48 @@ http://localhost:3000/awesome
 - source code snapshot -> https://github.com/academind/react-complete-guide-course-resources/tree/main/code/30%20React%20Summary
 - for convenience section files: 02-react-refresher/
 
-- react refresher -> going over the basics 
+- react refresher -> going over the basics
 - imperative approach -> manipulating dom (step by step)
 - declarative approach -> write ui code and blend with js, event listeners, state, and dynamic values
-- vite install (install in current folder vite react template): 
+- vite install (install in current folder vite react template):
 
 ```cmd
 pnpm create vite . --template react
 ```
 
 ## 21. CSS Modules
+
 ```css
 /* Post.module.css */
-.post{
+.post {
   font-size: 1.5rem;
 }
 ```
+
 - css modules -> filename Post.module.css / import classes from "./Post.module.css"
-- access the css: classes used in css can be accessed as properties of imported object ("classes") 
-`<div className={classes.post}></div>`
+- access the css: classes used in css can be accessed as properties of imported object ("classes")
+  `<div className={classes.post}></div>`
 
 ## 25. state
+
 - react components only refresh/reload with state updates eg. const [state, update state function] = useState() hooks
 - react components DO NOT UPDATE without state updates
 - OPTIMIZATION: when working with state and it depends on previous state, pass to the useState() set function a function that receives previous state (you can name this anything)
 
 ```js
-function PostList(){
+function PostList() {
   const [posts, setPosts] = useState([]);
 
-  function addPostHandler(postData){
-    setPosts((existingPosts)=>[postData, ...existingPosts]);  //optimized way by passing function that receives prev state
+  function addPostHandler(postData) {
+    setPosts((existingPosts) => [postData, ...existingPosts]); //optimized way by passing function that receives prev state
   }
 
-  return (
-  <>
-    //...
-  </>
-  );
+  return <>//...</>;
 }
 ```
 
 ## 30. react form buttons / 31. handling submit
+
 - by default clicking button submits form
 - give button type=""button" so it doesnt trigger form submit or give type="submit" to submit (optional as it will by default submit)
 - form should have onSubmit handler that passes event and calls event.preventDefault();
@@ -161,7 +170,9 @@ function NewPost({onAddPost, onCancel}){
   }
 }
 ```
+
 ## 35. sending a POST HTTP Request
+
 - frontend to backend communication
 - use fetch(url, {}) to send and get data
 - fetch is not react only feature, it is in all browsers
@@ -169,79 +180,83 @@ function NewPost({onAddPost, onCancel}){
 - fetch awaits response
 
 ```js
-function addPostHandler(postData){
-
+function addPostHandler(postData) {
   //submit form
-  fetch('http://localhost:8080/posts', {
-    method: 'POST',
-    body: JSON.stringify(postData),  //convert to json
-    headers:{
-      'Content-Type':'application/json'
-    }
+  fetch("http://localhost:8080/posts", {
+    method: "POST",
+    body: JSON.stringify(postData), //convert to json
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
-  setPosts((existingPosts)=>[postData, ...existingPosts]);  //optimized way by passing function that receives prev state
+  setPosts((existingPosts) => [postData, ...existingPosts]); //optimized way by passing function that receives prev state
 }
 ```
 
 ## 36. Handling Side effects with useEffect()
+
 - frontend sends a fetch request to /posts on backend which when done returns "posts"
 
 ### backend
+
 ```js
-app.get('/posts', async (req, res)=>{
+app.get("/posts", async (req, res) => {
   const storedPosts = await getStoredPosts();
-  res.json({posts: storedPosts});
+  res.json({ posts: storedPosts });
 });
 ```
 
-- handle feedback from fetch 
+- handle feedback from fetch
+
 ### frontend ANTIPATTERN... DO NOT DO THIS ON FRONTEND
+
 - ANTIPATTERN -> .then() handling causes infinite loop because updating the state eg. calling setPosts() in the then() causes component to re-render -> which causes fetch to be called again
 
 ### UseEffect() -> frontend FIX for handling fetch() request
+
 - FIX: handling should be done with useEffect() as it prevents infinite loop
 - when is useEffect() called depends on the array (second prop)
   - always called -> no second prop
   - called at start -> empty array
   - called when dependency changes -> put dependencies in the array...when anything inside array changes, the useEffect is called.
 - to call an async function inside the useEffect, define a nested inner async function
-- useEffect() should not be async 
+- useEffect() should not be async
 
 ```js
 function PostList() {
   // fetch().then(response=> response.json()).then(data=> {setPosts(data.posts)});
   const [posts, setPosts] = useState([]);
 
-  useEffect(()=>{
-    async function fetchPosts(){
-      const response = await fetch('');
+  useEffect(() => {
+    async function fetchPosts() {
+      const response = await fetch("");
       const resData = await response.json();
       setPosts(resData.posts);
     }
     fetchPosts();
-
   }, [posts]);
 }
-
 ```
 
-## 38. routing 
+## 38. routing
+
 - react allows you to use your own routing.
 - have a look at https://github.com/clarklindev/react-router-6 the code is self explanatory
 - react router 6
-- routing happens on client side 
+- routing happens on client side
 
 ## 40. layout routes and outlet
+
 - you can make layout routes by adding `<Route>` children to a `<Route>`
-- organize routing into its own folder 
+- organize routing into its own folder
 - you tell react where to render the content of the route in the layout via the `<Outlet/>` from react-router-dom
 - Outlet jsx element is a placeholder for where nested route can render their content in the RootLayout
 
 ### install latest react router
 
 ```cmd
-pnpm i react-router-dom    
+pnpm i react-router-dom
 ```
 
 ```js
@@ -259,13 +274,15 @@ function RootLayout(){
 export default RootLayout;
 
 ```
+
 - import {RouterProvider, createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
 - RouterProvider takes a "router" prop which you provide an route configuration object
 - use createBrowserRouter to create a route config object
 - then pass it as a value to RouterProvider's router prop
 
-### METHOD A (array) -> createBrowserRouter([]) array method 
-- createBrowserRouter() takes an array as an value (a list of route definitions) 
+### METHOD A (array) -> createBrowserRouter([]) array method
+
+- createBrowserRouter() takes an array as an value (a list of route definitions)
 - a route definition is an object with a path and element that should be rendered when route is active `{path:"/", element:<App/> }`
 - can add more routes to array and use layout route with children prop (array)
 
@@ -281,9 +298,9 @@ const route = createBrowserRouter([
 
 //METHOD 2 - can add more routes to array and use layout route
 const route = createBrowserRouter([
-  {path:"/", element:<RootLayout/>}, 
+  {path:"/", element:<RootLayout/>},
   children:[ {path:"/", element:<Posts/>}, {path:"/create-post", element:<NewPost/>} ],
-]); 
+]);
 
 //...
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -292,23 +309,32 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 ```
 
 ### METHOD B (JSX) -> createBrowserRouter(createRoutesFromElements()) method
+
 - OR you can pass to createBrowserRouter createRoutesFromElements(): `createBrowserRouter(createRoutesFromElements(<Route path='about' element={<About />} />))` and nest jsx of Route elements
 
 ```js
-import {RouterProvider, createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
-import Posts from './Posts';
+import {
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+} from "react-router-dom";
+import Posts from "./Posts";
 
-const route = createBrowserRouter(createRoutesFromElements(<Route path='/' element={<Posts/>} />)); //can add more <Route> components as children of <Route></Route>
+const route = createBrowserRouter(
+  createRoutesFromElements(<Route path="/" element={<Posts />} />)
+); //can add more <Route> components as children of <Route></Route>
 
 //...
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <RouterProvider router={route}/>
-)
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <RouterProvider router={route} />
+);
 ```
 
 ## 42 linking and navigation
 
 ### Link element
+
 - in react, use Link component: `import {Link} from 'react-router-dom';`
 - the right element for creating a link: `<a/>` that navigates a url BUT it creates a new request
 - Link renders an `<a/>` element but it prevents the browser default of sending a request
@@ -317,34 +343,37 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
 ```js
 //causes new request to be sent to server
-<a href="/create-post">new post</a>
+<a href="/create-post">new post</a>;
 
 //does not send new request to server
-import {Link} from 'react-router-dom';
-<Link to="/create-post">new post</Link>
+import { Link } from "react-router-dom";
+<Link to="/create-post">new post</Link>;
 ```
+
 ### navigation with code (navigate programatically)
+
 - navigating using code
-- useNavigate hook: import {useNavigate} from 'react-router-dom'; 
+- useNavigate hook: import {useNavigate} from 'react-router-dom';
 - can use .. to navigate to parent route
 
 ```js
-import {useNavigate} from 'react-router-dom'; 
+import { useNavigate } from "react-router-dom";
 
 const navigate = useNavigate();
 
-function closeHandler(){
-  navigate('/');
-  navigate('..'); //navigate up one level
+function closeHandler() {
+  navigate("/");
+  navigate(".."); //navigate up one level
 }
 ```
 
 ## react-router 6.4: to handle data-fetching and submitting form data
 
 ## 43. loader
+
 - instead of using useEffect(), go to route definition... to the route that needs loader for data...
 - add loader property, value is a function that will execute whenever the route gets activated (ie. when its about to render the route element)
-- convention is to go to the route's component file and add export an extra function: loader 
+- convention is to go to the route's component file and add export an extra function: loader
 - and instead of putting code in route definition (just import and call it)
 - loader() executes client side
 - it can/or not return a promise, it will await for data to load first before rendering the route component
@@ -353,24 +382,27 @@ function closeHandler(){
 - give loader an alias if there is more loaders from different routes: postsLoader
 
 ### consuming loader() data with useLoaderData hook
+
 - import {useLoaderData} from 'react-router-dom'
 - to consume the loader() data for the route component (or any nested component), use the useLoaderData hook
 - here PostsList is nested in Posts but we will consume the loader data there...
 
 ```js
 // Posts.jsx
-function Posts(){
+function Posts() {
   return (
     <>
-      <Outlet/>
-      <main><PostsList/></main>
+      <Outlet />
+      <main>
+        <PostsList />
+      </main>
     </>
   );
 }
 export default Posts;
 
-export async function loader(){
-  const response = await fetch('');
+export async function loader() {
+  const response = await fetch("");
   const resData = await response.json();
   return resData;
 }
@@ -378,10 +410,11 @@ export async function loader(){
 
 - PostsList gets access to loader() data via useLoaderData hook
 - removes the need for useEffect inside PostsList
+
 ```js
 //PostsList.jsx
-import {useLoaderData} from 'react-router-dom'
-function PostsList(){
+import { useLoaderData } from "react-router-dom";
+function PostsList() {
   //BELOW COMMENTED OUT -> DEPRECATED for useLoaderData()
   // const [posts, setPosts] = useState([]);
 
@@ -404,25 +437,27 @@ function PostsList(){
 import Posts, {loader as postsLoader} from './Posts';
 
 const route = createBrowserRouter([
-  {path:"/", element:<RootLayout/>}, 
-  children:[ 
+  {path:"/", element:<RootLayout/>},
+  children:[
     {
-      path:"/", 
+      path:"/",
       element:<Posts/>,
       // loader: ()=>{},
       loader: postsLoader,
-      children:[ 
+      children:[
         {
-          path:"/create-post", 
-          element:<NewPost/>, 
+          path:"/create-post",
+          element:<NewPost/>,
           // action:()=>{}
-        } 
+        }
       ]
-    }, 
+    },
   ],
-]); 
+]);
 ```
+
 ## 44. action() functions for handling form submits
+
 - when you have a form on a page, you can handle the submits with action() handlers, you also put the function close into the route component code
 - it is triggered when form is submitted
 - move the submit request code from submitHandler() to action() handler
@@ -433,51 +468,52 @@ const route = createBrowserRouter([
 - action(data) receives data argument which can be destructed, data is just a object..has eg. request property containing the "request" object generated by react-router
 - the request object has a formData() method which gives access to the data encoded in the form
 - formData() yields a promise, so change to use async/await
-- to get data from formData ->   const postData = Object.fromEntries(formData);  //{body:'...', author:'...'}
+- to get data from formData -> const postData = Object.fromEntries(formData); //{body:'...', author:'...'}
 
 ```js
-export async function action({request}){
+export async function action({ request }) {
   const formData = await request.formData();
   // formData.get('body') get form data
-  const postData = Object.fromEntries(formData);  //{body:'...', author:'...'}
+  const postData = Object.fromEntries(formData); //{body:'...', author:'...'}
   //...
 }
 ```
+
 - react router dom provides redirect() for what happens after form is sent
 - redirect() generates a response object, which is then returned by action() function and react-router will check if its a redirect, and if it is, it will go to that route
 
 ```js
 //NewPost.jsx
-import {Form, redirect} from 'react-router-dom';
+import { Form, redirect } from "react-router-dom";
 
-function NewPost(){
+function NewPost() {
   return (
     <>
       <Form method="post">
         <p>
           <label htmlFor="body">Text</label>
-          <textarea id="body" name="body"/>
+          <textarea id="body" name="body" />
         </p>
       </Form>
     </>
-  )
+  );
 }
 
-export async function action({request}){
+export async function action({ request }) {
   const formData = await request.formData();
   // formData.get('body') get form data
-  const postData = Object.fromEntries(formData);  //{body:'...', author:'...'}
+  const postData = Object.fromEntries(formData); //{body:'...', author:'...'}
 
   //request object
-  const response = fetch('http://localhost:8080/posts', {
-    method: 'POST',
-    body: JSON.stringify(postData),  //convert to json
-    headers:{
-      'Content-Type':'application/json'
-    }
+  const response = fetch("http://localhost:8080/posts", {
+    method: "POST",
+    body: JSON.stringify(postData), //convert to json
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
-  return redirect('/');    //return a response object from action
+  return redirect("/"); //return a response object from action
 }
 ```
 
@@ -486,59 +522,71 @@ export async function action({request}){
 import NewPost, {action as newPostAction} from './routes/NewPost';
 
 const route = createBrowserRouter([
-  {path:"/", element:<RootLayout/>}, 
-  children:[ 
+  {path:"/", element:<RootLayout/>},
+  children:[
     {
-      path:"/", 
+      path:"/",
       element:<Posts/>,
       // loader: ()=>{},
       loader: postsLoader,
-      children:[ 
+      children:[
         {
-          path:"/create-post", 
-          element:<NewPost/>, 
+          path:"/create-post",
+          element:<NewPost/>,
           // action:()=>{}
           action: newPostAction
-        } 
+        }
       ]
-    }, 
+    },
   ],
-]); 
+]);
 ```
 
 ## 45. Dynamic Routes with react-router
-- use syntax: `{path:':id'}` in the router config 
+
+- use syntax: `{path:':id'}` in the router config
 - note: absolute path has '/' eg. `{path:'/:id'}`
-- note: relative path is      eg. `{path:':id'}`
+- note: relative path is eg. `{path:':id'}`
 - to get the dynamic route id from the router config object, loader() function also receives an object with 'params' attribute which you can destruct to access the dynamic id
 - the attribute name is the same as what is defined in the router config object eg. if route object is {path:':id'} then you access params.id
 
 ```js
-export async function loader({params}){
-  const response = await fetch('http://localhost:8080/posts/' + params.id);
+export async function loader({ params }) {
+  const response = await fetch("http://localhost:8080/posts/" + params.id);
   const resData = await response.json();
   return resData.posts;
 }
 ```
+
 ---
-# Section 03 - NextJS essentials - App Router 
+
+# Section 03 - NextJS essentials - App Router
+
 - lessons 85 -> 133
+- 49 lessons
+- 4hrs 1min
+
 ## NEXT.JS CORE ESSENTIALS
+
 - routing, pages, components
 - fetching and sending data
 - styling, images, metadata
 
 ## 86. starting setup
+
 - project folder-> 03-nextjs-essentials-app-router/
 
 ## 87. file based routing + react server components
+
 - app/ folder where you setup pages of website
 - page.js reserved filename -> Nextjs ensures its rendered on server (server component)
 
 ## 88. Adding another route via the file system
+
 - Important: These filenames are only reserved when creating them inside of the app/
 
 - reserved filenames (1min42sec)
+
   - page.js -> define page content
   - layout.js -> wrap around pages
   - not-found.js -> not-found fallback page
@@ -546,20 +594,26 @@ export async function loader({params}){
   - loading.js -> Fallback page which is shown whilst sibling or nested pages (or layouts) are fetching data
   - route.js -> Allows you to create an API route (i.e., a page which does NOT return JSX code but instead data, e.g., in the JSON format)
 
-- routes are created by adding folders to app/ (with name as anything you want for the route) AND ALSO NEED a page.js 
+- routes are created by adding folders to app/ (with name as anything you want for the route) AND ALSO NEED a page.js
 - eg. app/about/page.js
 - page.js is just a default exported function
 - then you can access the url via http://localhost:3000/about
 
 ```js
 //AboutPage.jsx
-export default function AboutPage(){
-  return <main><h1>about us</h1></main>
+export default function AboutPage() {
+  return (
+    <main>
+      <h1>about us</h1>
+    </main>
+  );
 }
 ```
+
 ## 89. Navigating between pages
 
 ### WRONG WAY
+
 - using `<a>` elements causes page reload instead of single page app (SPA) environment where click just updates page with client javascript.
 
 ```js
@@ -567,28 +621,30 @@ export default function AboutPage(){
 ```
 
 ### CORRECT WAY
-- use `<Link>` 
+
+- use `<Link>`
 - NOTE: import Link from 'next/link';
 - NOTE: NOT import {Link} from 'next/link';
 - import Link from 'next/link';
 - difference between react-router which uses "to" -> nextjs Link still uses "href" prop
 
 ## 90. working with pages and layouts
+
 - a layout defines the "shell" around one or more pages
 - its the layout of how the page should be rendered
 - every project needs atleast one root layout: app/layout.js
 - you can have other layouts inside app/route folders
-- layout includes `<html>` and `<body>` 
+- layout includes `<html>` and `<body>`
 - layout DOES NOT have a `<head>` `but includes and an exported metadata object which includes all content that goes into head.
 - children is the content of the page
 
 ```js
 //app/layout.js
-import './globals.css'
+import "./globals.css";
 
 export const metadata = {
-  title: 'NextJS Course App',
-  description: 'Your first NextJS app!',
+  title: "NextJS Course App",
+  description: "Your first NextJS app!",
 };
 
 export default function RootLayout({ children }) {
@@ -598,25 +654,30 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-
 ```
 
 ## 91. reserved file names, custom components, & how to organize a nextjs project
+
 - Important: These filenames are only reserved when creating them inside of the app/
 - https://nextjs.org/docs/app/api-reference/file-conventions
 
 ### import css
+
 ```js
-import './global.css';
+import "./global.css";
 ```
+
 ### Favicon
+
 - if you add an image called "icon" to app/ it will use it as an favicon
 
 ### components
+
 - convention is to create a components/ folder parrallel to app/
 - https://nextjs.org/docs/app/building-your-application/routing/colocation
 
-### import alias 
+### import alias
+
 - in nextjs you can target root in your imports to make absolute path
 - eg. import @/components/header
 - this is configured in jsconfig.json
@@ -636,63 +697,114 @@ import './global.css';
 
 - test links: http://localhost:3000/blog and http://localhost:3000/blog/post-1
 - nextjs uses square brackets to denote something is dynamic: `[name]` where name is any placeholder
-- so it will look like `app/blog/page.js` and `app/blog/[slug]/page.js` 
+- so it will look like `app/blog/page.js` and `app/blog/[slug]/page.js`
 - Nextjs passes a props to page components, and you can destruct this prop to retrieve "params".
 - params is an object where every placeholder in a dynamic route ([slug]) will be a key, and the value stored is the actual URL value.
-- eg. 
-  - if dir structure is `app/blog/[slug]/page.js` 
-  - url to access the page is: `localhost:3000/blog/page-1` 
-  - params.slug value is "page-1" 
+- eg.
+  - if dir structure is `app/blog/[slug]/page.js`
+  - url to access the page is: `localhost:3000/blog/page-1`
+  - params.slug value is "page-1"
 
-### Potential Blocker
-- NOTE CORRECT:   `import Link from 'next/link';` //no curly braces {} around Link 
+### Potential Blockers
+
+- NOTE CORRECT: `import Link from 'next/link';` //no curly braces {} around Link
 - NOTE INCORRECT: `import {Link} from 'next/link'`;
-
+- not in correct folder
 
 ```js
 //app/blog/page.js
-import {Link} from 'next/link';
+import { Link } from "next/link";
 
-export default function BlogPage(){
-  return (<main>
-    <Link href="/blog/post-1">post1</Link>
-    <Link href="/blog/post-2">post2</Link>
-  </main>);
+export default function BlogPage() {
+  return (
+    <main>
+      <Link href="/blog/post-1">post1</Link>
+      <Link href="/blog/post-2">post2</Link>
+    </main>
+  );
 }
 ```
 
 ```js
 //app/blog/[slug]/page.js
-export default function BlogPostPage({params}){
-  return (<main><h1>blog post</h1></main>);
+export default function BlogPostPage({ params }) {
+  return (
+    <main>
+      <h1>blog post</h1>
+    </main>
+  );
 }
 ```
+
 ## 94. Onwards to the Main Project: The Foodies App
 
+- exercise source: [github](https://github.com/mschwarzmueller/nextjs-complete-guide-course-resources/blob/main/attachments/02-nextjs-essentials/foodies-starting-project.zip)
+- /03-2-foodies
+- note: `meals/share` route has precedence over the dynamic route `/meals/[slug]` even though they both have /meals parent folder
+
+## 95. EXERCISE / 96. EXERCISE SOLUTION
+
+- practice creating of routes / dynamic routes
+- run node project at: /03-2-foodies
+- exercise todo:
+
+1. create /meals route
+
+- http://localhost:3000/meals
+
+2. create /meals/share route
+
+- http://localhost:3000/meals/share
+
+3. create /community route
+
+- http://localhost:3000/community
+
+4. create a dynamic route
+
+- /meals/[slug]
+- dynamic url eg. http://localhost:3000/meals/pasta
+
 ---
+
 # Section 04 - Routing and Page Rendering - Deep Dive
+
 # Section 05 - Data Fetching - Deep Dive
+
 # Section 06 - Mutating Data - Deep Dive
+
 # Section 07 - Understanding & Configuring caching
+
 # Section 08 - NextJs app optimizations
+
 # Section 09 - user authentication
+
 # Section 10 - round up and next steps
 
 # Section 11 - Pages & File-based routing
+
 # Section 12 - Project Time: working with file-based routing
 
 # Section 13 - page pre-rendering and data-fetching
+
 # Section 14 - project time: page pre-rendering & data-fetching
 
 # Section 15 - optimizing Next.js apps
 
 //FULL STACK REACT
+
 # Section 16 - adding backend code with API Routes (fullstack react)
+
 # Section 17 - Project time: API Routes
 
 # Section 18 - App-wide state (react context)
+
 # Section 19 - complete app example (build a full blog A-Z)
+
 # Section 20 - Deploying Nextjs apps
+
 # Section 21 - Adding Authentication
+
 # Section 22 - Optional Nextjs Summary
+
 # Section 23 - Course Roundup
