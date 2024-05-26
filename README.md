@@ -975,7 +975,65 @@ export default function NavLink({href, children}){
 }
 ```
 
+## 106. meal details: output meal data & images with unknown dimensions
+- PRACTICE LESSON... (uses dynamic route  AND images dynamically loaded from db (no width/height at build-time) add "fill" attribute)
 
+- ability to have a page which shows many items eg. meals (meals-grid)
+- ability to share am item eg. a meal
+- the purpose of meal detail page is to show the detail of one recipe
+
+- meal-grid has many meal-items
+- meal-item has a dynamic slot for the Link to open details page: `app/meals/[slug]/page.js`
+- Image -> with import's nextjs can detect width/height.. but dynamically loaded from database, which is a path pointing to an image
+- Image -> add "fill" attribute for dynamically loaded iamge: `<Image src={image} alt={title} fill />`
+
+- app/meals/page.js
+- app/meals/page.module.css
+- components/meals/meals-grid.js
+- components/meals/meals-grid.module.css
+- components/meals/meal-item.js
+- components/meals/meal-item.module.css
+
+```js
+//app/meals/page.js
+export default function MealsPage() {
+  return (
+    <>
+      <header className={classes.header}>
+        <h1>meals <span className={classes.highlight}>by you</span></h1>
+        <p>choose a recipe</p>
+        <p className={classes.cta}>
+          <Link href="/meals/share">share your recipe</Link>
+        </p>
+      </header>
+      <main>
+      // meals grid here...
+      </main>
+    </>
+  );
+}
+
+```
+
+```js
+//components/meals/meals-grid.js`
+import MealItem from './meal-item';
+import classes from './meals-grid.module.css';
+
+export default function MealsGrid(meals){
+  return (
+    <ul className={classes.meals}>
+      {
+        meals.map( meal=> (
+          <li key={meal.id}>
+            <MealItem {...meal}/>
+          </li>
+        ));
+      }
+    </ul>
+  );
+}
+```
 
 
 
