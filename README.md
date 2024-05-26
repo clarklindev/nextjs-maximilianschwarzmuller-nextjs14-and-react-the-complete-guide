@@ -1035,15 +1035,104 @@ export default function MealsGrid(meals){
 }
 ```
 
+## 107. setting up SQLLite database
+- install sqlLite db
+- add initdb.js to root, it will setup the db (if it doesnt exist -> or use existing db) -> dummy meals
+- run initdb.js  `node initdb.js` -> meals.db is created
 
+```cmd
+pnpm i better-sqlite3
+```
 
+```js
+const sql = require('better-sqlite3');
+const db = sql('meals.db');
 
+const dummyMeals = [
+  {
+    title: 'Juicy Cheese Burger',
+    slug: 'juicy-cheese-burger',
+    image: '/images/burger.jpg',
+    summary:'good burger',
+    instructions: ``,
+    creator: 'John Doe',
+    creator_email: 'johndoe@example.com',
+  }
+];
 
+db.prepare(`
+   CREATE TABLE IF NOT EXISTS meals (
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
+       slug TEXT NOT NULL UNIQUE,
+       title TEXT NOT NULL,
+       image TEXT NOT NULL,
+       summary TEXT NOT NULL,
+       instructions TEXT NOT NULL,
+       creator TEXT NOT NULL,
+       creator_email TEXT NOT NULL
+    )
+`).run();
 
+async function initData() {
+  const stmt = db.prepare(`
+      INSERT INTO meals VALUES (
+         null,
+         @slug,
+         @title,
+         @image,
+         @summary,
+         @instructions,
+         @creator,
+         @creator_email
+      )
+   `);
 
+  for (const meal of dummyMeals) {
+    stmt.run(meal);
+  }
+}
 
+initData();
+```
 
+## 108. NEXTJS way of loading data from db
+- with nextjs backend and frontend are blended seamlessly together (no need for separate backend)
+- NOTE: because nextjs components are by default SERVER side components, you can reach out directly to db
+- create a new folder eg. lib/ and create a file that reaches out to db and gets data
+- sqllite:
+  - "run()" is used when you insert/change data, 
+  - "all()" is used when fetching data (all rows)
+  - "get()" to get single row
+- sqllite does not use promises but they can be used in our component by converting them to async functions
+- NOTE: async functions are allowed in NEXTJS at component level (not possible with react)
 
+```js
+//lib/meals.js
+import sql from 'better-sqlite3';
+const db = sql('meals.db');
+
+export async function getMeals(){
+  //simulate delay
+  // await new Promise((resolve)=> setTimeout(resolve, 2000));
+  return db.prepare('SELECT * FROM meals').all();
+}
+```
+
+```js
+//app/meals/page.js
+import {getMeals} from '@/lib/meals';
+
+//- NOTE: here async is added at component level (allowed in NEXTJS)
+export default async function MealsPage(){
+  const meals = await getMeals();
+
+  return (<>
+    // ...
+    <MealsGrid meals={meals}>
+    </>
+  )
+}
+```
 
 
 
