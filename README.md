@@ -918,19 +918,78 @@ import logoImg from '@assets/logo.png';
 ## 104. React Server components vs Client Components
 - by default in nextjs all components are server side components (rendered on server)
 - you can see the difference by testing if your console.logs show in browser or cmd/terminal (where you run the project)
-- SO even tho everything is server components, you can still render client components...
-- However react hooks are a client-side concept
-- event handlers are client-side concept
+- SO even tho everything is server components, you can still render it as a client-side components...
+- and these need to be client-side components:
+  - react hooks are a client-side concept
+  - event handlers are client-side concept
 
 ### 'use client'
-- if you want to build a client-side component have to (at top of file): 
+- if you want to build a client-side component have to declare 'use client'; (at top of file): 
 
 ```js
 'use client'; 
 ```
+## 105. creating NavLink -> using client components efficiently
+- /app/community/page.js
+- /app/community/page.module.css
+
+### usePathname -> getting active path to set active Link class
+- externalize Link to NavLink component so only that part is client-side component...
+- NEXTJS usePathname hook
+- NOTE: usePathname is a hook (this should ring a bell ...DING!! -> SERVER COMPONENT requires 'use client';)
+- NOTE: you want to add 'use client'; as far down the component tree as possible SOLUTION -> create a components/nav-link.js (NavLink)
+- getting active path so you can set the class
+- use path to test if it startsWith (nested pages) eg '/meals' OR equals string match
+- if it does then you know it should be active
+
+```js
+//app/components/main-header/main-header.js
+import NavLink from './nav-link';
+
+//...
+return (<nav>
+    <NavLink href="/meals">Browse Meals</NavLink>
+    <NavLink href="/community">Community</NavLink>
+  </nav>
+)
+```
+
+```js
+//components/main-header/nav-link.js
+'use client';
+
+import {usePathname} from 'next/navigation';
+import Link from 'next/link';
+import classes from './nav-link.module.css';
+
+export default function NavLink({href, children}){
+  const path = usePathname();
+  return (
+    <Link 
+      href={href}
+      className={path.startsWith(href) ? classes.active : undefined}
+    >
+      {children}
+    </Link>
+  );
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---
-
 # Section 04 - Routing and Page Rendering - Deep Dive
 
 # Section 05 - Data Fetching - Deep Dive
