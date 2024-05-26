@@ -884,6 +884,51 @@ import logoImg from '@assets/logo.png';
 <Image src={logoImg} priority/>    //note: assign the full object imported (and not the .src property (logoImg.src)
 ```
 
+## 101. using more custom components
+- PRACTICE LESSON... (NOTHING NEW)
+- here you create a custom components/main-header/main-header-background.js component 
+- and refactor some of the css into css module
+- in main-header.js: import MainHeaderBackground from "./main-header-background"; 
+- main-header-background: return the background svg wrapped in `<div className={classes['header-background']}>`
+
+## 102. populating the starting content
+- PRACTICE LESSON... (NOTHING NEW)
+- editing app/page.js
+- div: creating a image slideshow 
+- div: a hero div with some text 
+- div: call-to-action with some links 
+- add app/page.module.css
+
+## 103. preparing image slideshow
+- nextjs working with `<Image>`
+- components/images/image-slideshow.js
+- components/images/image-slideshow.module.css
+- NOTE: image-slideshow is importing with `import x from '@assets/x.jpg';`
+- then an image array is created referencing the imports
+- image-slideshow then creates Image element for each item in array
+- useState to keep track of index in array, 
+- useEffect called once that creates const interval = setInterval(()=>{}) 
+- setInterval that updates this useState() index calling useState's set method
+- the set method has a method that just checks if current index is lower than the array length, if so +1 else set index to 0
+- make sure to add cleanup function by return ()=>{//clearInterval(interval)}
+
+### ERROR ERROR ERROR!
+- note you get an error from above (react server component error - you're importing a component that needs useState. it only works in a client component, but none of its parents are marked with "use client", so they're Server components by default)
+
+## 104. React Server components vs Client Components
+- by default in nextjs all components are server side components (rendered on server)
+- you can see the difference by testing if your console.logs show in browser or cmd/terminal (where you run the project)
+- SO even tho everything is server components, you can still render client components...
+- However react hooks are a client-side concept
+- event handlers are client-side concept
+
+### 'use client'
+- if you want to build a client-side component have to (at top of file): 
+
+```js
+'use client'; 
+```
+
 ---
 
 # Section 04 - Routing and Page Rendering - Deep Dive
