@@ -1258,15 +1258,22 @@ export default function NotFound({error}){
 - replace placeholders with item props (eg. meal's props see initdb.js initData() for item attributes (db columns))
 - fix line breaks -> `meal.instructions = meal.instructions.replace(/\n/g, '<br/>');`
 
+
 ```js
 //app/meals/[slug]/page.js
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
+
 import classes from './page.module.css';
 import {getMeal} from '@/lib/meals';
 
 export default function MealDetailsPage({params}){
-  
   const meal = getMeal(params.slug);  //note: this params.slug is the same naming as the dynamic route app/meals/[slug]
+  
+  if(!meal){
+    notFound();
+  }
+  
   meal.instructions = meal.instructions.replace(/\n/g, '<br/>');  //fix line breaks
 
   return <>
@@ -1310,6 +1317,11 @@ export async function getMeal(slug){
   return db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug);
 }
 ```
+
+## 114. throwing not found for individual meals
+- practice (NOTHING NEW)
+- `import { notFound } from 'next/navigation';`
+- shows closest error or not-found page if you call notFound() -> stops component from executing
 
 ---
 
