@@ -1428,6 +1428,46 @@ export default function ImagePicker({ label, name }) {
 }
 ```
 
+## 119. NextJS handling form submissions (server actions) with "use server";
+- form submission handling with NEXTJS
+
+- OPTION 1: normal method attach action handler for handling `<form onSubmit={}>` -> prevent default, collect data, send to backend
+
+### server action
+- OPTION 2: NEXTJS/REACT way -> create a function in the component that has the form and call "use server"; which ensure the code is run only on server
+- AND need to add "async" to the function
+- assign the server function as a value to the action prop of form
+- the action function receives `formData` object (FormData) which you can access form field that have "name" properties via `get()`
+- to also retrieve Image pickers values also need to give it label and name attribute
+- the image should be stored in file system and a path stored in the db.
+
+```js
+//app/meals/share/page.js
+export default function ShareMealPage() {
+
+  //server action
+  async function shareMeal(formData){
+    'use server';
+
+    const meal = {
+      title: formData.get('title'),
+      summary: formData.get('summary'),
+      instructions: formData.get('instructions'),
+      image: formData.get('image'),
+      creator: formData.get('name'),
+      creator_email: formData.get('email')
+    }
+
+    console.log(meal);
+  }
+
+  //...
+  return (
+    <form action={shareMeal}></form>);
+}
+```
+
+
 ---
 
 # Section 04 - Routing and Page Rendering - Deep Dive
