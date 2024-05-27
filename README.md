@@ -1329,6 +1329,15 @@ export async function getMeal(slug){
 - app/meals/share/page.js
 - app/meals/share/page.module.css
 
+## 116. image picker input component
+- create an image picker to allow user to upload image on the form AND preview uploaded image 
+- `<input className={classes.input} type="file" id={name} accept="image/png, image/jpeg" name={input}/>`
+- we are hiding the default input picker button and adding our own buton.
+- our button has type="button" so it doesnt submit the form (default is type submit)
+- the button should click the hidden input type="file"
+- BUT now error because eventHandlers are client side
+- add "use client";
+- use useRef from React to reference hidden input via ref.current eg. `const imageInput = useRef() `and trigger a click: `imageInput.current.click()`
 
 ---
 
