@@ -1,5 +1,6 @@
 - course: nextjs-maximilianschwarzmuller-nextjs14-and-react-the-complete-guide
-  https://www.udemy.com/course/nextjs-react-the-complete-guide/
+  - https://www.udemy.com/course/nextjs-react-the-complete-guide/
+  - https://github.com/mschwarzmueller/nextjs-complete-guide-course-resources
 
 - NOTE: this is the 2024 next14 update
 
@@ -1520,11 +1521,126 @@ export function saveMeal(meal){
   //create slug 
   meal.slug = slugify(meal.title, {lower: true});
   meal.instructions = xss(meal.instructions);
-
 }
 
 ```
 
+## 122. storing uploaded images + storing data in the database
+- storing images in db is bad for performance
+- we will store uploaded images in public folder. NOTE: this will be updated later to use AWS S3 buckets
+- images stored in public/ will be publically available
+- get the file extension
+- generate a unique filename (not the same name of uploaded) + append extension
+- to prevent clashing filename, add more randomness to the filename by adding a unique string to filename
+- nodejs provide fs api to write files
+- import fs from node:fs;
+
+### SAVE FILE
+### 1. create a stream
+- use fs to writestream with createWriteStream() allows us to write data to a file
+- fs requires a path to file we want to write (where to put it (including filename)) -> it returns an stream object you can use to write the file
+
+### 2. create buffered image using arrayBuffer()
+- to use the stream.write() to write to stream -> write() expects a chunk
+- what is a chunck? the image should be converted to a buffered image (which is image broken up into parts) -> call arrayBuffer() method: `meal.image.arrayBuffer()`
+- note: arrayBuffer() will return a Promise which will resolve to the buffer...
+- await the .arrayBuffer() call and add async to the function
+
+### 3. convert array buffer to regular buffer
+- we just created an arrayBuffer() in previous step.
+- convert to regular buffer: Buffer.from()
+- the second prop to stream.write() is the function to call once done writing and it receives error as a prop if there are errors
+
+### 4. overwrite the meal object's .image attribute
+- the image is now saved to public/images/ folder BUT we will only store the path in db.
+- override .image: meal.image = `/images/*image filename*`
+- NOTE: public folder is seen as root and does not need to be included in the paths.
+
+### STORE IN DATABASE
+### 5. save to db
+- call db.prepare():
+- OPTION 1 -> `VALUES (?, ?, ?, ?, ?, ?, ?)` method OR
+- OPTION 2 -> easier way is to look at /initdb.js initData() and put the @ values into the VALUES () (see below) 
+  - SQL indentation usually matters
+  - you can target the specific fields by their name with the @ syntax and then later just pass an object to the run() function.
+  - better-sqllite package will look at the property names in the object you're passing-in and extract the property values matching the @ properties in VALUES()
+  - order matters VALUES needs to match INSERT order
+  - VALUES() comma's matter.
+- call .run() and pass meal object: run(meal) 
+
+### call shareMeal()
+- in /lib/actions.js -> shareMeal() -> calls saveMeal(meal) and then redirects: redirect('/');
+
+```js
+//lib/meals.js
+import fs from 'node:fs';
+
+export function saveMeal(meal){
+  //create slug 
+  meal.slug = slugify(meal.title, {lower: true});
+  meal.instructions = xss(meal.instructions);
+
+  const extension = meal.image.name.split('.').pop();
+  const fileName = `${meal.slug}.${extension}`;
+  
+  //1.
+  const stream = fs.createWriteStream(`public/images/${fileName}`);
+
+  //2.
+  const bufferedImage = await meal.image.arrayBuffer();
+  
+  //3.
+  //use stream to write the file -> convert the arrayBuffer to regular Buffer
+  stream.write(Buffer.from(bufferedImage), (error)=>{
+    if(error){
+      throw new Error('save failed');
+    }
+  });
+
+  //4.
+  meal.image = `/images/${fileName}`;
+  
+  //5.
+  db.prepare(
+    `
+      INSERT INTO meals 
+        (title, summary, instructions, creator, creator_email, image, slug)
+      VALUES (
+        @title,
+        @summary,
+        @instructions,
+        @creator,
+        @creator_email,
+        @image,
+        @slug
+      )
+    `
+  ).run(meal);
+}
+
+```
+
+```js
+//lib/actions.js
+'use server';
+import { redirect } from "next/navigation";
+import { saveMeal } from "./meals";
+
+export async function shareMeal(formData){
+  const meal = {
+    title: formData.get('title'),
+    summary: formData.get('summary'),
+    instructions: formData.get('instructions'),
+    image: formData.get('image'),
+    creator: formData.get('name'),
+    creator_email: formData.get('email')
+  }
+
+  //console.log(meal);
+  await saveMeal(meal);
+  redirect('/');
+}
+```
 
 ---
 
