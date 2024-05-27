@@ -833,6 +833,7 @@ export default function ExampleLayout({children}){
 ```
 
 ## 99. Styling Nextjs
+
 - options: tailwind or cssmodules
 - see lesson ## 21. CSS Modules
 - if you name your css .module.css (classes are scoped),
@@ -840,7 +841,7 @@ export default function ExampleLayout({children}){
 
 ```css
 /* components/main-header.module.css */
-.header{
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -849,23 +850,23 @@ export default function ExampleLayout({children}){
 ```
 
 ```js
-import classes from './main-header.module.css';
+import classes from "./main-header.module.css";
 
-export default function Test(){
+export default function Test() {
   return (
     <>
       <div className={classes.header}>Hi</div>
     </>
   );
 }
-
 ```
 
 ### 100. Optimizing Images with Nextjs <Image> component
+
 - https://nextjs.org/docs/app/api-reference/components/image
 - Nextjs has an Image component which assists with optimizing images
 - optimizations: eg. auto lazy loading under-the-hood -> only display image if really visible on page
-- note: the Image src prop is assigned the object imported... 
+- note: the Image src prop is assigned the object imported...
 - Image has loading="lazy" automatically added
 - width and height is inferred
 - srcset attribute added ensuring different sized images are loaded depending on viewport/device
@@ -873,49 +874,55 @@ export default function Test(){
 - priority property -> to tell nextjs to load image as quickly as possible
 
 ### Image vs img
+
 - see lesson ## 98. adding a custom component -> Images where an `<img>` element is used
-- difference between using img element: using `<img>` you assign src="" the imported object.src 
+- difference between using img element: using `<img>` you assign src="" the imported object.src
 
 ```js
-import Image from 'next/image';
-import logoImg from '@assets/logo.png';
+import Image from "next/image";
+import logoImg from "@assets/logo.png";
 
 // ...
-<Image src={logoImg} priority/>    //note: assign the full object imported (and not the .src property (logoImg.src)
+<Image src={logoImg} priority />; //note: assign the full object imported (and not the .src property (logoImg.src)
 ```
 
 ## 101. using more custom components
+
 - PRACTICE LESSON... (NOTHING NEW)
-- here you create a custom components/main-header/main-header-background.js component 
+- here you create a custom components/main-header/main-header-background.js component
 - and refactor some of the css into css module
-- in main-header.js: import MainHeaderBackground from "./main-header-background"; 
+- in main-header.js: import MainHeaderBackground from "./main-header-background";
 - main-header-background: return the background svg wrapped in `<div className={classes['header-background']}>`
 
 ## 102. populating the starting content
+
 - PRACTICE LESSON... (NOTHING NEW)
 - editing app/page.js
-- div: creating a image slideshow 
-- div: a hero div with some text 
-- div: call-to-action with some links 
+- div: creating a image slideshow
+- div: a hero div with some text
+- div: call-to-action with some links
 - add app/page.module.css
 
 ## 103. preparing image slideshow
+
 - nextjs working with `<Image>`
 - components/images/image-slideshow.js
 - components/images/image-slideshow.module.css
 - NOTE: image-slideshow is importing with `import x from '@assets/x.jpg';`
 - then an image array is created referencing the imports
 - image-slideshow then creates Image element for each item in array
-- useState to keep track of index in array, 
-- useEffect called once that creates const interval = setInterval(()=>{}) 
+- useState to keep track of index in array,
+- useEffect called once that creates const interval = setInterval(()=>{})
 - setInterval that updates this useState() index calling useState's set method
 - the set method has a method that just checks if current index is lower than the array length, if so +1 else set index to 0
 - make sure to add cleanup function by return ()=>{//clearInterval(interval)}
 
 ### ERROR ERROR ERROR!
+
 - note you get an error from above (react server component error - you're importing a component that needs useState. it only works in a client component, but none of its parents are marked with "use client", so they're Server components by default)
 
 ## 104. React Server components vs Client Components
+
 - by default in nextjs all components are server side components (rendered on server)
 - you can see the difference by testing if your console.logs show in browser or cmd/terminal (where you run the project)
 - SO even tho everything is server components, you can still render it as a client-side components...
@@ -924,16 +931,20 @@ import logoImg from '@assets/logo.png';
   - event handlers are client-side concept
 
 ### 'use client'
-- if you want to build a client-side component have to declare 'use client'; (at top of file): 
+
+- if you want to build a client-side component have to declare 'use client'; (at top of file):
 
 ```js
-'use client'; 
+"use client";
 ```
+
 ## 105. creating NavLink -> using client components efficiently
+
 - /app/community/page.js
 - /app/community/page.module.css
 
 ### usePathname -> getting active path to set active Link class
+
 - externalize Link to NavLink component so only that part is client-side component...
 - NEXTJS usePathname hook
 - NOTE: usePathname is a hook (this should ring a bell ...DING!! -> SERVER COMPONENT requires 'use client';)
@@ -944,28 +955,29 @@ import logoImg from '@assets/logo.png';
 
 ```js
 //app/components/main-header/main-header.js
-import NavLink from './nav-link';
+import NavLink from "./nav-link";
 
 //...
-return (<nav>
+return (
+  <nav>
     <NavLink href="/meals">Browse Meals</NavLink>
     <NavLink href="/community">Community</NavLink>
   </nav>
-)
+);
 ```
 
 ```js
 //components/main-header/nav-link.js
-'use client';
+"use client";
 
-import {usePathname} from 'next/navigation';
-import Link from 'next/link';
-import classes from './nav-link.module.css';
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import classes from "./nav-link.module.css";
 
-export default function NavLink({href, children}){
+export default function NavLink({ href, children }) {
   const path = usePathname();
   return (
-    <Link 
+    <Link
       href={href}
       className={path.startsWith(href) ? classes.active : undefined}
     >
@@ -976,7 +988,8 @@ export default function NavLink({href, children}){
 ```
 
 ## 106. meal details: output meal data & images with unknown dimensions
-- PRACTICE LESSON... (uses dynamic route  AND images dynamically loaded from db (no width/height at build-time) add "fill" attribute)
+
+- PRACTICE LESSON... (uses dynamic route AND images dynamically loaded from db (no width/height at build-time) add "fill" attribute)
 
 - ability to have a page which shows many items eg. meals (meals-grid)
 - ability to share am item eg. a meal
@@ -1000,19 +1013,18 @@ export default function MealsPage() {
   return (
     <>
       <header className={classes.header}>
-        <h1>meals <span className={classes.highlight}>by you</span></h1>
+        <h1>
+          meals <span className={classes.highlight}>by you</span>
+        </h1>
         <p>choose a recipe</p>
         <p className={classes.cta}>
           <Link href="/meals/share">share your recipe</Link>
         </p>
       </header>
-      <main>
-      // meals grid here...
-      </main>
+      <main>// meals grid here...</main>
     </>
   );
 }
-
 ```
 
 ```js
@@ -1036,31 +1048,33 @@ export default function MealsGrid(meals){
 ```
 
 ## 107. setting up SQLLite database
+
 - install sqlLite db
 - add initdb.js to root, it will setup the db (if it doesnt exist -> or use existing db) -> dummy meals
-- run initdb.js  `node initdb.js` -> meals.db is created
+- run initdb.js `node initdb.js` -> meals.db is created
 
 ```cmd
 pnpm i better-sqlite3
 ```
 
 ```js
-const sql = require('better-sqlite3');
-const db = sql('meals.db');
+const sql = require("better-sqlite3");
+const db = sql("meals.db");
 
 const dummyMeals = [
   {
-    title: 'Juicy Cheese Burger',
-    slug: 'juicy-cheese-burger',
-    image: '/images/burger.jpg',
-    summary:'good burger',
+    title: "Juicy Cheese Burger",
+    slug: "juicy-cheese-burger",
+    image: "/images/burger.jpg",
+    summary: "good burger",
     instructions: ``,
-    creator: 'John Doe',
-    creator_email: 'johndoe@example.com',
-  }
+    creator: "John Doe",
+    creator_email: "johndoe@example.com",
+  },
 ];
 
-db.prepare(`
+db.prepare(
+  `
    CREATE TABLE IF NOT EXISTS meals (
        id INTEGER PRIMARY KEY AUTOINCREMENT,
        slug TEXT NOT NULL UNIQUE,
@@ -1071,7 +1085,8 @@ db.prepare(`
        creator TEXT NOT NULL,
        creator_email TEXT NOT NULL
     )
-`).run();
+`
+).run();
 
 async function initData() {
   const stmt = db.prepare(`
@@ -1096,11 +1111,12 @@ initData();
 ```
 
 ## 108. NEXTJS way of loading data from db
+
 - with nextjs backend and frontend are blended seamlessly together (no need for separate backend)
 - NOTE: because nextjs components are by default SERVER side components, you can reach out directly to db
 - create a new folder eg. lib/ and create a file that reaches out to db and gets data
 - sqllite:
-  - "run()" is used when you insert/change data, 
+  - "run()" is used when you insert/change data,
   - "all()" is used when fetching data (all rows)
   - "get()" to get single row
 - sqllite does not use promises but they can be used in our component by converting them to async functions
@@ -1108,13 +1124,13 @@ initData();
 
 ```js
 //lib/meals.js
-import sql from 'better-sqlite3';
-const db = sql('meals.db');
+import sql from "better-sqlite3";
+const db = sql("meals.db");
 
-export async function getMeals(){
+export async function getMeals() {
   //simulate delay
   // await new Promise((resolve)=> setTimeout(resolve, 2000));
-  return db.prepare('SELECT * FROM meals').all();
+  return db.prepare("SELECT * FROM meals").all();
 }
 ```
 
@@ -1135,6 +1151,7 @@ export default async function MealsPage(){
 ```
 
 ## 109. adding a loading page
+
 - adding a loading page (loading.js)
 - closest loading.js becomes active page when page/nested-page is loading data
 - NOTE:here loading page replaces entire screen
@@ -1143,14 +1160,54 @@ export default async function MealsPage(){
 //app/loading.js
 import classes from "./loading.module.css";
 
-export default function MealsLoadingPage(){
-  return <p className={classes.loading}>fetching meals</p>
+export default function MealsLoadingPage() {
+  return <p className={classes.loading}>fetching meals</p>;
 }
-
 ```
 
+## 110. using `<Suspense>` + streamed responses for granular loading state management
+
+- it would be better if only the portion of data that is loading data shows loading
+- to not use this file, rename "loading.js" to something else so it has no context within NextJS because loading.js is reserved filename (renamed to loading-out.js)
+- TODO: externalize the loading part to its own function (eg. Meals()) which returns the jsx for meals component 
+- AND because it is loading something you can use the react fallback `<Suspense>` wrapper
+- `<Suspense fallback={}>` needs you to define fallback content that should be shown while loading in the fallback attribute
+
+```js
+import Link from "next/link";
+import classes from "./page.module.css";
+import MealsGrid from "@/components/meals/meals-grid";
+import { getMeals } from "@/lib/meals";
+
+async function Meals() {
+  const meals = await getMeals();
+  return <MealsGrid meals={meals} />;
+}
+
+export default function MealsPage() {
+  return (
+    <>
+      <header className={classes.header}>
+        <h1>
+          meals <span className={classes.highlight}>by you</span>
+        </h1>
+        <p>choose a recipe</p>
+        <p className={classes.cta}>
+          <Link href="/meals/share">share your recipe</Link>
+        </p>
+      </header>
+      <main className={classes.main}>
+        <Suspense fallback={<p className={classes.loading}>fetching meals</p>}>
+          <Meals />
+        </Suspense>
+      </main>
+    </>
+  );
+}
+```
 
 ---
+
 # Section 04 - Routing and Page Rendering - Deep Dive
 
 # Section 05 - Data Fetching - Deep Dive
