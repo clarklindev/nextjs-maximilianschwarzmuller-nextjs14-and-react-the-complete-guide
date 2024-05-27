@@ -1206,6 +1206,31 @@ export default function MealsPage() {
 }
 ```
 
+## 111. handling errors
+- error.js files to handle errors when some error occurs eg. loading data fails
+- error.js -> rendered by nextjs when error occurs (its a custom error page)
+- NOTE: it only handles errors of page.js that sit in same folder OR that is in a nested layout -> so you can put at root folder to catch any errors
+- we add to app/meals/error.js
+- you can get more details about the error from the props of the error.js component -> "error" prop (OPTIONAL)
+- the error component must be a client-side-component: `"use client";` to also catch errors on client-side
+- simulate the error in lib/meals.js
+
+```js
+import sql from 'better-sqlite3';
+
+const db = sql('meals.db');
+
+export async function getMeals(){
+  //simulate delay
+  //await new Promise((resolve)=> setTimeout(resolve, 2000));
+  
+  //simulate load error
+  throw new Error('loading meals failed');
+
+  return db.prepare('SELECT * FROM meals').all();
+}
+```
+
 ---
 
 # Section 04 - Routing and Page Rendering - Deep Dive
