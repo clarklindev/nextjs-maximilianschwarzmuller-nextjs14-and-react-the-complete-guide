@@ -1134,6 +1134,20 @@ export default async function MealsPage(){
 }
 ```
 
+## 109. adding a loading page
+- adding a loading page (loading.js)
+- closest loading.js becomes active page when page/nested-page is loading data
+- NOTE:here loading page replaces entire screen
+
+```js
+//app/loading.js
+import classes from "./loading.module.css";
+
+export default function MealsLoadingPage(){
+  return <p className={classes.loading}>fetching meals</p>
+}
+
+```
 
 
 ---
