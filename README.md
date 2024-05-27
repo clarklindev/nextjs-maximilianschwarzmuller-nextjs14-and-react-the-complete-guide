@@ -1169,7 +1169,7 @@ export default function MealsLoadingPage() {
 
 - it would be better if only the portion of data that is loading data shows loading
 - to not use this file, rename "loading.js" to something else so it has no context within NextJS because loading.js is reserved filename (renamed to loading-out.js)
-- TODO: externalize the loading part to its own function (eg. Meals()) which returns the jsx for meals component 
+- TODO: externalize the loading part to its own function (eg. Meals()) which returns the jsx for meals component
 - AND because it is loading something you can use the react fallback `<Suspense>` wrapper
 - `<Suspense fallback={}>` needs you to define fallback content that should be shown while loading in the fallback attribute
 
@@ -1207,6 +1207,7 @@ export default function MealsPage() {
 ```
 
 ## 111. handling errors
+
 - error.js files to handle errors when some error occurs eg. loading data fails
 - error.js -> rendered by nextjs when error occurs (its a custom error page)
 - NOTE: it only handles errors of page.js that sit in same folder OR that is in a nested layout -> so you can put at root folder to catch any errors
@@ -1216,22 +1217,23 @@ export default function MealsPage() {
 - simulate the error in lib/meals.js
 
 ```js
-import sql from 'better-sqlite3';
+import sql from "better-sqlite3";
 
-const db = sql('meals.db');
+const db = sql("meals.db");
 
-export async function getMeals(){
+export async function getMeals() {
   //simulate delay
   //await new Promise((resolve)=> setTimeout(resolve, 2000));
-  
-  //simulate load error
-  throw new Error('loading meals failed');
 
-  return db.prepare('SELECT * FROM meals').all();
+  //simulate load error
+  throw new Error("loading meals failed");
+
+  return db.prepare("SELECT * FROM meals").all();
 }
 ```
 
-## 112. not-found 
+## 112. not-found
+
 - can add to top-level of project to handle all not-found routes
 - not-found.js file to handle invalid routes
 - test with an invalid route
@@ -1239,98 +1241,106 @@ export async function getMeals(){
 
 ```js
 //app/not-found.js
-export default function NotFound({error}){
-  return <main className="not-found">
-    <h1>Not found</h1>
-    <p>could not find requested page/resource</p>
-  </main>
+export default function NotFound({ error }) {
+  return (
+    <main className="not-found">
+      <h1>Not found</h1>
+      <p>could not find requested page/resource</p>
+    </main>
+  );
 }
 ```
 
 ## 113. loading and rendering meal details using DYNAMIC ROUTES & ROUTE PARAMS
+
 - using dynamic routes and route params to load item details
 - `app/meals/[slug]/page.js`
 - NOTE: `meals/[slug]/page/` uses dangerouslySetInnerHTML={{__html:'...'}} (potential cross-site-scripting attack vulnerability)
-- it is an object and you set the actual html via __html attribute
+- it is an object and you set the actual html via \_\_html attribute
 - get slug via params prop `const dynamicId = params.slug;`
 - getMeal() returns a promise so make it async OR remove async from lib/meals.js getMeal() function
 - and we can call getMeal() directly since its a server-side component: `const meal = getMeal(dynamicId);`
 - replace placeholders with item props (eg. meal's props see initdb.js initData() for item attributes (db columns))
 - fix line breaks -> `meal.instructions = meal.instructions.replace(/\n/g, '<br/>');`
 
-
 ```js
 //app/meals/[slug]/page.js
-import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import Image from "next/image";
+import { notFound } from "next/navigation";
 
-import classes from './page.module.css';
-import {getMeal} from '@/lib/meals';
+import classes from "./page.module.css";
+import { getMeal } from "@/lib/meals";
 
-export default function MealDetailsPage({params}){
-  const meal = getMeal(params.slug);  //note: this params.slug is the same naming as the dynamic route app/meals/[slug]
-  
-  if(!meal){
+export default function MealDetailsPage({ params }) {
+  const meal = getMeal(params.slug); //note: this params.slug is the same naming as the dynamic route app/meals/[slug]
+
+  if (!meal) {
     notFound();
   }
-  
-  meal.instructions = meal.instructions.replace(/\n/g, '<br/>');  //fix line breaks
 
-  return <>
-    <header className={classes.header}>
-      <div className={classes.image}>
-        <Image src={meal.image} alt={meal.title} fill/>
-      </div>
-      <div className={classes.headerText}>
-        <h1>{meal.title}</h1>
-        <p className={classes.creator}>
-          by <a href={`mailto:${meal.creator_email}`}>{meal.creator}</a>
-        </p>
-        <p className={classes.summary}>
-          {meal.summary}
-        </p>
-      </div>
-    </header>
-    <main>
-      <p className={classes.instructions} dangerouslySetInnerHTML={{__html:meal.instructions}}></p>
-    </main>
-  </>
+  meal.instructions = meal.instructions.replace(/\n/g, "<br/>"); //fix line breaks
+
+  return (
+    <>
+      <header className={classes.header}>
+        <div className={classes.image}>
+          <Image src={meal.image} alt={meal.title} fill />
+        </div>
+        <div className={classes.headerText}>
+          <h1>{meal.title}</h1>
+          <p className={classes.creator}>
+            by <a href={`mailto:${meal.creator_email}`}>{meal.creator}</a>
+          </p>
+          <p className={classes.summary}>{meal.summary}</p>
+        </div>
+      </header>
+      <main>
+        <p
+          className={classes.instructions}
+          dangerouslySetInnerHTML={{ __html: meal.instructions }}
+        ></p>
+      </main>
+    </>
+  );
 }
 ```
 
-- NOTE: here you are using a slug prop to access the DB  
-- INSECURE WRONG WAY: `return db.prepare('SELECT * FROM meals WHERE slug = ' + slug);`  //insecure
+- NOTE: here you are using a slug prop to access the DB
+- INSECURE WRONG WAY: `return db.prepare('SELECT * FROM meals WHERE slug = ' + slug);` //insecure
 - SECURE WAY -> FIX TO PROTECT FROM SQL ATTACKS: use "?" and .get() passing ? value to get(): `return db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug);`
 
 ```js
 //lib/meals.js
-import sql from 'better-sqlite3';
+import sql from "better-sqlite3";
 
-const db = sql('meals.db');
+const db = sql("meals.db");
 
-export async function getMeals(){
-  return db.prepare('SELECT * FROM meals').all();
+export async function getMeals() {
+  return db.prepare("SELECT * FROM meals").all();
 }
 
-export async function getMeal(slug){
+export async function getMeal(slug) {
   // return db.prepare('SELECT * FROM meals WHERE slug = ' + slug);  //insecure
-  return db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug);
+  return db.prepare("SELECT * FROM meals WHERE slug = ?").get(slug);
 }
 ```
 
 ## 114. throwing not found for individual meals
+
 - practice (NOTHING NEW)
 - `import { notFound } from 'next/navigation';`
 - shows closest error or not-found page if you call notFound() -> stops component from executing
 
 ## 115. share meals form -> this is C of CRUD (create meals)
+
 - working with form
 - create a meal
 - app/meals/share/page.js
 - app/meals/share/page.module.css
 
 ## 116. image picker input component
-- create an image picker to allow user to upload image on the form AND preview uploaded image 
+
+- create an image picker to allow user to upload image on the form AND preview uploaded image
 - `<input className={classes.input} type="file" id={name} accept="image/png, image/jpeg" name={input}/>`
 - we are hiding the default input picker button and adding our own buton.
 - our button has type="button" so it doesnt submit the form (default is type submit)
@@ -1338,6 +1348,85 @@ export async function getMeal(slug){
 - BUT now error because eventHandlers are client side
 - add "use client";
 - use useRef from React to reference hidden input via ref.current eg. `const imageInput = useRef() `and trigger a click: `imageInput.current.click()`
+- you can allow user to upload multiple files by adding "multiple" attribute to input
+
+## 117. image preview for image picker
+- handle image pick event
+- use state to store the picked image
+- and show preview
+- use an onChange={} to call a function to handle the uploaded image
+- then use `event.target.files[0]` to access the upload
+- to show image preview, convert the uploaded data to data-url (a value that can be used for an input when working with image)
+- get hold of the fileReader value using `fileReader.onload = ()=>{}`
+- so the function assigned to onload is called when fileReader is done and you will be able to access file via `fileReader.result` (which is what we want to set in state)
+- note useState is good usecase because if the browser refreshes we loose the state (which is what we want)
+
+## 118. image picker improvements
+1. Reset the previewed image if no image was selected - Add set setPickedImage(null); to the if(!file) block
+2. Add the required prop to the (hidden) `<input>` element - This ensures that the `<form>` can't be submitted without an image being selected.
+
+```js
+//app/components/meals/image-picker.js
+
+"use client";
+import { useRef } from "react";
+
+import classes from "./image-picker.module.css";
+
+export default function ImagePicker({ label, name }) {
+  const [pickedImage, setPickedImage] = useState();
+
+  const imageInput = useRef();
+
+  const handlePickClick = () => {
+    imageInput.current.click();
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+
+    if (!file) {
+      setPickedImage(null);
+      return;
+    }
+
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPickedImage(fileReader.result);
+    };
+    fileReader.readAsDataURL(file);
+  };
+
+  return (
+    <div className={classes.picker}>
+      <label htmlFor={name}>{label}</label>
+      <div className={classes.preview}>
+        {!pickedImage && <p>no image picked yet..</p>}
+        {pickedImage && <Image src={pickedImage} alt="selected image" fill />}
+      </div>
+      <div className={classes.controls}>
+        <input
+          ref={imageInput}
+          className={classes.input}
+          type="file"
+          id={name}
+          accept="image/png, image/jpeg"
+          name={name}
+          onChange={handleImageChange}
+          required
+        />
+        <button
+          className={classes.button}
+          type="button"
+          onClick={handlePickClick}
+        >
+          pick an image
+        </button>
+      </div>
+    </div>
+  );
+}
+```
 
 ---
 
