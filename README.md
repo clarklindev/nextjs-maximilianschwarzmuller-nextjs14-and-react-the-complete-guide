@@ -1323,6 +1323,13 @@ export async function getMeal(slug){
 - `import { notFound } from 'next/navigation';`
 - shows closest error or not-found page if you call notFound() -> stops component from executing
 
+## 115. share meals form -> this is C of CRUD (create meals)
+- working with form
+- create a meal
+- app/meals/share/page.js
+- app/meals/share/page.module.css
+
+
 ---
 
 # Section 04 - Routing and Page Rendering - Deep Dive
