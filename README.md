@@ -1493,6 +1493,39 @@ export async function shareMeal(formData){
 }
 ```
 
+## 121. creating a slug & sanitizing user input for XSS protection
+- storing the form data (SQLLITE)
+- add function saveMeal(meal) to lib/meals.js
+- meal object has the format (see above) 
+- the slug should be generated from the title
+- install slugify
+- install xss (protect against cross-site scripting)
+- therefore we need to sanitize content sent by user
+- create slug `const slug = slugify(meal.title);`
+- sanitize: `const instructions = xss(meal.instructions);`
+- note: slug is added on the fly to meal 
+- note: instructions is overriding old instructions with the sanitized version
+
+```cmd
+pnpm i slugify xss
+```
+
+```js
+//app/lib/meals
+//... 
+import slugify from 'slugify';
+import xss from 'xss';
+
+export function saveMeal(meal){
+  //create slug 
+  meal.slug = slugify(meal.title, {lower: true});
+  meal.instructions = xss(meal.instructions);
+
+}
+
+```
+
+
 ---
 
 # Section 04 - Routing and Page Rendering - Deep Dive
