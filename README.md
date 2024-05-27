@@ -1466,7 +1466,32 @@ export default function ShareMealPage() {
     <form action={shareMeal}></form>);
 }
 ```
+## 120. storing server actions in separate files
+- you can create server action functions but only if the component is NOT using "use client";
+- can store server actions in separate files: lib/actions.js
+- when defining actions in a separate file with 'use server'; ontop, all functions are treated as server actions
+- TODO: move shareMeal() server action function to its own file lib/actions.js
+- remove 'use server' from within the function as it is defined at top of file
+- app/meals/share/page.js -> the shareMeal function needs to be imported 
+- with this change you CAN IF NEEDED convert app/meals/share/page.js as client-side code
 
+```js
+//app/lib/actions.js
+'use server';
+
+export async function shareMeal(formData){
+  const meal = {
+    title: formData.get('title'),
+    summary: formData.get('summary'),
+    instructions: formData.get('instructions'),
+    image: formData.get('image'),
+    creator: formData.get('name'),
+    creator_email: formData.get('email')
+  }
+
+  console.log(meal);
+}
+```
 
 ---
 
