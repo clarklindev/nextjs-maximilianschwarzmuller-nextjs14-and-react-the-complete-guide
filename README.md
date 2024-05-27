@@ -1231,6 +1231,22 @@ export async function getMeals(){
 }
 ```
 
+## 112. not-found 
+- can add to top-level of project to handle all not-found routes
+- not-found.js file to handle invalid routes
+- test with an invalid route
+- uses globals.css
+
+```js
+//app/not-found.js
+export default function NotFound({error}){
+  return <main className="not-found">
+    <h1>Not found</h1>
+    <p>could not find requested page/resource</p>
+  </main>
+}
+```
+
 ---
 
 # Section 04 - Routing and Page Rendering - Deep Dive

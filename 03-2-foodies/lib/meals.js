@@ -7,7 +7,7 @@ export async function getMeals(){
   //await new Promise((resolve)=> setTimeout(resolve, 2000));
   
   //simulate load error
-  throw new Error('loading meals failed');
+  // throw new Error('loading meals failed');
 
   return db.prepare('SELECT * FROM meals').all();
 }
