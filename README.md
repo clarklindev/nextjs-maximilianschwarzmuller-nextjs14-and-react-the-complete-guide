@@ -1247,6 +1247,70 @@ export default function NotFound({error}){
 }
 ```
 
+## 113. loading and rendering meal details using DYNAMIC ROUTES & ROUTE PARAMS
+- using dynamic routes and route params to load item details
+- `app/meals/[slug]/page.js`
+- NOTE: `meals/[slug]/page/` uses dangerouslySetInnerHTML={{__html:'...'}} (potential cross-site-scripting attack vulnerability)
+- it is an object and you set the actual html via __html attribute
+- get slug via params prop `const dynamicId = params.slug;`
+- getMeal() returns a promise so make it async OR remove async from lib/meals.js getMeal() function
+- and we can call getMeal() directly since its a server-side component: `const meal = getMeal(dynamicId);`
+- replace placeholders with item props (eg. meal's props see initdb.js initData() for item attributes (db columns))
+- fix line breaks -> `meal.instructions = meal.instructions.replace(/\n/g, '<br/>');`
+
+```js
+//app/meals/[slug]/page.js
+import Image from 'next/image';
+import classes from './page.module.css';
+import {getMeal} from '@/lib/meals';
+
+export default function MealDetailsPage({params}){
+  
+  const meal = getMeal(params.slug);  //note: this params.slug is the same naming as the dynamic route app/meals/[slug]
+  meal.instructions = meal.instructions.replace(/\n/g, '<br/>');  //fix line breaks
+
+  return <>
+    <header className={classes.header}>
+      <div className={classes.image}>
+        <Image src={meal.image} alt={meal.title} fill/>
+      </div>
+      <div className={classes.headerText}>
+        <h1>{meal.title}</h1>
+        <p className={classes.creator}>
+          by <a href={`mailto:${meal.creator_email}`}>{meal.creator}</a>
+        </p>
+        <p className={classes.summary}>
+          {meal.summary}
+        </p>
+      </div>
+    </header>
+    <main>
+      <p className={classes.instructions} dangerouslySetInnerHTML={{__html:meal.instructions}}></p>
+    </main>
+  </>
+}
+```
+
+- NOTE: here you are using a slug prop to access the DB  
+- INSECURE WRONG WAY: `return db.prepare('SELECT * FROM meals WHERE slug = ' + slug);`  //insecure
+- SECURE WAY -> FIX TO PROTECT FROM SQL ATTACKS: use "?" and .get() passing ? value to get(): `return db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug);`
+
+```js
+//lib/meals.js
+import sql from 'better-sqlite3';
+
+const db = sql('meals.db');
+
+export async function getMeals(){
+  return db.prepare('SELECT * FROM meals').all();
+}
+
+export async function getMeal(slug){
+  // return db.prepare('SELECT * FROM meals WHERE slug = ' + slug);  //insecure
+  return db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug);
+}
+```
+
 ---
 
 # Section 04 - Routing and Page Rendering - Deep Dive

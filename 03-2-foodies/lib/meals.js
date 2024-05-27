@@ -11,3 +11,8 @@ export async function getMeals(){
 
   return db.prepare('SELECT * FROM meals').all();
 }
+
+export function getMeal(slug){
+  // return db.prepare('SELECT * FROM meals WHERE slug = ' + slug);  //insecure
+  return db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug);  //secure
+}
