@@ -1,4 +1,5 @@
 - course: nextjs-maximilianschwarzmuller-nextjs14-and-react-the-complete-guide
+
   - https://www.udemy.com/course/nextjs-react-the-complete-guide/
   - https://github.com/mschwarzmueller/nextjs-complete-guide-course-resources
 
@@ -1352,6 +1353,7 @@ export async function getMeal(slug) {
 - you can allow user to upload multiple files by adding "multiple" attribute to input
 
 ## 117. image preview for image picker
+
 - handle image pick event
 - use state to store the picked image
 - and show preview
@@ -1363,6 +1365,7 @@ export async function getMeal(slug) {
 - note useState is good usecase because if the browser refreshes we loose the state (which is what we want)
 
 ## 118. image picker improvements
+
 1. Reset the previewed image if no image was selected - Add set setPickedImage(null); to the if(!file) block
 2. Add the required prop to the (hidden) `<input>` element - This ensures that the `<form>` can't be submitted without an image being selected.
 
@@ -1430,11 +1433,13 @@ export default function ImagePicker({ label, name }) {
 ```
 
 ## 119. NextJS handling form submissions (server actions) with "use server";
+
 - form submission handling with NEXTJS
 
 - OPTION 1: normal method attach action handler for handling `<form onSubmit={}>` -> prevent default, collect data, send to backend
 
 ### server action
+
 - OPTION 2: NEXTJS/REACT way -> create a function in the component that has the form and call "use server"; which ensure the code is run only on server
 - AND need to add "async" to the function
 - assign the server function as a value to the action prop of form
@@ -1445,66 +1450,67 @@ export default function ImagePicker({ label, name }) {
 ```js
 //app/meals/share/page.js
 export default function ShareMealPage() {
-
   //server action
-  async function shareMeal(formData){
-    'use server';
+  async function shareMeal(formData) {
+    "use server";
 
     const meal = {
-      title: formData.get('title'),
-      summary: formData.get('summary'),
-      instructions: formData.get('instructions'),
-      image: formData.get('image'),
-      creator: formData.get('name'),
-      creator_email: formData.get('email')
-    }
+      title: formData.get("title"),
+      summary: formData.get("summary"),
+      instructions: formData.get("instructions"),
+      image: formData.get("image"),
+      creator: formData.get("name"),
+      creator_email: formData.get("email"),
+    };
 
     console.log(meal);
   }
 
   //...
-  return (
-    <form action={shareMeal}></form>);
+  return <form action={shareMeal}></form>;
 }
 ```
+
 ## 120. storing server actions in separate files
+
 - you can create server action functions but only if the component is NOT using "use client";
 - can store server actions in separate files: lib/actions.js
 - when defining actions in a separate file with 'use server'; ontop, all functions are treated as server actions
 - TODO: move shareMeal() server action function to its own file lib/actions.js
 - remove 'use server' from within the function as it is defined at top of file
-- app/meals/share/page.js -> the shareMeal function needs to be imported 
+- app/meals/share/page.js -> the shareMeal function needs to be imported
 - with this change you CAN IF NEEDED convert app/meals/share/page.js as client-side code
 
 ```js
 //app/lib/actions.js
-'use server';
+"use server";
 
-export async function shareMeal(formData){
+export async function shareMeal(formData) {
   const meal = {
-    title: formData.get('title'),
-    summary: formData.get('summary'),
-    instructions: formData.get('instructions'),
-    image: formData.get('image'),
-    creator: formData.get('name'),
-    creator_email: formData.get('email')
-  }
+    title: formData.get("title"),
+    summary: formData.get("summary"),
+    instructions: formData.get("instructions"),
+    image: formData.get("image"),
+    creator: formData.get("name"),
+    creator_email: formData.get("email"),
+  };
 
   console.log(meal);
 }
 ```
 
 ## 121. creating a slug & sanitizing user input for XSS protection
+
 - storing the form data (SQLLITE)
 - add function saveMeal(meal) to lib/meals.js
-- meal object has the format (see above) 
+- meal object has the format (see above)
 - the slug should be generated from the title
 - install slugify
 - install xss (protect against cross-site scripting)
 - therefore we need to sanitize content sent by user
 - create slug `const slug = slugify(meal.title);`
 - sanitize: `const instructions = xss(meal.instructions);`
-- note: slug is added on the fly to meal 
+- note: slug is added on the fly to meal
 - note: instructions is overriding old instructions with the sanitized version
 
 ```cmd
@@ -1513,19 +1519,19 @@ pnpm i slugify xss
 
 ```js
 //app/lib/meals
-//... 
-import slugify from 'slugify';
-import xss from 'xss';
+//...
+import slugify from "slugify";
+import xss from "xss";
 
-export function saveMeal(meal){
-  //create slug 
-  meal.slug = slugify(meal.title, {lower: true});
+export function saveMeal(meal) {
+  //create slug
+  meal.slug = slugify(meal.title, { lower: true });
   meal.instructions = xss(meal.instructions);
 }
-
 ```
 
 ## 122. storing uploaded images + storing data in the database
+
 - storing images in db is bad for performance
 - we will store uploaded images in public folder. NOTE: this will be updated later to use AWS S3 buckets
 - images stored in public/ will be publically available
@@ -1536,39 +1542,47 @@ export function saveMeal(meal){
 - import fs from node:fs;
 
 ### SAVE FILE
+
 ### 1. create a stream
+
 - use fs to writestream with createWriteStream() allows us to write data to a file
 - fs requires a path to file we want to write (where to put it (including filename)) -> it returns an stream object you can use to write the file
 
 ### 2. create buffered image using arrayBuffer()
+
 - to use the stream.write() to write to stream -> write() expects a chunk
 - what is a chunck? the image should be converted to a buffered image (which is image broken up into parts) -> call arrayBuffer() method: `meal.image.arrayBuffer()`
 - note: arrayBuffer() will return a Promise which will resolve to the buffer...
 - await the .arrayBuffer() call and add async to the function
 
 ### 3. convert array buffer to regular buffer
+
 - we just created an arrayBuffer() in previous step.
 - convert to regular buffer: Buffer.from()
 - the second prop to stream.write() is the function to call once done writing and it receives error as a prop if there are errors
 
 ### 4. overwrite the meal object's .image attribute
+
 - the image is now saved to public/images/ folder BUT we will only store the path in db.
 - override .image: meal.image = `/images/*image filename*`
 - NOTE: public folder is seen as root and does not need to be included in the paths.
 
 ### STORE IN DATABASE
+
 ### 5. save to db
+
 - call db.prepare():
 - OPTION 1 -> `VALUES (?, ?, ?, ?, ?, ?, ?)` method OR
-- OPTION 2 -> easier way is to look at /initdb.js initData() and put the @ values into the VALUES () (see below) 
+- OPTION 2 -> easier way is to look at /initdb.js initData() and put the @ values into the VALUES () (see below)
   - SQL indentation usually matters
   - you can target the specific fields by their name with the @ syntax and then later just pass an object to the run() function.
   - better-sqllite package will look at the property names in the object you're passing-in and extract the property values matching the @ properties in VALUES()
   - order matters VALUES needs to match INSERT order
   - VALUES() comma's matter.
-- call .run() and pass meal object: run(meal) 
+- call .run() and pass meal object: run(meal)
 
 ### call shareMeal()
+
 - in /lib/actions.js -> shareMeal() -> calls saveMeal(meal) and then redirects: redirect('/');
 
 ```js
@@ -1576,19 +1590,19 @@ export function saveMeal(meal){
 import fs from 'node:fs';
 
 export function saveMeal(meal){
-  //create slug 
+  //create slug
   meal.slug = slugify(meal.title, {lower: true});
   meal.instructions = xss(meal.instructions);
 
   const extension = meal.image.name.split('.').pop();
   const fileName = `${meal.slug}.${extension}`;
-  
+
   //1.
   const stream = fs.createWriteStream(`public/images/${fileName}`);
 
   //2.
   const bufferedImage = await meal.image.arrayBuffer();
-  
+
   //3.
   //use stream to write the file -> convert the arrayBuffer to regular Buffer
   stream.write(Buffer.from(bufferedImage), (error)=>{
@@ -1599,11 +1613,11 @@ export function saveMeal(meal){
 
   //4.
   meal.image = `/images/${fileName}`;
-  
+
   //5.
   db.prepare(
     `
-      INSERT INTO meals 
+      INSERT INTO meals
         (title, summary, instructions, creator, creator_email, image, slug)
       VALUES (
         @title,
@@ -1622,24 +1636,83 @@ export function saveMeal(meal){
 
 ```js
 //lib/actions.js
-'use server';
+"use server";
 import { redirect } from "next/navigation";
 import { saveMeal } from "./meals";
 
-export async function shareMeal(formData){
+export async function shareMeal(formData) {
   const meal = {
-    title: formData.get('title'),
-    summary: formData.get('summary'),
-    instructions: formData.get('instructions'),
-    image: formData.get('image'),
-    creator: formData.get('name'),
-    creator_email: formData.get('email')
-  }
+    title: formData.get("title"),
+    summary: formData.get("summary"),
+    instructions: formData.get("instructions"),
+    image: formData.get("image"),
+    creator: formData.get("name"),
+    creator_email: formData.get("email"),
+  };
 
   //console.log(meal);
   await saveMeal(meal);
-  redirect('/');
+  redirect("/");
 }
+```
+
+## 123. Form submission status - useFormStatus()
+
+- when form is being submitted -> give feedback to user that something is happening.
+- React has useFormStatus() hook
+
+```js
+"use client";
+import { useFormStatus } from "react-dom";
+
+const status = useFormStatus();
+//status.pending = ...
+```
+
+- useFormStatus() returns an object with some useful props which you can use object destructing to extract.
+- eg. `.pending` property (boolean) true if there is an ongoing request, or otherwise false
+- it requires a client component: "use client";
+- NOTE: the useFormStatus() hook will only work if it is inside of the form (ie. a child component of `<form>`)
+- you might not want the page to be a client side component just to conditionally update button
+
+### DO THIS
+- FIX: move to its own component
+- made form submit component more generic by requiring user pass-in label `<FormSubmit label=""/>`
+```js
+//app/components/meals/form-submit.js
+"use client";
+import { useFormStatus } from "react-dom";
+
+export default function FormSubmit({label}) {
+  const { pending } = useFormStatus();
+  return (
+    <button disabled={pending}>
+      {pending ? "Submitting..." : label}
+    </button>
+  );
+}
+```
+
+- using `<FormSubmit>` component
+```js
+///app/meals/share/page/ShareMealPage.js
+import FormSubmit from '@components/meals/form-submit';
+...
+export default function ShareMealPage() {
+  return (
+    <>
+      <form>
+        ...
+        <ImagePicker label="your image" name="image" />
+        <p className={classes.actions}>
+          <FormSubmit label="share meal"/>
+        </p>
+      </form>
+    </>
+  );
+}
+
+
 ```
 
 ---
