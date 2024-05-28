@@ -1858,6 +1858,34 @@ export async function shareMeal(prevState, formData){
 }
 ```
 
+## 127. building for production and understanding nextjs caching
+- moving development to production...
+- `npm run build` prepare for production
+- `npm start`
+
+```cmd
+npm run build
+npm start
+```
+
+## 128. revalidatePath() -> triggering cache revalidations 
+- you will see that nextjs caches the production pages so that even if you were to rebuild, the cache still exists
+- you need to tell nextjs to throw away its cache when you add a meal (revalidate)
+- call revalidatePath() to revalidate the cache() before route path eg. 
+
+```js
+//lib/actions.js
+await saveMeal(meal);
+// revalidatePath('/meals', 'layout')
+revalidatePath('/meals');
+redirect('/meals');
+
+```
+- if you use "layout" it revalidates all nested pages too, otherwise "page" only revalidates the page
+- "page" is the default so can be omitted 
+- right before a redirect() is triggered to revalidate 
+
+
 ---
 
 # Section 04 - Routing and Page Rendering - Deep Dive
