@@ -1695,13 +1695,14 @@ export default function FormSubmit({label}) {
 
 - using `<FormSubmit>` component
 ```js
-///app/meals/share/page/ShareMealPage.js
+///app/meals/share/page.js
+import { shareMeal } from "@/lib/actions";
 import FormSubmit from '@components/meals/form-submit';
 ...
 export default function ShareMealPage() {
   return (
     <>
-      <form>
+      <form action={shareMeal}>
         ...
         <ImagePicker label="your image" name="image" />
         <p className={classes.actions}>
@@ -1721,42 +1722,140 @@ export default function ShareMealPage() {
 - BUT... users can remove 'required' prop from form (developer tools) and then submit invalid values to the backend
 
 ### server-side-validation
-- /lib/actions.js
+- server action functions -> /lib/actions.js
 - validate the formData values
-- should use validator tools...
+- should actually use validator library/tools...
 - if form data does not pass validation you can throw an error, but it destroys all form data sent
-- add an error.js page for app/meals/share to catch the errors of app/meals/share/page.js
+- add an error.js page for app/meals/share to catch the errors of app/meals/share/page.js (NOTE: there is better way to handle errors with useActionState())
 
 ```js
 //lib/actions.js
 // ...
+export async function shareMeal(formData){
+  const meal = {
+    title: formData.get('title'),
+    summary: formData.get('summary'),
+    instructions: formData.get('instructions'),
+    image: formData.get('image'),
+    creator: formData.get('name'),
+    creator_email: formData.get('email')
+  }
 
-const meal = {
-  title: formData.get('title'),
-  summary: formData.get('summary'),
-  instructions: formData.get('instructions'),
-  image: formData.get('image'),
-  creator: formData.get('name'),
-  creator_email: formData.get('email')
+  const isInvalidText = (text) => {
+    return !text || text.trim() === ""
+  } 
+
+  //validation:
+  if( isInvalidText(meal.title) 
+    || isInvalidText(meal.summary) 
+    || isInvalidText(meal.instructions) 
+    || isInvalidText(meal.creator) 
+    || isInvalidText(meal.creator_email)
+    || !meal.creator_email.includes('@') ||
+    !meal.image || meal.image.size === 0
+  ){
+    throw new Error('invalid input');
+  }
+
+  // ...
 }
+```
 
-const isInvalidText = (text) => {
-  return !text || text.trim() === ""
-} 
+## 125. useFormState() / useActionState()
+- ERROR -> Q&A says useFormState() works and useActionState() needs canary version of react and might not work with nextjs so use useFormState()
+
+- useFormState -> note: useFormState is part of 'react-dom'
+- useActionState will give an error like:
+
+```ERROR
+TypeError: (0 , react__WEBPACK_IMPORTED_MODULE_1__.useActionState) is not a function or its return value is not iterable
+```
+```js
+import { useFormState } from 'react-dom';
+``` 
+
+<!-- - NEW METHOD: useActionState -> note: useActionState is part of 'react'
+- supported by canary version of react
+```js
+import { useActionState } from 'react';
+``` -->
+
+## 126. sever-action response object and useActionState()/useFormState() - handle validation more elagantly
+- useFormState() works! 
+- useActionState() seems newer BUT only supported on React canary version..
+- handle validation more elagantly in action functions by returning response objects (no methods allowed in this object)
+
+```js
+//lib/actions.js
 
 //validation:
-if( isInvalidText(meal.title) 
-  || isInvalidText(meal.summary) 
-  || isInvalidText(meal.instructions) 
-  || isInvalidText(meal.creator) 
-  || isInvalidText(meal.creator_email)
-  || !meal.creator_email.includes('@') ||
-  !meal.image || meal.image.size === 0
-){
-  throw new Error('invalid input');
-}
+  if( isInvalidText(meal.title) 
+    || isInvalidText(meal.summary) 
+    || isInvalidText(meal.instructions) 
+    || isInvalidText(meal.creator) 
+    || isInvalidText(meal.creator_email)
+    || !meal.creator_email.includes('@') ||
+    !meal.image || meal.image.size === 0
+  ){
+    //throw new Error('invalid input');
+    return {
+      message: 'invalid input'
+    }
+  }
 
-// ...
+```
+### useActionState() hook /useFormState() hook
+- we can get the response object in the form (in our project it is the share page (app/meals/share/page.js) - the Create of CRUD) using useActionState() / useFormState() hook
+
+```js
+import {useFormState} from 'react-dom';
+//import { useActionState } from 'react';
+```
+
+- useActionState/useFormState is responsible for managing state of page or component that has a form that will be submited with server actions 
+- needs "use client";
+- useActionState() / useFormState() needs 2 arguments:
+  1. actual server action that should be triggered when form is submitted (shareMeal) 
+    - NOTE: using useActionState() / useFormState() the server action has a different structure: useActionState() / useFormState() will pass 2 parameters to the server action
+    - eg. shareMeal() now receives 1st prop the previous state (possibly not used but required to include) and formData as before but as 2nd prop
+  2. initial state of component before action response
+  
+- useActionState / useFormState will give array with 2 elements:
+  1. state -> latest response from server action
+  2. formAction -> which you should set on form action prop
+
+### State
+- state will then either be:
+- A - initial state of component before action response
+- B - response received back from shareMeal action function
+- use returned state: `{state.message && <p>{state.message}</p>}`
+
+```js
+//app/meals/share/page.js
+
+"use client";
+// import { useActionState } from 'react';
+import { useFormState } from 'react-dom';
+import { shareMeal } from "@/lib/actions";
+
+export default function ShareMealPage(){
+  // const [formState, formAction] = useActionState(shareMeal, {message:null}); //useActionState requires canary version of react
+  const [formState, formAction] = useFormState(shareMeal, {message:null});
+
+  //...
+  <form className={classes.form} action={formAction}>
+    ...
+
+    {formState.message && <p>{formState.message}</p>}
+  </form>
+  //...
+}
+```
+
+```js
+//lib/actions
+export async function shareMeal(prevState, formData){
+}
 ```
 
 ---
