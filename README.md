@@ -1711,8 +1711,52 @@ export default function ShareMealPage() {
     </>
   );
 }
+```
 
+## 124. server-side input validation
+- should validate form values 
 
+### client-side-validation
+- there is built in validation -> form fields have 'required' props to ensure cant submit empty values 
+- BUT... users can remove 'required' prop from form (developer tools) and then submit invalid values to the backend
+
+### server-side-validation
+- /lib/actions.js
+- validate the formData values
+- should use validator tools...
+- if form data does not pass validation you can throw an error, but it destroys all form data sent
+- add an error.js page for app/meals/share to catch the errors of app/meals/share/page.js
+
+```js
+//lib/actions.js
+// ...
+
+const meal = {
+  title: formData.get('title'),
+  summary: formData.get('summary'),
+  instructions: formData.get('instructions'),
+  image: formData.get('image'),
+  creator: formData.get('name'),
+  creator_email: formData.get('email')
+}
+
+const isInvalidText = (text) => {
+  return !text || text.trim() === ""
+} 
+
+//validation:
+if( isInvalidText(meal.title) 
+  || isInvalidText(meal.summary) 
+  || isInvalidText(meal.instructions) 
+  || isInvalidText(meal.creator) 
+  || isInvalidText(meal.creator_email)
+  || !meal.creator_email.includes('@') ||
+  !meal.image || meal.image.size === 0
+){
+  throw new Error('invalid input');
+}
+
+// ...
 ```
 
 ---
