@@ -1241,6 +1241,8 @@ export async function getMeals() {
 - not-found.js file to handle invalid routes
 - test with an invalid route
 - uses globals.css
+- NOTE: will show closest 'not-found' OR 'error' page,
+- so if error is closer than not-found page, it will show error page if its closer, unless a not-found page is put at same level as the error page to make them equally close.
 
 ```js
 //app/not-found.js
