@@ -5,7 +5,60 @@
 
 - NOTE: this is the 2024 next14 update
 
+## Table of contents
+
+[Section 01 - getting started](#section-01---getting-started-22min)
+
+[Section 02 - OPTIONAL - React refresher](#section-02---optional---react-refresher)
+
+[Section 03 - NextJS essentials - App Router](#section-03---nextjs-essentials---app-router)
+
+[Section 04 - Routing and Page Rendering - Deep Dive](#section-04---routing-and-page-rendering---deep-dive)
+
+[Section 05 - Data Fetching - Deep Dive](#section-05---data-fetching---deep-dive)
+
+[Section 06 - Mutating Data - Deep Dive](#section-06---mutating-data---deep-dive)
+
+[Section 07 - Understanding & Configuring caching](#section-07---understanding--configuring-caching)
+
+[Section 08 - NextJs app optimizations](#section-08---nextjs-app-optimizations)
+
+[Section 09 - user authentication](#section-09---user-authentication)
+
+[Section 10 - round up and next steps](#section-10---round-up-and-next-steps)
+
+[Section 11 - Pages & File-based routing](#section-11---pages--file-based-routing)
+
+[Section 12 - Project Time: working with file-based routing](#section-12---project-time-working-with-file-based-routing)
+
+[Section 13 - page pre-rendering and data-fetching](#section-13---page-pre-rendering-and-data-fetching)
+
+[Section 14 - project time: page pre-rendering & data-fetching](#section-14---project-time-page-pre-rendering--data-fetching)
+
+[Section 15 - optimizing Next.js apps](#section-15---optimizing-nextjs-apps)
+
+//FULL STACK REACT
+
+[Section 16 - adding backend code with API Routes (fullstack react)](#section-16---adding-backend-code-with-api-routes-fullstack-react)
+
+[Section 17 - Project time: API Routes](#section-17---project-time-api-routes)
+
+[Section 18 - App-wide state (react context)](#section-18---app-wide-state-react-context)
+
+[Section 19 - complete app example (build a full blog A-Z)](#section-19---complete-app-example-build-a-full-blog-a-z)
+
+[Section 20 - Deploying Nextjs apps](#section-20---deploying-nextjs-apps)
+
+[Section 21 - Adding Authentication](#section-21---adding-authentication)
+
+[Section 22 - Optional Nextjs Summary](#section-22---optional-nextjs-summary)
+
+[Section 23 - Course Roundup](#section-23---course-roundup) 
+
+---
+
 # Section 01 - getting started (22min)
+[back (table of contents)](#table-of-contents)
 
 ## 02 What is nextjs?
 
@@ -85,8 +138,10 @@ http://localhost:3000/awesome
 
 ---
 
-# Section 02 - OPTIONAL - React refresher (7hrs 41min - lesson 10-89 (lesson 47+ is legacy lessons))
+# Section 02 - OPTIONAL - React refresher 
+[back (table of contents)](#table-of-contents)
 
+- 7hrs 41min - lesson 10-89 (lesson 47+ is legacy lessons)
 - NOTE TO SELF: DO NOT REDO THESE LESSONS AGAIN -> YOU KNOW IT!!
 
 - source code snapshot -> https://github.com/academind/react-complete-guide-course-resources/tree/main/code/30%20React%20Summary
@@ -563,6 +618,7 @@ export async function loader({ params }) {
 ---
 
 # Section 03 - NextJS essentials - App Router
+[back (table of contents)](#table-of-contents)
 
 - lessons 85 -> 133
 - 49 lessons
@@ -1679,24 +1735,25 @@ const status = useFormStatus();
 - you might not want the page to be a client side component just to conditionally update button
 
 ### DO THIS
+
 - FIX: move to its own component
 - made form submit component more generic by requiring user pass-in label `<FormSubmit label=""/>`
+
 ```js
 //app/components/meals/form-submit.js
 "use client";
 import { useFormStatus } from "react-dom";
 
-export default function FormSubmit({label}) {
+export default function FormSubmit({ label }) {
   const { pending } = useFormStatus();
   return (
-    <button disabled={pending}>
-      {pending ? "Submitting..." : label}
-    </button>
+    <button disabled={pending}>{pending ? "Submitting..." : label}</button>
   );
 }
 ```
 
 - using `<FormSubmit>` component
+
 ```js
 ///app/meals/share/page.js
 import { shareMeal } from "@/lib/actions";
@@ -1718,13 +1775,16 @@ export default function ShareMealPage() {
 ```
 
 ## 124. server-side input validation
-- should validate form values 
+
+- should validate form values
 
 ### client-side-validation
-- there is built in validation -> form fields have 'required' props to ensure cant submit empty values 
+
+- there is built in validation -> form fields have 'required' props to ensure cant submit empty values
 - BUT... users can remove 'required' prop from form (developer tools) and then submit invalid values to the backend
 
 ### server-side-validation
+
 - server action functions -> /lib/actions.js
 - validate the formData values
 - should actually use validator library/tools...
@@ -1734,30 +1794,32 @@ export default function ShareMealPage() {
 ```js
 //lib/actions.js
 // ...
-export async function shareMeal(formData){
+export async function shareMeal(formData) {
   const meal = {
-    title: formData.get('title'),
-    summary: formData.get('summary'),
-    instructions: formData.get('instructions'),
-    image: formData.get('image'),
-    creator: formData.get('name'),
-    creator_email: formData.get('email')
-  }
+    title: formData.get("title"),
+    summary: formData.get("summary"),
+    instructions: formData.get("instructions"),
+    image: formData.get("image"),
+    creator: formData.get("name"),
+    creator_email: formData.get("email"),
+  };
 
   const isInvalidText = (text) => {
-    return !text || text.trim() === ""
-  } 
+    return !text || text.trim() === "";
+  };
 
   //validation:
-  if( isInvalidText(meal.title) 
-    || isInvalidText(meal.summary) 
-    || isInvalidText(meal.instructions) 
-    || isInvalidText(meal.creator) 
-    || isInvalidText(meal.creator_email)
-    || !meal.creator_email.includes('@') ||
-    !meal.image || meal.image.size === 0
-  ){
-    throw new Error('invalid input');
+  if (
+    isInvalidText(meal.title) ||
+    isInvalidText(meal.summary) ||
+    isInvalidText(meal.instructions) ||
+    isInvalidText(meal.creator) ||
+    isInvalidText(meal.creator_email) ||
+    !meal.creator_email.includes("@") ||
+    !meal.image ||
+    meal.image.size === 0
+  ) {
+    throw new Error("invalid input");
   }
 
   // ...
@@ -1765,6 +1827,7 @@ export async function shareMeal(formData){
 ```
 
 ## 125. useFormState() / useActionState()
+
 - ERROR -> Q&A says useFormState() works and useActionState() needs canary version of react and might not work with nextjs so use useFormState()
 
 - useFormState -> note: useFormState is part of 'react-dom'
@@ -1773,9 +1836,10 @@ export async function shareMeal(formData){
 ```ERROR
 TypeError: (0 , react__WEBPACK_IMPORTED_MODULE_1__.useActionState) is not a function or its return value is not iterable
 ```
+
 ```js
-import { useFormState } from 'react-dom';
-``` 
+import { useFormState } from "react-dom";
+```
 
 <!-- - NEW METHOD: useActionState -> note: useActionState is part of 'react'
 - supported by canary version of react
@@ -1784,7 +1848,8 @@ import { useActionState } from 'react';
 ``` -->
 
 ## 126. sever-action response object and useActionState()/useFormState() - handle validation more elagantly
-- useFormState() works! 
+
+- useFormState() works!
 - useActionState() seems newer BUT only supported on React canary version..
 - handle validation more elagantly in action functions by returning response objects (no methods allowed in this object)
 
@@ -1792,42 +1857,45 @@ import { useActionState } from 'react';
 //lib/actions.js
 
 //validation:
-  if( isInvalidText(meal.title) 
-    || isInvalidText(meal.summary) 
-    || isInvalidText(meal.instructions) 
-    || isInvalidText(meal.creator) 
-    || isInvalidText(meal.creator_email)
-    || !meal.creator_email.includes('@') ||
-    !meal.image || meal.image.size === 0
-  ){
-    //throw new Error('invalid input');
-    return {
-      message: 'invalid input'
-    }
-  }
-
+if (
+  isInvalidText(meal.title) ||
+  isInvalidText(meal.summary) ||
+  isInvalidText(meal.instructions) ||
+  isInvalidText(meal.creator) ||
+  isInvalidText(meal.creator_email) ||
+  !meal.creator_email.includes("@") ||
+  !meal.image ||
+  meal.image.size === 0
+) {
+  //throw new Error('invalid input');
+  return {
+    message: "invalid input",
+  };
+}
 ```
+
 ### useActionState() hook /useFormState() hook
+
 - we can get the response object in the form (in our project it is the share page (app/meals/share/page.js) - the Create of CRUD) using useActionState() / useFormState() hook
 
 ```js
-import {useFormState} from 'react-dom';
+import { useFormState } from "react-dom";
 //import { useActionState } from 'react';
 ```
 
-- useActionState/useFormState is responsible for managing state of page or component that has a form that will be submited with server actions 
+- useActionState/useFormState is responsible for managing state of page or component that has a form that will be submited with server actions
 - needs "use client";
 - useActionState() / useFormState() needs 2 arguments:
-  1. actual server action that should be triggered when form is submitted (shareMeal) 
-    - NOTE: using useActionState() / useFormState() the server action has a different structure: useActionState() / useFormState() will pass 2 parameters to the server action
-    - eg. shareMeal() now receives 1st prop the previous state (possibly not used but required to include) and formData as before but as 2nd prop
+  1. actual server action that should be triggered when form is submitted (shareMeal)
+  - NOTE: using useActionState() / useFormState() the server action has a different structure: useActionState() / useFormState() will pass 2 parameters to the server action
+  - eg. shareMeal() now receives 1st prop the previous state (possibly not used but required to include) and formData as before but as 2nd prop
   2. initial state of component before action response
-  
 - useActionState / useFormState will give array with 2 elements:
   1. state -> latest response from server action
   2. formAction -> which you should set on form action prop
 
 ### State
+
 - state will then either be:
 - A - initial state of component before action response
 - B - response received back from shareMeal action function
@@ -1838,30 +1906,29 @@ import {useFormState} from 'react-dom';
 
 "use client";
 // import { useActionState } from 'react';
-import { useFormState } from 'react-dom';
+import { useFormState } from "react-dom";
 import { shareMeal } from "@/lib/actions";
 
-export default function ShareMealPage(){
+export default function ShareMealPage() {
   // const [formState, formAction] = useActionState(shareMeal, {message:null}); //useActionState requires canary version of react
-  const [formState, formAction] = useFormState(shareMeal, {message:null});
+  const [formState, formAction] = useFormState(shareMeal, { message: null });
 
   //...
   <form className={classes.form} action={formAction}>
     ...
-
     {formState.message && <p>{formState.message}</p>}
-  </form>
+  </form>;
   //...
 }
 ```
 
 ```js
 //lib/actions
-export async function shareMeal(prevState, formData){
-}
+export async function shareMeal(prevState, formData) {}
 ```
 
 ## 127. building for production and understanding nextjs caching
+
 - moving development to production...
 - `npm run build` prepare for production
 - `npm start`
@@ -1871,62 +1938,70 @@ npm run build
 npm start
 ```
 
-## 128. revalidatePath() -> triggering cache revalidations 
+## 128. revalidatePath() -> triggering cache revalidations
+
 - `import { revalidatePath } from 'next/cache';`
 - you will see that nextjs caches the production pages so that even if you were to rebuild, the cache still exists
 - you need to tell nextjs to throw away its cache when you add a meal (revalidate)
-- call revalidatePath() to revalidate the cache() before route path eg. 
+- call revalidatePath() to revalidate the cache() before route path eg.
 
 ```js
 //lib/actions.js
-import { revalidatePath } from 'next/cache';
+import { revalidatePath } from "next/cache";
 
 await saveMeal(meal);
 // revalidatePath('/meals', 'layout')
-revalidatePath('/meals');
-redirect('/meals');
-
+revalidatePath("/meals");
+redirect("/meals");
 ```
+
 - if you use "layout" it revalidates all nested pages too, otherwise "page" only revalidates the page
-- "page" is the default so can be omitted 
-- right before a redirect() is triggered to revalidate 
+- "page" is the default so can be omitted
+- right before a redirect() is triggered to revalidate
 
 ## 129. dont store files locally on the filesystem
+
 - public/ folder works for development, but in production nextjs copies public/ to `.next` folder
 - and its the .next/ folder that will be used by the nextjs production server
 - see nextjs "static assets" - https://nextjs.org/docs/pages/building-your-application/optimizing/static-assets
-- USE third party storage services like aws s3 
+- USE third party storage services like aws s3
 
 ## 130. Storing Uploaded Images In The Cloud (AWS S3)
+
 - NB lesson!
 - working on git branch: aws-storing-images-in-aws-s3
 - project folder: /03-3-foodies-image-storage-using-aws-s3
 - TODO: update 03-2-foodies/ so that it stores images on [aws-s3](https://aws.amazon.com/s3/) bucket instead of locally in public folder
 
-1) Create an AWS account
+1. Create an AWS account
 
-2) Create a S3 bucket
-  - navigate to s3 console 
-  - create a bucket (container used to store files)
-  - every bucket has globally unique name 
-  - use a prefix eg. <your-name>-nextjs-demo-users-image
-  - confirm default settings..
+2. Create a S3 bucket
+
+- navigate to s3 console
+- create a bucket (container used to store files)
+- every bucket has globally unique name
+- use a prefix eg. <your-name>-nextjs-demo-users-image
+- confirm default settings..
 
 ## READING IMAGES OFF AWS S3 BUCKET
 
-3) Upload the dummy image files
-- select the created bucket
-- copy images to bucket (you can select multiple images in project public/)  by clicking upload
+3. Upload the dummy image files
 
-4) Configure the bucket for serving the images
-- configure the bucket such that the images can be loaded from the NextJS website 
-NOTE: for security reasons, by default, files not accessible
+- select the created bucket
+- copy images to bucket (you can select multiple images in project public/) by clicking upload
+
+4. Configure the bucket for serving the images
+
+- configure the bucket such that the images can be loaded from the NextJS website
+  NOTE: for security reasons, by default, files not accessible
 
 ### disable "Block all public access"
+
 - TODO: we must update the bucket settings to make sure the images can be viewed by everyone.
 - "Permissions" tab -> Edit Block public access (bucket settings) -> unselect "Block all public access" -> save changes
 
 ### add Bucket policy
+
 - TODO: AND you must add a "Bucket Policy" (a policy document - that allows you to manage the permissions of the objects stored in the bucket)
 - replace `DOC-EXAMPLE-BUCKET` with the bucket name (no quotes) -> save changes
 - Now the bucket is configure to grant access to all objects inside of it to anyone who has a URL pointing to one of those objects.
@@ -1950,30 +2025,37 @@ NOTE: for security reasons, by default, files not accessible
   ]
 }
 ```
+
 ### test if it works
+
 - To test if everything works, click on one of the images you uploaded (in the bucket).
 - Then click on the "Object URL" - if opening it works (and you can see the image), you configured everything as needed.
 
-5) Update the NextJS code to use those S3 images
+5. Update the NextJS code to use those S3 images
+
 - update NextJS app to load images from aws-s3 bucket
 - project folder -> empty out public/
 - if you also delete the .next folder in the NextJS project and you then visit localhost:3000/meals, you should see a bunch of meals without images.
 
-### update referenced images 
-- edit the database data by updating the initdb.js file: 
+### update referenced images
+
+- edit the database data by updating the initdb.js file:
   - Change all the image property values from image (ie. remove "/images/"): '/images/burger.jpg' to image: 'burger.jpg' (and do that for all meals).
+
 ```js
 //before
 <Image src={image} alt={title} fill />
 //after
 <Image src={`S3_URL_BUCKET_NAME/${image}`} alt={title} fill />
 ```
-- goto: `components/meals/meal-item.js` and update image source (use string literal) by replacing "S3_URL_BUCKET_NAME" with 
-the object url *(get from AWS): eg. `https://maxschwarzmueller-nextjs-demo-users-image.s3.amazonaws.com`
+
+- goto: `components/meals/meal-item.js` and update image source (use string literal) by replacing "S3_URL_BUCKET_NAME" with
+  the object url \*(get from AWS): eg. `https://maxschwarzmueller-nextjs-demo-users-image.s3.amazonaws.com`
 - The new src value is a string that contains the S3 URL to your bucket objects (i.e., the URL you previously clicked for testing purposes - without the image file name at the end). The actual image name that should be loaded is then dynamically inserted via ${image}.
 - Note: This will only work if the images stored in the S3 bucket have the names referenced in the initdb.js file!
 
 ### AND also update referenced images here...
+
 - You should also update the app/meals/[mealSlug]/page.js file and make sure that the image on this page is also fetched from S3:
 
 ```js
@@ -1991,13 +2073,14 @@ the object url *(get from AWS): eg. `https://maxschwarzmueller-nextjs-demo-users
 ```cmd
 node initdb.js
 ```
+
 - NOTE: doing above step will cause an error:
 
 ```ERROR
 Error: Invalid src prop (https://maxschwarzmueller-nextjs-demo-users-image.s3.amazonaws.com/burger.jpg) on `next/image`, hostname "maxschwarzmueller-nextjs-demo-users-image.s3.amazonaws.com" is not configured under images in your `next.config.js`
 ```
 
-6) FIX -> NEXTJS: Allowing S3 as an image source
+6. FIX -> NEXTJS: Allowing S3 as an image source
 
 - by default, NextJS does not allow external URLs when using the `<Image>` component.
 - You explicitly have to allow such a URL in order to get rid of this error
@@ -2013,10 +2096,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'maxschwarzmueller-nextjs-demo-users-image.s3.amazonaws.com',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "maxschwarzmueller-nextjs-demo-users-image.s3.amazonaws.com",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
@@ -2026,7 +2109,9 @@ module.exports = nextConfig;
 ```
 
 ## SAVING IMAGES TO AWS S3 BUCKET
-7) Storing uploaded images on S3
+
+7. Storing uploaded images on S3
+
 - when creating a meal, we upload an image and we should should forward this image to AWS S3.
 - aws has a package: `@aws-sdk/client-s3` that allow you to interact with S3 - e.g., to store files in a specific bucket.
 
@@ -2041,60 +2126,67 @@ pnpm i @aws-sdk/client-s3
 
 ```js
 //lib/meals.js (file where saving to db happens)
-import { S3 } from '@aws-sdk/client-s3';
+import { S3 } from "@aws-sdk/client-s3";
 
 const s3 = new S3({
-  region: 'ap-southeast-1' //get from aws object properties -> aws region
+  region: "ap-southeast-1", //get from aws object properties -> aws region
 });
-const db = sql('meals.db'); // <- this was already there!
-
+const db = sql("meals.db"); // <- this was already there!
 ```
+
 - edit lib/meals.js -> the saveMeal() function and remove all code that was related to storing the image on the local file system.
 
-### REMOVE 
+### REMOVE
+
 ```js
-  //storing the image on the local file system
-  //1.
-  // const stream = fs.createWriteStream(`public/images/${fileName}`);
+//storing the image on the local file system
+//1.
+// const stream = fs.createWriteStream(`public/images/${fileName}`);
 
-  // //2.
-  // const bufferedImage = await meal.image.arrayBuffer();
+// //2.
+// const bufferedImage = await meal.image.arrayBuffer();
 
-  // //3.
-  // //use stream to write the file -> convert the arrayBuffer to regular Buffer
-  // stream.write(Buffer.from(bufferedImage), (error)=>{
-  //   if(error){
-  //     throw new Error('save failed');
-  //   }
-  // });
+// //3.
+// //use stream to write the file -> convert the arrayBuffer to regular Buffer
+// stream.write(Buffer.from(bufferedImage), (error)=>{
+//   if(error){
+//     throw new Error('save failed');
+//   }
+// });
 ```
+
 ### ADD
+
 - replace bucket value...
 
 ```js
 s3.putObject({
-  Bucket: 'maxschwarzmueller-nextjs-demo-users-image',
+  Bucket: "maxschwarzmueller-nextjs-demo-users-image",
   Key: fileName,
   Body: Buffer.from(bufferedImage),
   ContentType: meal.image.type,
 });
 ```
 
-- update meal.image 
+- update meal.image
+
 ```js
 //BEFORE
-meal.image = `/images/${fileName}`; 
+meal.image = `/images/${fileName}`;
 
 //AFTER
 meal.image = fileName;
 ```
 
 ### Grant NextJS backend AWS access permissions (.env.local)
-8) Granting the NextJS backend AWS access permissions
+
+8. Granting the NextJS backend AWS access permissions
+
 - VERY IMPORTANT STEP
 - because we are in Creation phase of CRUD, need to grant the NextJS app S3 access permissions.
 
 ### .env.local
+
 - previous steps we configured S3 to serve the bucket content to everyone.
 - But we did not (and should not!) configure it to allow everyone to write to the bucket or change the bucket contents.
 - set up AWS access keys for your app -> To grant our app appropriate permissions
@@ -2113,12 +2205,15 @@ meal.image = fileName;
 AWS_ACCESS_KEY_ID=<your aws access key>
 AWS_SECRET_ACCESS_KEY=<your aws secret access key>
 ```
+
 ### where to get access keys?
+
 - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html
 - You get those access keys from inside the AWS console (in the browser). You can get them by clicking on your account name (in the top right corner of the AWS console) and then "Security Credentials".
 - Scroll down to the "Access Keys" area and create a new Access Key. Copy & paste the values into your .env.local file and never share these keys with anyone! Don't commit them to Git or anything like that!
 
 ## 131. adding static metadata
+
 - metadata used by search engine crawlers / link share
 - nextjs `metadata` is reserved inside page / layout files.
 - if you add metadata to a layout, it will automatically be added for all pages wrapped by layout UNLESS a page specifies its own metadata.
@@ -2128,89 +2223,150 @@ AWS_SECRET_ACCESS_KEY=<your aws secret access key>
 
 ```js
 export const metadata = {
-  title:"",
-  description:""
-}
+  title: "",
+  description: "",
+};
 ```
 
 ## 132 adding dynamic metadata
+
 - for dynamic pages eg. `app/meals/[slug]/page.js` we use dynamic metadata:
-- NEXTJS supports dynamic metadata via: `export async function generateMetadata(){}` 
+- NEXTJS supports dynamic metadata via: `export async function generateMetadata(){}`
 - if nextjs does not find metadata, it looks for generateMetadata() function and executes it.
-- the function returns a metadata object 
+- the function returns a metadata object
 - the function receives the same data the page component function receives as props (an object with params key)
 
 ```js
 //app/meals/[slug]/page.js
 
-export async function generateMetadata({params}){
+export async function generateMetadata({ params }) {
   const meal = getMeal(params.slug);
 
-  if(!meal){
+  if (!meal) {
     notFound();
   }
 
   return {
     title: meal.title,
-    description: meal.summary
-  }
+    description: meal.summary,
+  };
 }
 
-export default function MealDetailsPage({params}){
+export default function MealDetailsPage({ params }) {
   const meal = getMeal(params.slug);
 
-  if(!meal){
+  if (!meal) {
     notFound();
   }
   //...
 }
-
 ```
 
 ## 133. module summary
+
 - watch this to refresh on what you did this module:
 - https://www.udemy.com/course/nextjs-react-the-complete-guide/learn/lecture/41159816
 
 ---
 
 # Section 04 - Routing and Page Rendering - Deep Dive
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 05 - Data Fetching - Deep Dive
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 06 - Mutating Data - Deep Dive
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 07 - Understanding & Configuring caching
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 08 - NextJs app optimizations
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 09 - user authentication
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 10 - round up and next steps
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 11 - Pages & File-based routing
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 12 - Project Time: working with file-based routing
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 13 - page pre-rendering and data-fetching
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 14 - project time: page pre-rendering & data-fetching
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 15 - optimizing Next.js apps
+[back (table of contents)](#table-of-contents)
+
+---
 
 //FULL STACK REACT
 
 # Section 16 - adding backend code with API Routes (fullstack react)
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 17 - Project time: API Routes
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 18 - App-wide state (react context)
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 19 - complete app example (build a full blog A-Z)
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 20 - Deploying Nextjs apps
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 21 - Adding Authentication
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 22 - Optional Nextjs Summary
+[back (table of contents)](#table-of-contents)
+
+---
 
 # Section 23 - Course Roundup
+[back (table of contents)](#table-of-contents)
+
+---
