@@ -567,6 +567,7 @@ export async function loader({ params }) {
 - lessons 85 -> 133
 - 49 lessons
 - 4hrs 1min
+- module summary: https://www.udemy.com/course/nextjs-react-the-complete-guide/learn/lecture/41159816
 
 ## NEXT.JS CORE ESSENTIALS
 
@@ -1885,6 +1886,68 @@ redirect('/meals');
 - "page" is the default so can be omitted 
 - right before a redirect() is triggered to revalidate 
 
+## 129. dont store files locally on the filesystem
+- public/ folder works for development, but in production nextjs copies public/ to `.next` folder
+- and its the .next/ folder that will be used by the nextjs production server
+- see nextjs "static assets" - https://nextjs.org/docs/pages/building-your-application/optimizing/static-assets
+- USE third party storage services like aws s3 
+
+## 130. Storing Uploaded Images In The Cloud (AWS S3)
+- NB lesson!
+
+## 131. adding static metadata
+- metadata used by search engine crawlers / link share
+- nextjs `metadata` is reserved inside page / layout files.
+- if you add metadata to a layout, it will automatically be added for all pages wrapped by layout UNLESS a page specifies its own metadata.
+- eg. app/meals/page.js -> add metadata will override the metadata in app/layout.js
+- the meta "title" will show up in the browser tab
+- metadata for pages:
+
+```js
+export const metadata = {
+  title:"",
+  description:""
+}
+```
+
+## 132 adding dynamic metadata
+- for dynamic pages eg. `app/meals/[slug]/page.js` we use dynamic metadata:
+- NEXTJS supports dynamic metadata via: `export async function generateMetadata(){}` 
+- if nextjs does not find metadata, it looks for generateMetadata() function and executes it.
+- the function returns a metadata object 
+- the function receives the same data the page component function receives as props (an object with params key)
+
+```js
+//app/meals/[slug]/page.js
+
+export async function generateMetadata({params}){
+  const meal = getMeal(params.slug);
+
+  if(!meal){
+    notFound();
+  }
+
+  return {
+    title: meal.title,
+    description: meal.summary
+  }
+}
+
+export default function MealDetailsPage({params}){
+  const meal = getMeal(params.slug);
+
+  if(!meal){
+    notFound();
+  }
+
+  //...
+}
+
+```
+
+## 133. module summary
+- watch this to refresh on what you did this module:
+- https://www.udemy.com/course/nextjs-react-the-complete-guide/learn/lecture/41159816
 
 ---
 
