@@ -2289,6 +2289,34 @@ export default function MealDetailsPage({ params }) {
 ## 140 "Not found" page 
 - see lesson 113. not-found
 
+## 141. setup and using parallel routes
+- routes in parallel
+- render the content of 2 separate routes (separate paths) on same page 
+  - eg. /archive/@archive/page.js AND /archive/@latest/page.js
+- usually the layout.js receives the children prop eg. `export default function RootLayout({ children }) {}` HOWEVER, when you have parralel routes, instead of just "children" prop...the layout receives one prop per parallel "@" route
+- with the name you chose after the @ as a prop name eg. if parallel routes are `archive/@archive` and `archive/@latest`
+- note: you visit the http://localhost:3000/archive layout route
+- REQUIRED:
+  1. layout.js -> add `app/archive/layout.js`
+  2. one subfolder (starts with @) -> for each parallel route (`app/archive/@archive/page.js`) and (`app/archive/@latest/page.js`)
+
+```js
+//app/archive/layout.js
+
+//eg. if parallel routes are `app/archive/@archive` and `app/archive/@latest`
+
+export default function ArchiveLayout({archive, latest}){
+  return (
+    <div>
+      <h1>News archive</h1>
+      <section id="archive-filter">{archive}</section>
+      <section id="archive-latest">{latest}</section>
+    </div>
+  )
+}
+``` 
+
+
 ---
 
 # Section 05 - Data Fetching - Deep Dive
