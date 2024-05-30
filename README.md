@@ -2235,7 +2235,7 @@ export const metadata = {
 };
 ```
 
-## 133 adding dynamic metadata
+## 133. adding dynamic metadata
 
 - for dynamic pages eg. `app/meals/[slug]/page.js` we use dynamic metadata:
 - NEXTJS supports dynamic metadata via: `export async function generateMetadata(){}`
@@ -2278,6 +2278,13 @@ export default function MealDetailsPage({ params }) {
 
 # Section 04 - Routing and Page Rendering - Deep Dive
 [back (table of contents)](#table-of-contents)
+
+## 136,137,138,139 Practice routes / Dynamic routes / using dummy data for dynamic content
+- PRACTICE: routes exercise
+- create a news/page.js page which lists news items
+- create a news/[slug]/page.js page which is the news details page
+- create a main-header.js which links to home and news/
+- use dummy content to dynamically show news details page app/news/[slug]/page.js
 
 ---
 
