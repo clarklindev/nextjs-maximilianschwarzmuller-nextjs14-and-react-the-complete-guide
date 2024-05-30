@@ -136,6 +136,13 @@ http://localhost:3000/awesome
 - page router (older)
 - app router (course) -> introduced nextjs 13 -> supports react server components and server actions
 
+## 10. course setup
+- (2024-05) max adds a lesson 10 to section 1 to use Jetbrains IDE (thats what the whole lesson is about) 
+- which throws out the numbering for the rest of the course by 1. 
+- its quite annoying because it doesnt actually add any benefit to the rest of the lessons BUT it does affect lesson order.
+- so all lessons up to Section 04 - Routing and Page Rendering - Deep Dive are renumbered (adjustment of +1) 
+- see affected lessons in git commit history
+
 ---
 
 # Section 02 - OPTIONAL - React refresher 
@@ -156,7 +163,7 @@ http://localhost:3000/awesome
 pnpm create vite . --template react
 ```
 
-## 21. CSS Modules
+## 22. CSS Modules
 
 ```css
 /* Post.module.css */
@@ -169,7 +176,7 @@ pnpm create vite . --template react
 - access the css: classes used in css can be accessed as properties of imported object ("classes")
   `<div className={classes.post}></div>`
 
-## 25. state
+## 26. state
 
 - react components only refresh/reload with state updates eg. const [state, update state function] = useState() hooks
 - react components DO NOT UPDATE without state updates
@@ -187,7 +194,7 @@ function PostList() {
 }
 ```
 
-## 30. react form buttons / 31. handling submit
+## 31. react form buttons / 32. handling submit
 
 - by default clicking button submits form
 - give button type=""button" so it doesnt trigger form submit or give type="submit" to submit (optional as it will by default submit)
@@ -228,7 +235,7 @@ function NewPost({onAddPost, onCancel}){
 }
 ```
 
-## 35. sending a POST HTTP Request
+## 36. sending a POST HTTP Request
 
 - frontend to backend communication
 - use fetch(url, {}) to send and get data
@@ -251,7 +258,7 @@ function addPostHandler(postData) {
 }
 ```
 
-## 36. Handling Side effects with useEffect()
+## 37. Handling Side effects with useEffect()
 
 - frontend sends a fetch request to /posts on backend which when done returns "posts"
 
@@ -296,14 +303,14 @@ function PostList() {
 }
 ```
 
-## 38. routing
+## 39. routing
 
 - react allows you to use your own routing.
 - have a look at https://github.com/clarklindev/react-router-6 the code is self explanatory
 - react router 6
 - routing happens on client side
 
-## 40. layout routes and outlet
+## 41. layout routes and outlet
 
 - you can make layout routes by adding `<Route>` children to a `<Route>`
 - organize routing into its own folder
@@ -388,7 +395,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 );
 ```
 
-## 42 linking and navigation
+## 43 linking and navigation
 
 ### Link element
 
@@ -426,7 +433,7 @@ function closeHandler() {
 
 ## react-router 6.4: to handle data-fetching and submitting form data
 
-## 43. loader
+## 44. loader
 
 - instead of using useEffect(), go to route definition... to the route that needs loader for data...
 - add loader property, value is a function that will execute whenever the route gets activated (ie. when its about to render the route element)
@@ -513,7 +520,7 @@ const route = createBrowserRouter([
 ]);
 ```
 
-## 44. action() functions for handling form submits
+## 45. action() functions for handling form submits
 
 - when you have a form on a page, you can handle the submits with action() handlers, you also put the function close into the route component code
 - it is triggered when form is submitted
@@ -599,7 +606,7 @@ const route = createBrowserRouter([
 ]);
 ```
 
-## 45. Dynamic Routes with react-router
+## 46. Dynamic Routes with react-router
 
 - use syntax: `{path:':id'}` in the router config
 - note: absolute path has '/' eg. `{path:'/:id'}`
@@ -620,7 +627,7 @@ export async function loader({ params }) {
 # Section 03 - NextJS essentials - App Router
 [back (table of contents)](#table-of-contents)
 
-- lessons 85 -> 133
+- lessons 86 -> 134
 - 49 lessons
 - 4hrs 1min
 - module summary: https://www.udemy.com/course/nextjs-react-the-complete-guide/learn/lecture/41159816
@@ -631,16 +638,16 @@ export async function loader({ params }) {
 - fetching and sending data
 - styling, images, metadata
 
-## 86. starting setup
+## 87. starting setup
 
 - project folder-> 03-nextjs-essentials-app-router/
 
-## 87. file based routing + react server components
+## 88. file based routing + react server components
 
 - app/ folder where you setup pages of website
 - page.js reserved filename -> Nextjs ensures its rendered on server (server component)
 
-## 88. Adding another route via the file system
+## 89. Adding another route via the file system
 
 - Important: These filenames are only reserved when creating them inside of the app/
 
@@ -669,7 +676,7 @@ export default function AboutPage() {
 }
 ```
 
-## 89. Navigating between pages
+## 90. Navigating between pages
 
 ### WRONG WAY
 
@@ -687,7 +694,7 @@ export default function AboutPage() {
 - import Link from 'next/link';
 - difference between react-router which uses "to" -> nextjs Link still uses "href" prop
 
-## 90. working with pages and layouts
+## 91. working with pages and layouts
 
 - a layout defines the "shell" around one or more pages
 - its the layout of how the page should be rendered
@@ -715,7 +722,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-## 91. reserved file names, custom components, & how to organize a nextjs project
+## 92. reserved file names, custom components, & how to organize a nextjs project
 
 - Important: These filenames are only reserved when creating them inside of the app/
 - https://nextjs.org/docs/app/api-reference/file-conventions
@@ -752,7 +759,7 @@ import "./global.css";
 }
 ```
 
-## 93. Dynamic Routes -> configuring dynamic routes, using route parameters
+## 95. Dynamic Routes -> configuring dynamic routes, using route parameters
 
 - test links: http://localhost:3000/blog and http://localhost:3000/blog/post-1
 - nextjs uses square brackets to denote something is dynamic: `[name]` where name is any placeholder
@@ -795,13 +802,13 @@ export default function BlogPostPage({ params }) {
 }
 ```
 
-## 94. Onwards to the Main Project: The Foodies App
+## 95. Onwards to the Main Project: The Foodies App
 
 - exercise source: [github](https://github.com/mschwarzmueller/nextjs-complete-guide-course-resources/blob/main/attachments/02-nextjs-essentials/foodies-starting-project.zip)
 - /03-2-foodies
 - note: `meals/share` route has precedence over the dynamic route `/meals/[slug]` even though they both have /meals parent folder
 
-## 95. EXERCISE / 96. EXERCISE SOLUTION
+## 96. EXERCISE / 97. EXERCISE SOLUTION
 
 - practice creating of routes / dynamic routes
 - run node project at: /03-2-foodies
@@ -824,7 +831,7 @@ export default function BlogPostPage({ params }) {
 - /meals/[slug]
 - dynamic url eg. http://localhost:3000/meals/pasta
 
-## 97. layouts
+## 98. layouts
 
 - layouts wrap other pages
 - access the wrapped content via props' children attribute
@@ -838,7 +845,7 @@ export default function ExampleLayout({children}){
 
 ```
 
-## 98. adding a custom component
+## 99. adding a custom component
 
 - here we create our own header component with react
 
@@ -891,7 +898,7 @@ export default function ExampleLayout({children}){
 
 ```
 
-## 99. Styling Nextjs
+## 100. Styling Nextjs
 
 - options: tailwind or cssmodules
 - see lesson ## 21. CSS Modules
@@ -920,7 +927,7 @@ export default function Test() {
 }
 ```
 
-### 100. Optimizing Images with Nextjs <Image> component
+### 101. Optimizing Images with Nextjs <Image> component
 
 - https://nextjs.org/docs/app/api-reference/components/image
 - Nextjs has an Image component which assists with optimizing images
@@ -945,7 +952,7 @@ import logoImg from "@assets/logo.png";
 <Image src={logoImg} priority />; //note: assign the full object imported (and not the .src property (logoImg.src)
 ```
 
-## 101. using more custom components
+## 102. using more custom components
 
 - PRACTICE LESSON... (NOTHING NEW)
 - here you create a custom components/main-header/main-header-background.js component
@@ -953,7 +960,7 @@ import logoImg from "@assets/logo.png";
 - in main-header.js: import MainHeaderBackground from "./main-header-background";
 - main-header-background: return the background svg wrapped in `<div className={classes['header-background']}>`
 
-## 102. populating the starting content
+## 103. populating the starting content
 
 - PRACTICE LESSON... (NOTHING NEW)
 - editing app/page.js
@@ -962,7 +969,7 @@ import logoImg from "@assets/logo.png";
 - div: call-to-action with some links
 - add app/page.module.css
 
-## 103. preparing image slideshow
+## 104. preparing image slideshow
 
 - nextjs working with `<Image>`
 - components/images/image-slideshow.js
@@ -980,7 +987,7 @@ import logoImg from "@assets/logo.png";
 
 - note you get an error from above (react server component error - you're importing a component that needs useState. it only works in a client component, but none of its parents are marked with "use client", so they're Server components by default)
 
-## 104. React Server components vs Client Components
+## 105. React Server components vs Client Components
 
 - by default in nextjs all components are server side components (rendered on server)
 - you can see the difference by testing if your console.logs show in browser or cmd/terminal (where you run the project)
@@ -997,7 +1004,7 @@ import logoImg from "@assets/logo.png";
 "use client";
 ```
 
-## 105. creating NavLink -> using client components efficiently
+## 106. creating NavLink -> using client components efficiently
 
 - /app/community/page.js
 - /app/community/page.module.css
@@ -1046,7 +1053,7 @@ export default function NavLink({ href, children }) {
 }
 ```
 
-## 106. meal details: output meal data & images with unknown dimensions
+## 107. meal details: output meal data & images with unknown dimensions
 
 - PRACTICE LESSON... (uses dynamic route AND images dynamically loaded from db (no width/height at build-time) add "fill" attribute)
 
@@ -1106,7 +1113,7 @@ export default function MealsGrid(meals){
 }
 ```
 
-## 107. setting up SQLLite database
+## 108. setting up SQLLite database
 
 - install sqlLite db
 - add initdb.js to root, it will setup the db (if it doesnt exist -> or use existing db) -> dummy meals
@@ -1169,7 +1176,7 @@ async function initData() {
 initData();
 ```
 
-## 108. NEXTJS way of loading data from db
+## 109. NEXTJS way of loading data from db
 
 - with nextjs backend and frontend are blended seamlessly together (no need for separate backend)
 - NOTE: because nextjs components are by default SERVER side components, you can reach out directly to db
@@ -1209,7 +1216,7 @@ export default async function MealsPage(){
 }
 ```
 
-## 109. adding a loading page
+## 110. adding a loading page
 
 - adding a loading page (loading.js)
 - closest loading.js becomes active page when page/nested-page is loading data
@@ -1224,7 +1231,7 @@ export default function MealsLoadingPage() {
 }
 ```
 
-## 110. using `<Suspense>` + streamed responses for granular loading state management
+## 111. using `<Suspense>` + streamed responses for granular loading state management
 
 - it would be better if only the portion of data that is loading data shows loading
 - to not use this file, rename "loading.js" to something else so it has no context within NextJS because loading.js is reserved filename (renamed to loading-out.js)
@@ -1265,7 +1272,7 @@ export default function MealsPage() {
 }
 ```
 
-## 111. handling errors
+## 112. handling errors
 
 - error.js files to handle errors when some error occurs eg. loading data fails
 - error.js -> rendered by nextjs when error occurs (its a custom error page)
@@ -1291,7 +1298,7 @@ export async function getMeals() {
 }
 ```
 
-## 112. not-found
+## 113. not-found
 
 - can add to top-level of project to handle all not-found routes
 - not-found.js file to handle invalid routes
@@ -1312,7 +1319,7 @@ export default function NotFound({ error }) {
 }
 ```
 
-## 113. loading and rendering meal details using DYNAMIC ROUTES & ROUTE PARAMS
+## 114. loading and rendering meal details using DYNAMIC ROUTES & ROUTE PARAMS
 
 - using dynamic routes and route params to load item details
 - `app/meals/[slug]/page.js`
@@ -1386,20 +1393,20 @@ export async function getMeal(slug) {
 }
 ```
 
-## 114. throwing not found for individual meals
+## 115. throwing not found for individual meals
 
 - practice (NOTHING NEW)
 - `import { notFound } from 'next/navigation';`
 - shows closest error or not-found page if you call notFound() -> stops component from executing
 
-## 115. share meals form -> this is C of CRUD (create meals)
+## 116. share meals form -> this is C of CRUD (create meals)
 
 - working with form
 - create a meal
 - app/meals/share/page.js
 - app/meals/share/page.module.css
 
-## 116. image picker input component
+## 117. image picker input component
 
 - create an image picker to allow user to upload image on the form AND preview uploaded image
 - `<input className={classes.input} type="file" id={name} accept="image/png, image/jpeg" name={input}/>`
@@ -1411,7 +1418,7 @@ export async function getMeal(slug) {
 - use useRef from React to reference hidden input via ref.current eg. `const imageInput = useRef() `and trigger a click: `imageInput.current.click()`
 - you can allow user to upload multiple files by adding "multiple" attribute to input
 
-## 117. image preview for image picker
+## 118. image preview for image picker
 
 - handle image pick event
 - use state to store the picked image
@@ -1423,7 +1430,7 @@ export async function getMeal(slug) {
 - so the function assigned to onload is called when fileReader is done and you will be able to access file via `fileReader.result` (which is what we want to set in state)
 - note useState is good usecase because if the browser refreshes we loose the state (which is what we want)
 
-## 118. image picker improvements
+## 119. image picker improvements
 
 1. Reset the previewed image if no image was selected - Add set setPickedImage(null); to the if(!file) block
 2. Add the required prop to the (hidden) `<input>` element - This ensures that the `<form>` can't be submitted without an image being selected.
@@ -1491,7 +1498,7 @@ export default function ImagePicker({ label, name }) {
 }
 ```
 
-## 119. NextJS handling form submissions (server actions) with "use server";
+## 120. NextJS handling form submissions (server actions) with "use server";
 
 - form submission handling with NEXTJS
 
@@ -1530,7 +1537,7 @@ export default function ShareMealPage() {
 }
 ```
 
-## 120. storing server actions in separate files
+## 121. storing server actions in separate files
 
 - you can create server action functions but only if the component is NOT using "use client";
 - can store server actions in separate files: lib/actions.js
@@ -1558,7 +1565,7 @@ export async function shareMeal(formData) {
 }
 ```
 
-## 121. creating a slug & sanitizing user input for XSS protection
+## 122. creating a slug & sanitizing user input for XSS protection
 
 - storing the form data (SQLLITE)
 - add function saveMeal(meal) to lib/meals.js
@@ -1589,7 +1596,7 @@ export function saveMeal(meal) {
 }
 ```
 
-## 122. storing uploaded images + storing data in the database
+## 123. storing uploaded images + storing data in the database
 
 - storing images in db is bad for performance
 - we will store uploaded images in public folder. NOTE: this will be updated later to use AWS S3 buckets
@@ -1715,7 +1722,7 @@ export async function shareMeal(formData) {
 }
 ```
 
-## 123. Form submission status - useFormStatus()
+## 124. Form submission status - useFormStatus()
 
 - when form is being submitted -> give feedback to user that something is happening.
 - React has useFormStatus() hook
@@ -1774,7 +1781,7 @@ export default function ShareMealPage() {
 }
 ```
 
-## 124. server-side input validation
+## 125. server-side input validation
 
 - should validate form values
 
@@ -1826,7 +1833,7 @@ export async function shareMeal(formData) {
 }
 ```
 
-## 125. useFormState() / useActionState()
+## 126. useFormState() / useActionState()
 
 - ERROR -> Q&A says useFormState() works and useActionState() needs canary version of react and might not work with nextjs so use useFormState()
 
@@ -1847,7 +1854,7 @@ import { useFormState } from "react-dom";
 import { useActionState } from 'react';
 ``` -->
 
-## 126. sever-action response object and useActionState()/useFormState() - handle validation more elagantly
+## 127. sever-action response object and useActionState()/useFormState() - handle validation more elagantly
 
 - useFormState() works!
 - useActionState() seems newer BUT only supported on React canary version..
@@ -1927,7 +1934,7 @@ export default function ShareMealPage() {
 export async function shareMeal(prevState, formData) {}
 ```
 
-## 127. building for production and understanding nextjs caching
+## 128. building for production and understanding nextjs caching
 
 - moving development to production...
 - `npm run build` prepare for production
@@ -1938,7 +1945,7 @@ npm run build
 npm start
 ```
 
-## 128. revalidatePath() -> triggering cache revalidations
+## 129. revalidatePath() -> triggering cache revalidations
 
 - `import { revalidatePath } from 'next/cache';`
 - you will see that nextjs caches the production pages so that even if you were to rebuild, the cache still exists
@@ -1959,14 +1966,14 @@ redirect("/meals");
 - "page" is the default so can be omitted
 - right before a redirect() is triggered to revalidate
 
-## 129. dont store files locally on the filesystem
+## 130. dont store files locally on the filesystem
 
 - public/ folder works for development, but in production nextjs copies public/ to `.next` folder
 - and its the .next/ folder that will be used by the nextjs production server
 - see nextjs "static assets" - https://nextjs.org/docs/pages/building-your-application/optimizing/static-assets
 - USE third party storage services like aws s3
 
-## 130. Storing Uploaded Images In The Cloud (AWS S3)
+## 131. Storing Uploaded Images In The Cloud (AWS S3)
 
 - NB lesson!
 - working on git branch: aws-storing-images-in-aws-s3
@@ -2212,7 +2219,7 @@ AWS_SECRET_ACCESS_KEY=<your aws secret access key>
 - You get those access keys from inside the AWS console (in the browser). You can get them by clicking on your account name (in the top right corner of the AWS console) and then "Security Credentials".
 - Scroll down to the "Access Keys" area and create a new Access Key. Copy & paste the values into your .env.local file and never share these keys with anyone! Don't commit them to Git or anything like that!
 
-## 131. adding static metadata
+## 132. adding static metadata
 
 - metadata used by search engine crawlers / link share
 - nextjs `metadata` is reserved inside page / layout files.
@@ -2228,7 +2235,7 @@ export const metadata = {
 };
 ```
 
-## 132 adding dynamic metadata
+## 133 adding dynamic metadata
 
 - for dynamic pages eg. `app/meals/[slug]/page.js` we use dynamic metadata:
 - NEXTJS supports dynamic metadata via: `export async function generateMetadata(){}`
@@ -2262,7 +2269,7 @@ export default function MealDetailsPage({ params }) {
 }
 ```
 
-## 133. module summary
+## 134. module summary
 
 - watch this to refresh on what you did this module:
 - https://www.udemy.com/course/nextjs-react-the-complete-guide/learn/lecture/41159816
