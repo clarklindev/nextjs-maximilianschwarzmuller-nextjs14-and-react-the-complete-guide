@@ -2286,6 +2286,9 @@ export default function MealDetailsPage({ params }) {
 - create a main-header.js which links to home and news/
 - use dummy content to dynamically show news details page app/news/[slug]/page.js
 
+## 140 "Not found" page 
+- see lesson 113. not-found
+
 ---
 
 # Section 05 - Data Fetching - Deep Dive
