@@ -2292,10 +2292,17 @@ export default function MealDetailsPage({ params }) {
 ## 141. setup and using parallel routes
 - routes in parallel
 - render the content of 2 separate routes (separate paths) on same page 
+<<<<<<< HEAD
   - eg. /archive/@archive/page.js AND /archive/@latest/page.js
 - usually the layout.js receives the children prop eg. `export default function RootLayout({ children }) {}` HOWEVER, when you have parralel routes, instead of just "children" prop...the layout receives one prop per parallel "@" route
 - with the name you chose after the @ as a prop name eg. if parallel routes are `archive/@archive` and `archive/@latest`
 - note: you visit the http://localhost:3000/archive layout route
+=======
+  - eg. `/archive/@archive/page.js` AND `/archive/@latest/page.js`
+- usually the layout.js receives the children prop eg. `export default function RootLayout({ children }) {}` HOWEVER, when you have parralel routes, instead of just "children" prop...the layout receives one prop per parallel "@" route
+- with the name you chose after the @ as a prop name eg. if parallel routes are `archive/@archive` and `archive/@latest`
+- note: you visit the `http://localhost:3000/archive` layout route
+>>>>>>> 999ff
 - REQUIRED:
   1. layout.js -> add `app/archive/layout.js`
   2. one subfolder (starts with @) -> for each parallel route (`app/archive/@archive/page.js`) and (`app/archive/@latest/page.js`)
@@ -2303,7 +2310,9 @@ export default function MealDetailsPage({ params }) {
 ```js
 //app/archive/layout.js
 
-//eg. if parallel routes are `app/archive/@archive` and `app/archive/@latest`
+//eg. if parallel routes are 
+//`app/archive/@archive` and 
+//`app/archive/@latest`
 
 export default function ArchiveLayout({archive, latest}){
   return (
@@ -2316,6 +2325,63 @@ export default function ArchiveLayout({archive, latest}){
 }
 ``` 
 
+### 142. parallel routes & nested routes
+- allow user to pick year and show news belonging only to that year.
+- add a dynamic route for years: 
+- `app/archive/@archive/page.js` (ArchivePage) will output links for all available years that have news. 
+- clicking on year opens FilteredNewsPage `app/archive/@archive/[year]/page.js` 
+- `lib/news.js` (helper file with js functions that filter results)
+  - getAllNews()
+  - getLatestNews()
+  - getAvailableNewsYears()
+  - getAvailableNewsMonths()
+  - getNewsForYear()
+  - getNewsForYearAndMonth()
+- If you goto http://localhost:3000/archive/2021 -> you will get a "not found" because 2 routes are rendered on same page BUT one of the other parallel routes (archive/@latest/page.js), do not support the `/archive/[year]` route.
+- Nextjs allows you to add a file `default.js` when dealing with parallel routes for default fallback content...
+- eg. `@latest/default.js` if it does not have a page for the path.
+- so you can put the same content as `@latest/page.js`, but if that is the case you can remove the page.js and just have the `@latest/default.js`.
+
+```js
+//app/archive/@archive/[year]/page.js
+import { getAvailableNewsYears } from "@/lib/news";
+
+export default function ArchivePage() {
+  const links = getAvailableNewsYears();
+
+  return (
+    <header id="archive-header">
+      <nav>
+        <ul>
+          {links.map((link) => (
+            <li key={link}>
+              <Link href={`/archive/${link}`}>{link}</Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+  );
+}
+
+```
+
+```js
+//app/archive/@latest/default.js
+import NewsList from "@/components/news-list";
+import { getLatestNews } from "@/lib/news";
+
+export default function LatestNewsPage(){
+  const latestNews = getLatestNews();
+  
+  return (
+  <>
+    <h2>Latest News</h2>
+    <NewsList news={latestNews}/>
+  </>
+  );
+}
+```
 
 ---
 
