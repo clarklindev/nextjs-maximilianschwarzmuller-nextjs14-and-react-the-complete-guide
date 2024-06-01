@@ -2489,6 +2489,27 @@ export default function FilteredNewsPage({params}){
   );
 ```
 
+## 145. throwing (route-related) errors
+- checking url route is valid
+- note you have to compare the number vs number so convert selectedYear and selectedMonth to number
+```js
+if(selectedYear && !getAvailableNewsYears().includes(+selectedYear) || 
+  selectedMonth && !getAvailableNewsMonths(selectedYear).includes(+selectedMonth)){
+  throw new Error('Invalid filter');
+}
+```
+
+## 146. handling errors with error pages
+- see [112. handling errors](#112-handling-errors)
+- custom error handling without breaking the webpage
+- error.js
+- 'use client'; - to handle errors on both server + client
+- the error will be handled by error.js file next to the page:
+  
+`@archive/[[...filter]]/page.js` 
+and
+`@archive/[[...filter]]/error.js`
+
 ---
 
 # Section 05 - Data Fetching - Deep Dive
