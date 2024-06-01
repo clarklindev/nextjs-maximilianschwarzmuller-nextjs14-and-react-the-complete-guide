@@ -2292,17 +2292,11 @@ export default function MealDetailsPage({ params }) {
 ## 141. setup and using parallel routes
 - routes in parallel
 - render the content of 2 separate routes (separate paths) on same page 
-<<<<<<< HEAD
-  - eg. /archive/@archive/page.js AND /archive/@latest/page.js
-- usually the layout.js receives the children prop eg. `export default function RootLayout({ children }) {}` HOWEVER, when you have parralel routes, instead of just "children" prop...the layout receives one prop per parallel "@" route
-- with the name you chose after the @ as a prop name eg. if parallel routes are `archive/@archive` and `archive/@latest`
-- note: you visit the http://localhost:3000/archive layout route
-=======
-  - eg. `/archive/@archive/page.js` AND `/archive/@latest/page.js`
+- eg. `/archive/@archive/page.js` AND `/archive/@latest/page.js`
 - usually the layout.js receives the children prop eg. `export default function RootLayout({ children }) {}` HOWEVER, when you have parralel routes, instead of just "children" prop...the layout receives one prop per parallel "@" route
 - with the name you chose after the @ as a prop name eg. if parallel routes are `archive/@archive` and `archive/@latest`
 - note: you visit the `http://localhost:3000/archive` layout route
->>>>>>> 999ff
+
 - REQUIRED:
   1. layout.js -> add `app/archive/layout.js`
   2. one subfolder (starts with @) -> for each parallel route (`app/archive/@archive/page.js`) and (`app/archive/@latest/page.js`)
@@ -2382,6 +2376,54 @@ export default function LatestNewsPage(){
   );
 }
 ```
+
+## 143. catch all routes
+- syntax is `[[...filter]]`
+- TODO: change `archive/@archive/[year]` to a catch-all route `archive/@archive/[[...filter]]` 
+- this will catch all routes after `/archive/`
+- its not params.year but now... params.filter
+  - eg. there are 0 segments if url is /archive/
+  - eg. there is 1 segment if url is /archive/2024
+  - eg. there are 2 segments if url is /archive/2024/3
+- const filter = params.filter // console.log(filter) gives an error. this is because `archive/@archive/[[...filter]]/page.js` (catch-all) and `archive/@archive/page.js` conflict.
+```cmd
+`Error: You cannot define a route with the same specificity as a optional catch-all route ("/archive" and "/archive[[...filter]]").`
+```
+- delete the archive/@archive/page.js since `/[[...filter]]` will catch all.
+- now filter property holds array of all matched path segments.
+
+```js
+import NewsList from "@/components/news-list";
+import { getNewsForYear } from "@/lib/news";
+
+export default function FilteredNewsPage({params}){
+  // const newsYear = params.year; //accessing the dynamic route app/archive/@archive/[year] value
+  
+  //using catch-all route
+  const filter = params.filter;
+  console.log(filter);
+  
+  const links = getAvailableNewsYears();
+
+  // const news = getNewsForYear(newsYear);
+  // return <NewsList news={news}/>
+  return (
+    <header id="archive-header">
+      <nav>
+        <ul>
+          {links.map((link) => (
+            <li key={link}>
+              <Link href={`/archive/${link}`}>{link}</Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+  )
+}
+```
+
+
 
 ---
 
