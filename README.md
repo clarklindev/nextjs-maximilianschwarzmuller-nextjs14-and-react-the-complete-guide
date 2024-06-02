@@ -2518,6 +2518,121 @@ and
 - app/news/[slug]/image/page.js
 - note: the nested child components also get access to the params.
 
+## 149. route interception / intercepting route
+- NEXJS -> https://nextjs.org/docs/app/building-your-application/routing/intercepting-routes
+
+- normal: `localhost:3000/news/[slug]/image/page.js`
+- then i set up interception: `localhost:3000/news/[slug]/(.)image/page.js` to intercept `[slug]/image/page.js `
+
+### HOW TO? 
+you intercept a route based on the folder naming syntax: ()name-of-path-to-intercept 
+  - eg. `news/[slug]/(.)image/page.js` intercepts `news/[slug]/image/page.js`
+- you can set up an intercepting route by creating a folder named: `()` followed by the name of the path segment you want to intercept
+  eg. you want to intercept `news/[slug]/image/` then you can create a folder `news/[slug]/(.)image` which will intercept based on whats between opening and closing brackets () from the intercept folder to the path to be intercepted
+    - (.) same level (see above) 
+    - (..) one level above etc
+- then the intercept route `news/[slug]/(.)image/page.js` should show content as if the page was intercepted
+
+### Nextjs documentation
+- THE OFFICIAL NEXTJS NOTES EXPLAIN THIS CONCEPT A BIT BETTER...
+- Intercepting Routes: Allow you to intercept a route and show it in the context of another route. 
+- Intercepting routes allows you to load a route from another part of your application within the current layout. This routing paradigm can be useful when you want to display the content of a route without the user switching to a different context
+- eg. For example, when clicking on a photo in a feed, you can display the photo in a modal, overlaying the feed. In this case, Next.js intercepts the /photo/123 route, masks the URL, and overlays it over /feed.
+
+
+<img src="https://nextjs.org/_next/image?url=%2Fdocs%2Fdark%2Fintercepting-routes-soft-navigate.png&w=1920&q=75"  alt="Next.js Intercepted Routes" height="300">
+
+- However, when navigating to the photo by clicking a shareable URL or by refreshing the page, the entire photo page should render instead of the modal. No route interception should occur.
+
+<img src="https://nextjs.org/_next/image?url=%2Fdocs%2Fdark%2Fintercepting-routes-hard-navigate.png&w=1920&q=75"  alt="Next.js Intercepted Routes" height="300">
+
+### convention
+- Intercepting routes can be defined with the (..) convention, which is similar to relative path convention ../ but for segments.
+- You can use:
+
+- `(.)` to match segments on the same level  
+- `(..)` to match segments one level above  
+- `(..)(..)` to match segments two levels above  
+- `(...)` to match segments from the root app directory  
+- For example, you can intercept the photo segment from within the feed segment by creating a (..)photo directory.  
+
+<img src="https://nextjs.org/_next/image?url=%2Fdocs%2Fdark%2Fintercepted-routes-files.png&w=1920&q=75" alt="Next.js Intercepted Routes" height="300">
+
+- NOTE: Note that the (..) convention is based on route segments, not the file-system. 
+- so @parallel routes are not added to url and are ignored from intcepting route calculations when calculating how many levels to traverse between ().  
+
+### Examples -> Modals
+  
+- Intercepting Routes can be used together with [Parallel Routes](#141-setup-and-using-parallel-routes) to create modals. This allows you to solve common challenges when building modals, such as:
+
+  - Making the modal content shareable through a URL.
+  - Preserving context when the page is refreshed, instead of closing the modal.
+  - Closing the modal on backwards navigation rather than going to the previous route.
+  - Reopening the modal on forwards navigation.
+
+- the idea of intercepted route: is that you see different content depending on how you got to the page.
+- can have same url (with same segmented paths) for 2 different page.js files depending on how you got to the page:
+  1. a link navigated to within the page (internal navigated link) should open an image modal
+  2. BUT a link navigated to externally via browser url or external link should show the image on a page
+- this is done by intercepting the /photo segment from within /feed segment by creating a (...)photo directory
+
+- Consider the following UI pattern, where a user can open a photo modal from a gallery using client-side navigation, or navigate to the photo page directly from a shareable URL:
+
+<img src="https://nextjs.org/_next/image?url=%2Fdocs%2Fdark%2Fintercepted-routes-modal-example.png&w=1920&q=75" alt="Next.js Intercepted Routes" height="300">
+
+- In the above example, the path to the photo segment can use the (..) matcher since @modal is a slot and not a segment. This means that the photo route is only one segment level higher, despite being two file-system levels higher.
+
+- [Parallel Routes documentation for a step-by-step example](https://nextjs.org/docs/app/building-your-application/routing/parallel-routes#modals)
+- [Nextjs image example](https://github.com/vercel-labs/nextgram)
+
+## 150. combining parallel and intercepting routes
+- TODO: either show intercepted route as an image in a modal OR show as a regular fullscreen page
+- adjust `/news/[slug]/(.)image/page.js` to open a modal 
+
+```js
+//app/news/[slug]/(.)image/page.js
+import { DUMMY_NEWS } from "@/dummy-news";
+import { notFound } from "next/navigation";
+
+export default function InterceptedImagePage({params}){
+  const newsItemSlug = params.slug;
+  const newsItem = DUMMY_NEWS.find((newsItem) => newsItem.slug === newsItemSlug);
+
+  if(!newsItem){
+    notFound();
+  }
+
+  return (
+  <>
+    <div className="modal-backdrop"/>
+    <dialog className="modal" open>
+      <div className="fullscreen-image">
+        <img src={`/images/news/${newsItem.image}`} alt={newsItem.title}/>
+      </div>
+    </dialog>
+  </>
+  ) 
+}
+
+```
+- BUT also need to make modal an overlay -> can use [parallel routing](#141-setup-and-using-parallel-routes) to show content from 2 routes on same page
+- create a layout file: `app/news/[slug]/layout.js`
+- then we set up 2 routes shown in parallel for the layout:
+1) `app/news/[slug]/page.js` page...default page
+2) 
+`app/news/[slug]/@modal` , 
+`app/news/[slug]/@details` and move the page.js from 1. into /@details
+- NOTE: if you always want to show this `[slug]/page.js` in /@details ... you leave it there and it will always be available via layout.js as children prop. ie. page.js will be passed as child of layout.js (default)
+- the intercepted route [slug]/(.)image is moved into @modal/(.)image and path (.) does not change even though its in a folder because parrallel routes (@folder) are ignored. the (//path) is a path in the url not directory folder structure
+- `app/news/[slug]/layout.js` now receives modal as a prop (because parallel route is @modal) `export default function NewsDetailLayout({children, modal})`
+- add a page.js or default.js in @modal eg. `app/news[slug]/@modal/page.js` which will return null and show at same time as intercepting route `(.)image`
+
+```js
+//app/news/[slug]/@modal/page.js
+export default function ModalDefaultPage(){
+  return null;
+}
+```
 ---
 
 # Section 05 - Data Fetching - Deep Dive
