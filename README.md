@@ -2510,6 +2510,14 @@ if(selectedYear && !getAvailableNewsYears().includes(+selectedYear) ||
 and
 `@archive/[[...filter]]/error.js`
 
+## 147. server vs client components
+- REDUNDANT lesson see [lesson 106 - creating NavLink -> using client components efficiently -> usePathname()](#usepathname---getting-active-path-to-set-active-link-class)
+
+## 148. nested routes inside dynamic routes
+- this lesson only nests a route inside a dynamic route
+- app/news/[slug]/image/page.js
+- note: the nested child components also get access to the params.
+
 ---
 
 # Section 05 - Data Fetching - Deep Dive
