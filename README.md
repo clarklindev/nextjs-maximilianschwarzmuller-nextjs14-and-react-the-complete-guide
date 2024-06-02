@@ -2633,6 +2633,24 @@ export default function ModalDefaultPage(){
   return null;
 }
 ```
+
+## 152. navigating programmatically
+- TODO: ability to click on modal backdrop (navigate programatically) and take user back to page they coming from
+- app/news/[slug]/@modal/(.)image/page.js
+- `import {useRouter} from 'next/navigation';`
+- useRouter gives useful methods to navigate eg. back() 
+- useRouter only works inside client components
+
+```js
+//app/news/[slug]/@modal/(.)image/page.js
+"use client";
+import {useRouter} from 'next/navigation';
+
+const router = useRouter();
+//...
+
+<div className="modal-backdrop" onClick={router.back}/>
+```
 ---
 
 # Section 05 - Data Fetching - Deep Dive
