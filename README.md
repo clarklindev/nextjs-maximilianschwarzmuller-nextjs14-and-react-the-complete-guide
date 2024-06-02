@@ -2651,6 +2651,19 @@ const router = useRouter();
 
 <div className="modal-backdrop" onClick={router.back}/>
 ```
+
+## 153. route groups
+- route groups allow you to setup different layouts for different routes
+- syntax is (name) where name is the name you decide for the routegroup (this is not added to the url route)
+- at this point app/layout.js has the main navigation `<MainHeader>` for all routes but we want to create main landing page without a `<MainHeader>` and then the rest of the pages do have a `<MainHeader>` on the page.
+- TODO create route groups and put layouts inside these folders -> then the route groups have dedicated layouts.
+- create routegroup folder `app/(content)` -> move `news/` and `archive` into (content)
+- create routegroup folder `app/(marketing)`
+- move layout.js into both (content) and (marketing) folder
+- remove the `<MainHeader>` from the `(marketing)` folder
+- move starting app/page.js into app/(marketing)/page.js
+- NOTE: you cant have pages on same level as the routegroups (*) so move not-found.js into (content)
+```
 ---
 
 # Section 05 - Data Fetching - Deep Dive
