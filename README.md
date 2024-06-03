@@ -2817,7 +2817,8 @@ export default function NewsPage() {
   );
 }
 ```
-## 160 Option 2 (better method with nextjs) - Server-side data fetching
+## 160. Option 2 (better method with nextjs) - Server-side data fetching
+- NOTE: since there is no need to have a separate backend for the database... in lesson 161. we remove the backend/ server and put database directly with the nextjs code
 - from "backend/" folder run: `pnpm run start`
 - by default... all nextjs components are REACT SERVER COMPONENTS, so there is a better option than option 1 (lesson 159) to working with data.
 - REACT SERVER COMPONENTS allows you to decorate top-level component functions with async
@@ -2851,6 +2852,60 @@ export default async function NewsPage() {
   );
 }
 ```
+
+## 161. fetching directly from the source - removing separate backend - Option 2 (continued...)
+- as hinted in previous lesson there is no need to have a separate backend (if we own the database)
+- we make adjustments to the backend/ folder -> to load data directly from nextjs server code
+- REQUIRED: move `/backend/data.db` to root folder: `/data.db`
+- REQUIRED: `pnpm i better-sqlite3`
+- at this point even though `app/(content)/news/page.js` is loading data from `http://localhost:8080/news`
+- nextjs `lib/news.js` has helper functions that still work with imported dummy data...
+- FIX below...`const db = sql('path-to-db')`  
+- sql() is expecting a path relative to root project folder
+- sqlite3 is giving us a synchronous api -> it does not yield a promise we have to await
+- NOTE: with the lib functions "fixed", in `app/(content)/news/page.js` you can remove the fetch() and replace with the helper function call defined in lib/news.js
+
+```js
+//lib/news.js
+import sql from 'better-sqlite3';
+
+const db = sql('data.db');
+
+export function getAllNews() {
+  // return DUMMY_NEWS;
+  const news = db.prepare('SELECT * FROM news').all();
+  return news;
+}
+
+//...
+```
+
+```js
+//app/(content)/news/page.js
+import {getAllNews} from '@/lib/news.js';
+
+export default async function NewsPage(){
+
+  // const response = await fetch('http://localhost:8080/news');
+  // if(!response.ok){
+  //   throw new Error('failed to fetch news');
+  // }
+  // const news = await response.json();
+
+  const news = getAllNews();
+
+  return (
+    <>
+      <h1>News Page</h1>
+      <NewsList news={news}/>
+    </>
+  );
+}
+
+```
+- And now Because of React server components -> we skip that extra backend and that extra HTTP round-trip. And we directly fetch data from the data source (which in this case is a database, but which could also be a file or whatever) and use that in our components.
+- its also because the database lives on our server...
+
 ---
 
 # Section 06 - Mutating Data - Deep Dive
