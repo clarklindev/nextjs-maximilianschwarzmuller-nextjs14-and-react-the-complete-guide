@@ -1,4 +1,4 @@
-// import { DUMMY_NEWS } from "@/dummy-news";
+import { DUMMY_NEWS } from "@/dummy-news";
 import sql from 'better-sqlite3';
 
 const db = sql('data.db');

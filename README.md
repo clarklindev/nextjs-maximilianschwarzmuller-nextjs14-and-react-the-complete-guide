@@ -2906,6 +2906,39 @@ export default async function NewsPage(){
 - And now Because of React server components -> we skip that extra backend and that extra HTTP round-trip. And we directly fetch data from the data source (which in this case is a database, but which could also be a file or whatever) and use that in our components.
 - its also because the database lives on our server...
 
+## 162. showing a loading fallback
+- REDUNDANT LESSON (did this earlier) [110. adding a loading page](#110-adding-a-loading-page)
+- simulate a slower load...
+- we convert getAllNews() to an async function so instead of returning an array of news, it returns a promise which will eventually yield an array of news
+
+```js
+export async function getAllNews() {
+  // return DUMMY_NEWS;
+  const news = db.prepare('SELECT * FROM news').all();
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  return news;
+}
+```
+- now with the adjustment, page.js must be adjusted..
+- NOTE: we can convert the component function to async function because it is a react server component
+
+### showing a loading fallback
+- add a file called loading.js next to page loading data or higher in hierarchy level
+- this whole loading.js page is shown while data is loading
+- the fallback is handled automatically by nextjs.
+
+```js
+//app/(content)/news/page.js
+export default async function NewsPage() {
+  const news = await getAllNews();
+}
+```
+```js
+//app/(content)/news/loading.js
+export default function NewsLoading(){
+  return <p>Loading...</p>;
+}
+```
 ---
 
 # Section 06 - Mutating Data - Deep Dive
