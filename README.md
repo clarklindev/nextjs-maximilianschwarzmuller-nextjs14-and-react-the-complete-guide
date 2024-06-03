@@ -2663,7 +2663,33 @@ const router = useRouter();
 - remove the `<MainHeader>` from the `(marketing)` folder
 - move starting app/page.js into app/(marketing)/page.js
 - NOTE: you cant have pages on same level as the routegroups (*) so move not-found.js into (content)
+
+## 154. building apis with route handlers
+- route handlers do not have visible pages, they do not have a layout
+- you can name folder anything you want
+- file should not be named page.js because page.js depends on a layout.js
+- name it route.js (route handler)
+- in route handlers, you can export various functions which you MUST name as HTTP Methods:
+- GET(), POST(), PATCH(), PUT(), or DELETE() 
+- note its a regular function: `export function GET(){}` (not `export default function GET()`)
+- these api like routes -> are functions that accept json data and return json data instead of pages.
+- you can put multiple route handlers in the same file that are for the same path
+- they automatically receive a `request` object
+- they should return a response: which can be plain text `return new Response('hello')` or json `return Response.json()`
+- where can you use it? when you dont want to return a rendered page: eg. mobile app where you interact with json data.
+
+```js
+//app/api/route.js
+export function GET(request){
+  // return Response.json();
+  return new Response('hello');
+}
+export function POST(request){}
+export function PATCH(request){}
+export function PUT(request){}
+export function DELETE(request){}
 ```
+
 ---
 
 # Section 05 - Data Fetching - Deep Dive
