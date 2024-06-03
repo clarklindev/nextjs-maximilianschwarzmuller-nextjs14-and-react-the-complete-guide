@@ -2939,6 +2939,19 @@ export default function NewsLoading(){
   return <p>Loading...</p>;
 }
 ```
+
+## 163. migrating the rest of application to local data source (database)
+- TODO: update `/lib/news.js` functions so they dont use dummy data
+- migrate NewsDetailsPage: `app/(content)/news/[slug]/page.js`
+- migrate ImagePage: `app/(content)/news/[slug]/image/page.js`
+- migrate InterceptedImagePage: `app/(content)/news/[slug]/@modal/(.)image/page.js`
+  - with the intercepted page, its a client-side-component because you need to use React Hooks for `useRouter()`
+- 
+- FIX: make a client component a serverside component by extracting the code that needs to be a client component into its own component.
+- make the html that uses the useRouter() a separate component (which is clientside component) same as when we changed [106 - creating NavLink](#106-creating-navlink---using-client-components-efficiently) to its own component
+- change @modal/page.js to @modal/default.js
+- fix `archive/@latest/default.js`
+
 ---
 
 # Section 06 - Mutating Data - Deep Dive
