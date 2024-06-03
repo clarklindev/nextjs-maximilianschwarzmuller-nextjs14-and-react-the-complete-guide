@@ -2818,7 +2818,39 @@ export default function NewsPage() {
 }
 ```
 ## 160 Option 2 (better method with nextjs) - Server-side data fetching
+- from "backend/" folder run: `pnpm run start`
+- by default... all nextjs components are REACT SERVER COMPONENTS, so there is a better option than option 1 (lesson 159) to working with data.
+- REACT SERVER COMPONENTS allows you to decorate top-level component functions with async
+- ie. react server components can return promises
+- FIX: to change to server component...
+  1) remove use client"
+  2) make component async and move fetch out of fetchNews function into the component function
+  3) remove all states (useState : isLoading, news, error)
+- below.. code when using NextJS features to fetch data directly on the server inside of the component function and to output it.
 
+```js
+
+//app/(content)/news/page.js
+import NewsList from '@/components/news-list';
+
+export default async function NewsPage() {
+
+  const response = await fetch('http://localhost:8080/news');
+
+  if(!response.ok){
+    throw new Error('failed to fetch news');
+  }
+
+  const news = await response.json();
+
+  return (
+    <>
+      <h1>News Page</h1>
+      <NewsList news={news}/>
+    </>
+  );
+}
+```
 ---
 
 # Section 06 - Mutating Data - Deep Dive
