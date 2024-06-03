@@ -2743,8 +2743,84 @@ export const config = {
 - creates an express server listening to port: `8080`
 - creates an api GET route: `/news` which returns all data in `news` table
 
+## 159. Option 1 - Client-side data fetching
+### start backend
+- start the backend server: `backend/` run `pnpm run start`
+- open localhost:8080
+
+### nextjs server
+- start nextjs server: `npm run dev`
+- open localhost:3000
+
+### fetch data from clientside
+- app/(content)/news/page.js instead of importing dummy news...
+- NOTE: the lecture uses the react useEffect/fetch loading pattern [37. Handling Side effects with useEffect()](#37-handling-side-effects-with-useeffect)
+- BUT you can opt for react-router [react-router 6.4: to handle data-fetching and submitting form data](#react-router-64-to-handle-data-fetching-and-submitting-form-data)
+
+- remove dummy data import...
+- fetch data from localhost:8080
+- because we use react hooks (requires the component be a client component): 'use client';
+
+```js
+//app/(content)/news/page.js
+"use client";
+// import { DUMMY_NEWS } from '@/dummy-news'; //removed dummy data import
+
+import {useEffect, useState} from 'react';
+
+import NewsList from '@/components/news-list';
+
+export default function NewsPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+  const [news, setNews] = useState();
+
+  useEffect(()=>{
+
+    async function fetchNews(){
+      setIsLoading(true);
+
+      const response = await fetch('http://localhost:8080/news');
+
+      if(!response.ok){
+        setError('Failed to fetch news');
+        setIsLoading(false);
+      }
+
+      const news = await response.json();
+      setIsLoading(false);
+      setNews(news);
+
+    }
+    fetchNews();
+
+  }, []);
+
+  if(isLoading){
+    return <p>Loading...</p>
+  }
+
+  if(error){
+    return <p>{error}</p>
+  }
+
+  let newsContent;
+  if(news){
+    newsContent = <NewsList news={news}/>
+  }
+
+  return (
+    <>
+      <h1>News Page</h1>
+      {newsContent}
+    </>
+  );
+}
+```
+## 160 Option 2 (better method with nextjs) - Server-side data fetching
+
 ---
-/
+
 # Section 06 - Mutating Data - Deep Dive
 [back (table of contents)](#table-of-contents)
 
