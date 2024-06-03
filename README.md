@@ -2952,6 +2952,93 @@ export default function NewsLoading(){
 - change @modal/page.js to @modal/default.js
 - fix `archive/@latest/default.js`
 
+## 164. Granular Data Fetching With Suspense (5min 14sec)
+- NOTE: REDUNDANT LESSON repeats lesson 111 -> [111. using suspense](#111-using-suspense--streamed-responses-for-granular-loading-state-management)
+
+- `app/(content)/archive/@archive[[...filter]]/page.js` month selection has no loading feedback? even with a parent `app/(content)/archive/loading.js`loading.js
+- well it doesnt show the loading.js page because the page.js is already showing data, its action is to load more data...
+- FIX: creating a separate component
+- make component function async (possible with nextjs)
+- `import { Suspense } from "react";`
+- use `<Suspense fallback={<p>loading...</p>}>` by wrapping around the component which we want to provide a custom loading fallback...
+- suspense assists in making loading more granular by allowing you to define `<Suspense>` boundaries.
+- a slight pause when selecting month is because params update and so then does header 
+- TODO: wrap header (FilterHeader) in a suspense boundary too (7min 46sec)
+
+```js
+//app/(content)/archive/@archive[[...filter]]/page.js
+
+import {Suspense} from 'react';
+
+async function FilterHeader({year, month}){
+  const availableYears = await getAvailableNewsYears(); 
+  let links = availableYears;  //-> YEARS
+  //if year has already been selected -> show month links
+  if (year && !month) {
+    links = getAvailableNewsMonths(year); //-> MONTHS
+  }
+  //both selectedYear and selectedMonth -> show news with both these filters
+  if(year && month){
+    links = [];
+  }
+
+  return (
+    <header id="archive-header">
+      <nav>
+        <ul>
+          {
+            links.map((link) => {
+              const href= year ? 
+              `/archive/${year}/${link}` //here link is a month
+              : `/archive/${link}`;         //here link is a year
+
+              return (
+                <li key={link}>
+                  <Link href={href}>{link}</Link>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </nav>
+    </header>
+  )
+}
+
+async function FilteredNews({year, month}){
+  let news;
+  if(year && !month){
+    news = await getNewsForYear(year); //news for a given year
+  } else if(year && month){
+    news = await getNewsForYearAndMonth(year, month);
+  }
+  let newsContent = <p>no news for selected content</p>;
+  if (news && news.length > 0) {
+    newsContent = <NewsList news={news} />;
+  }
+  return newsContent;
+}
+
+export default async function FilteredNewsPage({ params }) {
+  //using catchall route
+  const filter = params.filter;
+
+  const selectedYear = filter?.[0]; //gets 1st segment (array element 1)
+  const selectedMonth = filter?.[1]; //gets 2nd segment (array element 2)
+
+  return (
+    <>
+      <Suspense fallback={<p>loading filters...</p>}>
+        <FilterHeader year={selectedYear} month={selectedMonth}/>
+      </Suspense>
+      <Suspense fallback={<p>loading news...</p>}>
+        <FilteredNews year={selectedYear} month={selectedMonth}/>
+      </Suspense>
+    </>
+  );
+}
+```
+
 ---
 
 # Section 06 - Mutating Data - Deep Dive
