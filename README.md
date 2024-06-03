@@ -2718,13 +2718,33 @@ export const config = {
 }
 ```
 
+# LOCALIZATION
+- not part of course but Nextjs course notes: 
+- https://nextjs.org/docs/app/building-your-application/routing/internationalization
+- https://github.com/vercel/next.js/tree/canary/examples/app-dir-i18n-routing
+- https://next-intl-docs.vercel.app/docs/getting-started
 ---
 
 # Section 05 - Data Fetching - Deep Dive
 [back (table of contents)](#table-of-contents)
+- this chapter continues on with the files we finished off with in `04-deep-dive-routing-and-rendering`
+
+## 157. module Overview
+- Data fetching - fetching data from different data sources
+- where and how to fetch data
+- working with apis
+- loading data from databases and other sources
+
+## 158. adding a backend
+- new `/backend` folder (given)
+- run initially with `npm run start`
+- it basically creates a backend database `/backend/data.db` 
+- with table `news`, create columns and populate the db data using initial static DUMMY data
+- creates an express server listening to port: `8080`
+- creates an api GET route: `/news` which returns all data in `news` table
 
 ---
-
+/
 # Section 06 - Mutating Data - Deep Dive
 [back (table of contents)](#table-of-contents)
 
