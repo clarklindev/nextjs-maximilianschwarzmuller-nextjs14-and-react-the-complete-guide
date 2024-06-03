@@ -2665,6 +2665,7 @@ const router = useRouter();
 - NOTE: you cant have pages on same level as the routegroups (*) so move not-found.js into (content)
 
 ## 154. building apis with route handlers
+- test: `localhost:3000/api`
 - route handlers do not have visible pages, they do not have a layout
 - you can name folder anything you want
 - file should not be named page.js because page.js depends on a layout.js
@@ -2688,6 +2689,33 @@ export function POST(request){}
 export function PATCH(request){}
 export function PUT(request){}
 export function DELETE(request){}
+```
+
+## 155. Middleware
+
+### middleware
+- root project folder: add a middleware.js parallel to package.json
+- receives a request object 
+- MUST return a NextResponse
+- intercept and perform actions on the incoming requests (eg. authentication, redirects) before being sent on to destination
+- code in middleware is run for every request with `matcher` property that allows filtering of the requests
+- value can also be an array (to filter multiple routes) etc.
+- MATCHER NOTES: [https://nextjs.org/docs/app/building-your-application/routing/middleware](https://nextjs.org/docs/app/building-your-application/routing/middleware)
+
+### config
+- you can also export a config object
+```js
+//middleware.js
+import {NextResponse} from 'next/server';
+
+export function middleware(request){
+  // return NextResponse.redirect();
+  return NextResponse.next();//forwards incoming
+}
+
+export const config = {
+  matcher: '/news'
+}
 ```
 
 ---
