@@ -3258,6 +3258,63 @@ export async function getData() {
 }
 ```
 
+## 176. Uploading & Storing Images (Cloudinary)
+- NOTE: deviation from [lesson 131. storing images in AWS s3](#131-storing-uploaded-images-in-the-cloud-aws-s3)
+
+- this lesson deals with file upload -> storing images in cloudinary
+- create free account: https://cloudinary.com/
+- after signup goto console -> https://console.cloudinary.com/
+
+```
+npm install cloudinary
+```
+- added `lib/cloudinary.js` which contains code `uploadImage(image)` to upload file to cloudinary 
+- .env.local
+  - requires: CLOUDINARY_CLOUD_NAME
+  - requires: CLOUDINARY_API_KEY
+  - requires: CLOUDINARY_API_SECRET
+
+- you can set up environment variables in nextjs root: `.env.local`
+- get the details from cloudinary api keys
+
+```.env.local
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
+- in `actions/posts/` try upload image calling uploadImage
+- uploadImage returns a promise which eventually gives you an url to uploaded file (cloudinary)
+- you can delete posts.db to clear the db (which is created when you run the project) lib/posts.js
+- once the image is uploaded you can view the post -> the image used is actually from cloudinary
+- to check login cloudinary -> asset management -> media library -> folders
+
+```js
+//actions/posts.js
+import { uploadImage } from '@/lib/cloudinary';
+
+export async function createPost(prevState, formData) {
+  //...
+
+  let imageUrl;
+  try{
+    imageUrl = await uploadImage(image);
+  }
+  catch(error){
+    throw new Error('Image upload failed')
+  }
+
+  await storePost({
+    imageUrl: imageUrl,
+    title,
+    content,
+    userId: 1
+  });
+
+  //...
+}
+```
+
+
 ---
 
 # Section 07 - Understanding & Configuring caching
