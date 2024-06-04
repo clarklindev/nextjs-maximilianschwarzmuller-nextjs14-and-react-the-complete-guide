@@ -1512,13 +1512,15 @@ export default function ImagePicker({ label, name }) {
 - the action function receives `formData` object (FormData) which you can access form field that have "name" properties via `get()`
 - to also retrieve Image pickers values also need to give it label and name attribute
 - the image should be stored in file system and a path stored in the db.
+- by defining "use server"; ensures function code is run server-side
+- without "use server" - code is run client-side and you would need to send form data to backend via fetch()
 
 ```js
 //app/meals/share/page.js
 export default function ShareMealPage() {
   //server action
   async function shareMeal(formData) {
-    "use server";
+    "use server"; //-----> note: use server is inside function
 
     const meal = {
       title: formData.get("title"),
@@ -1743,7 +1745,7 @@ const status = useFormStatus();
 
 ### DO THIS
 
-- FIX: move to its own component
+- FIX: move to its own component: eg. FormSubmit
 - made form submit component more generic by requiring user pass-in label `<FormSubmit label=""/>`
 
 ```js
@@ -3043,7 +3045,91 @@ export default async function FilteredNewsPage({ params }) {
 
 # Section 06 - Mutating Data - Deep Dive
 [back (table of contents)](#table-of-contents)
+- lessons 165-180 (16lessons) (1hr 36min)
+- REDUNDANT SECTION
+- NOTE: [server actions was part of lesson 120](#120-nextjs-handling-form-submissions-server-actions-with-use-server)
 
+## 165. module introduction
+- data mutation -> change data / add data
+- using server actions to manipulate data
+
+## 166. starting project files 
+- folder: /06/deep-dive-mutating-data
+- view posts / create posts (mutation of data)
+- form handling with server actions 
+- lib/posts.js
+  - initDb()
+  - getPosts()
+  - storePost()
+  - updatePostLikeStatus()
+- dummy db users (no authentication/user management yet)
+- option 1: setup external api approach
+- option 2 (selected): intergrate logic for form submissions in nextjs
+- if you have requirement for mobile, you would create api routes 
+- with SPA, nextjs you can use server actions
+
+## 167. form action with basic react
+- REDUNDANT LESSON
+- form actions was discussed in lesson [120. Form server actions](#120-nextjs-handling-form-submissions-server-actions-with-use-server)
+- basically `<form action={}>` syntax which calls a function but still requires fetch() to send client-side form data to backend
+
+## 168. server action
+- REDUNDANT LESSON
+- server actions was discussed as part of lesson [120. server actions](#server-action)
+- to convert form action to server action -> inside the function called by `<form action={function-to-call}>` -> add `"use server";`
+- server actions also need to be `async`
+
+## 169. storing data in database
+- REDUNDANT LESSON
+- storing data in database was discussed in lesson [123. storing data in database](#123-storing-uploaded-images--storing-data-in-the-database)
+- storing data in database - in this example the form action is calling createPost()[the Create in CRUD](#store-in-database)
+- which reaches out to db function call (lib/posts.js) storePost({}) 
+
+```js
+//app/new-post/page.js
+import { redirect } from 'next/navigation';
+
+export default function NewPostPage() {
+  async function createPost(formData) {
+    "use server";
+    const title = formData.get('title');
+    const image = formData.get('image');
+    const content = formData.get('content');
+
+    await storePost({
+      imageUrl: '',
+      title,
+      content,
+      userId: 1
+    });
+
+    redirect('/feed');
+  }
+
+  return (
+    <>
+      <h1>Create a new post</h1>
+      <form action={createPost}>
+      // ...
+      </form>
+    </>
+  );
+}
+```
+
+## 170. providing user feedback with useFormStatus hook
+- REDUNDANT LESSON
+- useFormStatus lesson [124. form submission status](#124-form-submission-status---useformstatus)
+- you should await the storePost() db function call
+- storePost() has a delay to simulate slow server
+- TODO: replace reset and Create post (send form buttons) with loading...
+- externalize form submit button with a "FormSubmit" component (replace) BUT it still needs to be imported between `<form>` tags
+- because useFormStatus is a react hook, you can "use client"; the externalized component leaving the Form component a server-side component
+
+## 171. Using useFormState hook
+- REDUNDANT LESSON
+- stick to useFormState and not useActionState (not working unless using REACT-canary version)
+- see [126. useFormState hook](#126-useformstate--useactionstate)
 ---
 
 # Section 07 - Understanding & Configuring caching
