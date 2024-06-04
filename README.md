@@ -3230,6 +3230,35 @@ export default function NewPostPage() {
 }
 
 ```
+## 174. storing server actions in separate files
+- REDUNDANT LESSON
+- lesson dealt with this already... [121. storing server actions in separate files](#121-storing-server-actions-in-separate-files)
+- DEVIATION from previous lesson...previously actions were stored in libs/actions.js
+- here actions are in `actions/` folder
+
+## 175. "use server" Does Not Guarantee Server-side Execution!
+- "use server" Does Not Guarantee Server-side Execution!
+- "use server" does not mean or guarantee that the code will only execute on the server! Whilst that will be the case for server actions, you can't rely on the usage of "use server" to "hide code" from the client!
+- If you have code that must never end up on the client-side (no matter if it's a server action or not), you should instead use the server-only package as described [here](https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#keeping-server-only-code-out-of-the-client-environment).
+- `npm install server-only`
+- Then import the package into any module that contains server-only code:
+- Now, any Client Component that imports getData() will receive a build-time error explaining that this module can only be used on the server.
+
+```js
+import 'server-only'
+ 
+export async function getData() {
+  const res = await fetch('https://external-service.com/data', {
+    headers: {
+      authorization: process.env.API_KEY,
+    },
+  })
+ 
+  return res.json()
+}
+```
+
+---
 
 # Section 07 - Understanding & Configuring caching
 [back (table of contents)](#table-of-contents)
