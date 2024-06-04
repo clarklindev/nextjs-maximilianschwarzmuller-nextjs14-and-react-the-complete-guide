@@ -3132,6 +3132,105 @@ export default function NewPostPage() {
 - see [126. useFormState hook](#126-useformstate--useactionstate)
 ---
 
+## 172. Validating User Input (useFormState Hook)
+- REDUNDANT LESSON
+- see Validating [125. server-side input validation](#125-server-side-input-validation)
+with [127. sever-action response object with UseFormState hook lesson](#useactionstate-hook-useformstate-hook)
+
+## 173. adjusting server actions for useFormState
+- NOTE: the `app/new-post/page.js` newPostPage(){} is at this point defined as client side "use client";
+- but the function within the component is conflicted: `createPost(formData){"use server"}` is "use server".
+- SOLUTION -> externalize the `<form>` to its own component: PostForm (`/components/post-form.js`)
+- make the new file declare "use client"; top of file since it uses useFormState
+- PostForm receives the form action as a prop ("action").
+- NOTE: here there is deviation from 03-2-foodies/ lesson 127... where there form action was externalized @/lib/actions.js shareMeal() -> component was defined as "use server"; it performed validation. here the createPost() function is defined "use server"
+- NOTE: if validation passed it called -> `saveMeal(meal);` by passing meal object (form data) which is sql statement function in @/lib/meals.js
+- REACT changes the way the passed-in form action (createPost) is structured with useFormState...
+- update `app/new-post.page.js`
+  - the first argument will become the previousState
+  - the second argument will become the form submitted data
+
+```js
+//components/post-form.js
+"use client";
+
+import {useFormState} from 'react-dom';
+
+import FormSubmit from '@/components/form-submit';
+
+export default function PostForm({action}){
+  const [state, formAction] = useFormState(action, {});
+  
+  return (
+    <>
+      <h1>Create a new post</h1>
+      <form action={formAction}>
+        <p className="form-control">
+          <label htmlFor="title">Title</label>
+          <input type="text" id="title" name="title" />
+        </p>
+        <p className="form-control">
+          <label htmlFor="image">Image URL</label>
+          <input
+            type="file"
+            accept="image/png, image/jpeg"
+            id="image"
+            name="image"
+          />
+        </p>
+        <p className="form-control">
+          <label htmlFor="content">Content</label>
+          <textarea id="content" name="content" rows="5" />
+        </p>
+        <p className="form-actions">
+          <FormSubmit label="create post"/>
+        </p>
+      </form>
+    </>
+  );
+}
+```
+
+```js
+//app/new-post/page.js
+import { redirect } from 'next/navigation';
+
+import PostForm from '@/components/post-form';
+import { storePost } from '@/lib/posts';
+
+export default function NewPostPage() {
+
+  async function createPost(prevState, formData) {
+    "use server";
+    const title = formData.get('title');
+    const image = formData.get('image');
+    const content = formData.get('content');
+
+    //validation goes here...
+    let errors =[];
+    if(!title || title.trim().length===0){
+      errors.push('title is required');
+    }
+
+    if(errors.length > 0){
+      return {errors};
+    }
+
+    await storePost({
+      imageUrl: '',
+      title,
+      content,
+      userId: 1
+    });
+
+    redirect('/feed');
+  }
+  
+  return <PostForm action={createPost}/>
+}
+
+```
+
 # Section 07 - Understanding & Configuring caching
 [back (table of contents)](#table-of-contents)
 
