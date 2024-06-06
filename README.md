@@ -3702,6 +3702,17 @@ export default function Posts({ posts }) {
   height: 6rem;
 }
 ```
+
+## 201,202,203 page metadata (static , dynamic metadata)
+- [metadata](https://nextjs.org/learn/dashboard-app/adding-metadata)
+- REDUNDANT LESSON -> why not repeat learning same concepts over and over. lets bloat this coarse so people never finish it.
+- already done in [lesson #132 static page metadata](#132-adding-static-metadata)
+- already done in [lesson #133 dynamic page metadata](#133-adding-dynamic-metadata)
+
+## 204. Layout metadata
+- you can also set metadata in layouts
+- this metadata will be used for all pages that dont set their own metadata (metadata in pages will overwrite this)
+
 ---
 
 # Section 09 - user authentication
