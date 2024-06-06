@@ -3439,9 +3439,269 @@ export async function deliverMessage(message) {
 
 ---
 
-# Section 08 - NextJs app optimizations
+# Section 08 - NextJs app optimization
 [back (table of contents)](#table-of-contents)
 
+## 193. Introduction
+- NOTE: this is project folder: `08-nextjs-app-optimization` a clone of `06-deep-dive-mutating-data` project folder 
+- project uses cloudinary
+- [nextjs official docs - optimizations](https://nextjs.org/docs/pages/building-your-application/optimizing)
+- here we deal with optimizing `images` and page `metadata`
+
+## 194. Nextjs Image Component
+- nextjs auto optimizations: 
+  1. size optimization
+  2. visual stability -> prevent layout shifts when images are loading (reserve width/height)
+  3. faster page loads -> images loaded and displayed only when visible
+  4. asset flexibility -> on-demand image resizing
+
+- `import Image from 'next/image'`
+- `import logo from '@assets/...'`
+- `<img>` (standard html tag) -> access the import image via imported name.src -> `<img src={logo.src}/>`
+- `<Image>` (nextjs component) -> access the import image directly on import object -> `<Image src={logo}/>`
+
+## 195. Understanding Nextjs image component
+- local imports (already part of project files) -> they are imported as an object with have props like:
+
+### imported object with these props
+ - src (path to processed image)
+ - blurDataURL
+ - width
+ - height
+ - blurWidth
+ - blurHeight
+
+### using Image component
+- using `<Image>` default: 
+  - sets width/height
+  - `src` NOTE: if you set `width` and `height` props on `<Image>`, you can set a string path on `src` instead of 'next/image' object
+  - `fill` auto container size for image (take up all possible space)
+  - renders an `<img>`
+  - sets `loading`="lazy" -> image is only loaded and displayed if on the screen
+  - `priority` prop - for always on screen images -> also disables lazy loading
+  - `srcset` for serving different images (nextjs generated dynamically) with different images for different screen densities
+
+## 196. Controlling image size
+- NOT RECOMMENDED: you can manually override image size with "width" and "height" props so nextjs generates more optimized images
+### "sizes" prop
+- PREFFERED METHOD: ["sizes" prop](https://nextjs.org/docs/pages/api-reference/components/image#sizes)
+- The sizes property allows you to tell the browser that the image will actually be smaller than full screen. If you don't specify a sizes value in an image with the fill property, a default value of 100vw (full screen width) is used.
+- The sizes property changes the behavior of the automatically generated srcset value. 
+- If sizes is defined, a large srcset is generated, suitable for a responsive image (640w/750w/etc). If the sizes property includes sizes such as 50vw, which represent a percentage of the viewport width, then the srcset is trimmed to not include any values which are too small to ever be necessary.
+
+### no "sizes"
+- If no sizes value is present, a small srcset is generated, suitable for a fixed-size image (1x/2x/etc). 
+
+### Example
+- if you know your styling will cause an image to be full-width on mobile devices, in a 2-column layout on tablets, and a 3-column layout on desktop displays, you should include a sizes property such as the following:
+- This example sizes could have a dramatic effect on performance metrics. Without the 33vw sizes, the image selected from the server would be 3 times as wide as it needs to be. Because file size is proportional to the square of the width, without sizes the user would download an image that's 9 times larger than necessary.
+
+```js
+//from official nexjs docs
+import Image from 'next/image'
+ 
+export default function Page() {
+  return (
+    <div className="grid-element">
+      <Image
+        fill
+        src="/example.png"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      />
+    </div>
+  )
+}
+```
+
+## 197. Priority images
+- always loaded images should have `priority` prop (removes lazy loading)
+
+## 198. loading unknown images (run-time)
+- dont know size in advance
+- NOTE: if you set `width` and `height` props on `<Image>`, you can set a string path on `src` instead of 'next/image' object
+- NOTE: but if you dont know the width and height, you can use `fill` prop
+- ERROR: you may be an error because -> setting a src that loads from an external image hosting site requires additional setup
+
+<img src="./08-nextjs-app-optimization/public/loading-unknown-images-error.jpg" alt="loading-unknown-images-error"/>
+
+- `next.config.mjs` hostname "res.cloudinary.com" is not configured under images
+- nextjs for security reasons blocks loading from external sites. 
+- FIX -> unblock by setting list of remote host addresses to allow for loading images in nextjs app (see below)
+- TODO: fix "fill" prop making image fill screen
+
+```js
+//next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images:{
+    remotePatterns:[{hostname: 'res.cloudinary.com'}]
+  }
+};
+
+export default nextConfig;
+```
+## 199. configuring css for images with "fill" prop
+- goto the wrapping container element (or add one) and adjust css
+- the parent container should have position `relative`
+- if the image then has `fill` prop, it will use container width and height, so set width and height on container element
+- now the images are loaded properly and also optimized by nextjs
+
+```css
+//global.css
+.post-image{
+  position: relative;
+  width: 8rem;
+  height: 6rem;
+}
+
+.post img {
+  object-fit: cover;
+}
+```
+
+## 200. image loader / cloudinary resizing
+- imagehosts eg. cloudinary gives more ways of loading images and files in optimized way
+- cloudinary allow you to manipulate url and add additional parameters which make cloudinary generate multiple versions of an image and cache the different versions
+- cloudinary will then do the resizing 
+
+### how to let cloudinary load images in optimized way?
+- [cloudinary official documentation on image transformations](https://cloudinary.com/documentation/image_transformations)
+- you add a loader prop `loader={imageLoader}` which has a function as a value 
+- loader is a nextjs concept not cloudinary:
+- A custom function used to resolve image URLs.
+- A loader is a function returning a URL string for the image, given the following parameters: src, width, quality
+- will funnel the `src` through loader function so you can manipulate it before image is served
+- this imageLoader function receives a config object from nextjs
+- you can then add extra parameters to the url to trigger Cloudinary to generate multiple versions of the url and cache these versions
+- this config object has `src`, `width`, `quality`
+- you can set `quality` prop on Image element (value between 0-100), this will be picked up by this config object
+- take advantage of on-demand image optimization capabilities offered by cloudinary
+- add parameters to url path (after '/upload/') before the image filename
+- using the nextjs `<Image>` component ensures the loader() is executed before image is rendererd
+
+### manipulate the url with .split()
+- `const urlStart = config.src.split('upload/');` returns an array with 2 parts excluding 'upload/'
+- NOTE: .split(separator) -> If separator is a non-empty string, the target string is split by all matches of the separator without including separator in the results. 
+- transformations variable `w_200,h_200` are rough estimates, you just ensuring the image is scaled down and not full size, 
+- note: setting width and height distorts the image BUT cloudinary offers `c_` crop/resize to not distort and keep aspect ratio. 
+- alternative is to remove the `h_200` and just set width. height will be set automatically while keeping aspect ratio using smaller image.
+- `quality` affects the image `q_${config.quality}`
+- then we reconstruct a new path joining `${urlStart}/upload/${transformations}/${urlEnd}`
+
+### ERROR/WARNING using 'fill'
+- how to get rid of warnings?
+- ERROR/WARNING: `sizes` prop required when using `fill`
+- but when using cloudinary loader() you dont really need "sizes"
+- then... you can remove `fill` from html and add 'width' (known) and 'height' (unknown but rough estimate)
+- then in css, set width and height on both the container and the image. and the `img` gets `object-fit:cover;`
+
+```js
+//components/posts.js
+'use client';
+
+import { useOptimistic } from 'react';
+import Image from 'next/image';
+
+import { formatDate } from '@/lib/format';
+import LikeButton from './like-icon';
+import { togglePostLikeStatus } from '@/actions/posts';
+
+function imageLoader(config) {
+  const urlStart = config.src.split('upload/')[0];
+  const urlEnd = config.src.split('upload/')[1];
+  const transformations = `w_200,q_${config.quality}`;
+  return `${urlStart}upload/${transformations}/${urlEnd}`;
+}
+
+function Post({ post, action }) {
+  return (
+    <article className="post">
+      <div className="post-image">
+        <Image loader={imageLoader} src={post.image} fill alt={post.title} quality={50} />
+      </div>
+      <div className="post-content">
+        <header>
+          <div>
+            <h2>{post.title}</h2>
+            <p>
+              Shared by {post.userFirstName} on{' '}
+              <time dateTime={post.createdAt}>
+                {formatDate(post.createdAt)}
+              </time>
+            </p>
+          </div>
+          <div>
+            <form
+              action={action.bind(null, post.id)}
+              className={post.isLiked ? 'liked' : ''}
+            >
+              <LikeButton />
+            </form>
+          </div>
+        </header>
+        <p>{post.content}</p>
+      </div>
+    </article>
+  );
+}
+
+export default function Posts({ posts }) {
+  const [optimisticPosts, updateOptimisticPosts] = useOptimistic(
+    posts,
+    (prevPosts, updatedPostId) => {
+      const updatedPostIndex = prevPosts.findIndex(
+        (post) => post.id === updatedPostId
+      );
+
+      if (updatedPostIndex === -1) {
+        return prevPosts;
+      }
+
+      const updatedPost = { ...prevPosts[updatedPostIndex] };
+      updatedPost.likes = updatedPost.likes + (updatedPost.isLiked ? -1 : 1);
+      updatedPost.isLiked = !updatedPost.isLiked;
+      const newPosts = [...prevPosts];
+      newPosts[updatedPostIndex] = updatedPost;
+      return newPosts;
+    }
+  );
+
+  if (!optimisticPosts || optimisticPosts.length === 0) {
+    return <p>There are no posts yet. Maybe start sharing some?</p>;
+  }
+
+  async function updatePost(postId) {
+    updateOptimisticPosts(postId);
+    await togglePostLikeStatus(postId);
+  }
+
+  return (
+    <ul className="posts">
+      {optimisticPosts.map((post) => (
+        <li key={post.id}>
+          <Post post={post} action={updatePost} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+```css
+/* global.css */
+.post-image{
+  position: relative;
+  width: 8rem;
+  height: 6rem;
+}
+
+.post img {
+  object-fit: cover;
+  width: 8rem;
+  height: 6rem;
+}
+```
 ---
 
 # Section 09 - user authentication
