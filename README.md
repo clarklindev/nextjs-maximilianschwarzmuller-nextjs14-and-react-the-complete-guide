@@ -3717,6 +3717,24 @@ export default function Posts({ posts }) {
 
 # Section 09 - user authentication
 [back (table of contents)](#table-of-contents)
+- lesson 205-223 (1hr 26min)
+
+## 205. introduction
+### overview
+- authentication
+- login/logout of users
+- create users
+- protect routes
+
+### project files
+folder: `/09-user-authentication`
+
+- login screen -> localhost:3000
+- training page -> localhost:3000/training 
+- TODO -> be able to protect/secure training page so it requires authentication
+- TODO -> be able to create an account (components/auth-form.js)
+- lib/db.js -> sets up database
+- TODO -> create users and sessions
 
 ---
 
