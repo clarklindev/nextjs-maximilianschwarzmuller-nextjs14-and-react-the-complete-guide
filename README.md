@@ -3313,7 +3313,124 @@ export async function createPost(prevState, formData) {
   //...
 }
 ```
+## 177. make like button work
+- the sql statements hardcode the user 2 (different from logged in user 1) to be able to like a post
+- later... you will revist this when we do user authentication.
 
+## 178. revalidate data
+- REDUNDANT LESSON
+- nextjs cached pages require revalidatePath()
+- revalidate path was introduced in lesson [129. revalidate path](#129-revalidatepath---triggering-cache-revalidations)
+
+## 179. optimistic updates
+- NEW LESSON 
+- [useOptimistic - Nextjs notes](https://react.dev/reference/react/useOptimistic)
+- [youtuber - bytegrad](https://youtu.be/PPOw-sDeoNw)
+
+### Official Nextjs documentation -> Optimistic updates with useOptimistic() hook
+- `import {useOptimistic} from 'react';`
+- `const [optimisticState, addOptimistic] = useOptimistic(state, updateFn);`
+- It accepts some state as an argument and returns a copy of that state that can be different during the duration of an async action such as a network request. You provide a function that takes the current state and the input to the action, and returns the optimistic state to be used while the action is pending.
+- This state is called the “optimistic” state because it is usually used to immediately present the user with the result of performing an action, even though the action actually takes time to complete.
+
+```js
+import { useOptimistic } from 'react';
+
+function AppContainer() {
+  const [optimisticState, addOptimistic] = useOptimistic(
+    state,
+    // updateFn
+    (currentState, optimisticValue) => {
+      // merge and return new state
+      // with optimistic value
+    }
+  );
+}
+```
+- update status before db update
+- optimistic update will happen -> preempt it working by going ahead with ui state updates
+- only roleback if update failed
+
+- useOptimistic() hook is in React canary release
+- from inside the component that will update the data, call useOptimistic(prop, prop)
+- the props for useOptimistic() 
+- 1st prop is the data you want to start with (data from db)
+- the second prop is a function call that makes changes to the data on client side until data
+has been processed/updated on server side (like a transit value)
+- you return updated data. which react makes available as the optimisticState
+  - functions 1st prop is current state
+  - functions 2nd prop is the optimisticValue
+- returns `[optimisticState, addOptimistic] = useOptimistic(dbData, (state, optimisticValue)=> {})`
+- `optimisticState` should be used in the code replacing the "message" (which is the passed in data)
+- `addOptimistic` should be called in the form action passing in the actual data we want to add for function call.. this is the same data as `optimisticValue`
+
+```js
+//example from nextjs official documentation
+//App.js
+import { useOptimistic, useState, useRef } from "react";
+import { deliverMessage } from "./actions.js";
+
+function Thread({ messages, sendMessage }) {
+  const formRef = useRef();
+
+  async function formAction(formData) {
+    addOptimisticMessage(formData.get("message"));
+    formRef.current.reset();
+    await sendMessage(formData);
+  }
+
+  //useOptimistic()
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic(
+    messages,
+    (state, newMessage) => [...state, { text: newMessage, sending: true }]
+  );
+
+  return (
+    <>
+      {optimisticMessages.map((message, index) => (
+        <div key={index}>
+          {message.text}
+          {!!message.sending && <small> (Sending...)</small>}
+        </div>
+      ))}
+      <form action={formAction} ref={formRef}>
+        <input type="text" name="message" placeholder="Hello!" />
+        <button type="submit">Send</button>
+      </form>
+    </>
+  );
+}
+
+export default function App() {
+  const [messages, setMessages] = useState([
+    { text: "Hello there!", sending: false, key: 1 }
+  ]);
+
+  async function sendMessage(formData) {
+    const sentMessage = await deliverMessage(formData.get("message"));
+
+    setMessages((messages) => [...messages, { text: sentMessage }]);
+  }
+
+  return <Thread messages={messages} sendMessage={sendMessage} />;
+}
+
+```
+
+```js
+//actions.js
+export async function deliverMessage(message) {
+  await new Promise((res) => setTimeout(res, 1000));
+  return message;
+}
+
+```
+
+## 180. caching differences between development and production
+- if you run `npm run build` then `npm run start`, you open the production build
+- in production nextjs does caching
+- call `revalidatePath("/", "layout")` inside createPost() before redirect() 
+- here we are revalidating everything from root that uses "layout"
 
 ---
 
