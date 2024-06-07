@@ -3755,6 +3755,12 @@ folder: `/09-user-authentication`
 - when user tries to log in THEN you take user entered password and you hash that 
 - and compare to whats in db if its the same password entered is correct.
 
+## 210. checking for email duplication
+- //actions/auth-actions.js
+- wrap createUser() with try/catch in-case email entered already exists
+- the error message should be accurate but vague meaning shouldnt be too specific about the error (whether 'user' or 'password' is incorrect)
+- THIS LESSON -> you will be able to create users
+
 ```js
 //components/auth-form.js
 'use client';
@@ -3832,8 +3838,18 @@ export async function signup(prevState, formData){
 
   //right way
   const hashedPassword = hashUserPassword(password);
-  createUser(email, hashedPassword);
-  
+  try{
+    createUser(email, hashedPassword);
+  } catch(error){
+    if(error.code === 'SQLITE_CONSTRAINT_UNIQUE'){
+      return {errors: { email: 'invalid login details'}};
+    }
+    throw error; //default error handling;
+  }
+
+  //no errors -> successfully created user
+  redirect('/training');
+
 }
 ```
 ```js
