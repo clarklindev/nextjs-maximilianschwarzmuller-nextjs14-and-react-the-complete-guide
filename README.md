@@ -3736,6 +3736,82 @@ folder: `/09-user-authentication`
 - lib/db.js -> sets up database
 - TODO -> create users and sessions
 
+## 207. user signup -> extracting and validating user input
+- user signup -> extract and validate (actions/auth-actions.js) user input 
+- server action to handle server submission: email + password
+- actions/ -> store server actions.
+- form (components/auth-form.js) using [useFormState hook](#126-useformstate--useactionstate)
+
+```js
+//components/auth-form.js
+'use client';
+import {useFormState} from 'react-dom';
+import { signup } from '@/actions/auth-actions';
+
+export default function AuthForm() {
+  const [formState, formAction] = useFormState(signup, {});
+
+  return (<>
+      <form action={formAction}>
+        <p>
+          <label htmlFor="email">Email</label>
+          <input type="email" name="email" id="email" />
+        </p>
+        <p>
+          <label htmlFor="password">Password</label>
+          <input type="password" name="password" id="password" />
+        </p>
+
+        {
+          formState.errors && (<ul if="form-errors">
+            {Object.keys(formState.errors).map(error=>{
+              return <li key={error}>
+                {formState.errors[error]}
+              </li>
+            })}
+          </ul>)
+        } 
+
+        <p>
+          <button type="submit">
+            Create Account
+          </button>
+        </p>
+      </form>
+    </>
+  );
+}
+
+```
+
+```js
+//actions/auth-actions.js
+'use server';
+
+export async function signup(prevState, formData){
+  const email = formData.get('email');
+  const password = formData.get('password');
+
+  //validate data
+  let errors = {}
+  if(!email.include('@')){
+    errors.email = "Please enter a valid email";
+  }
+  if(password.trim().length < 8){
+    errors.password = "password needs to be atleast 8 characters";
+  }
+
+  if(Object.keys(errors).length > 0){
+    return {
+      errors
+    }
+  }
+  
+  //store in db
+
+}
+```
+
 ---
 
 # Section 10 - round up and next steps
