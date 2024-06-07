@@ -3718,6 +3718,7 @@ export default function Posts({ posts }) {
 # Section 09 - user authentication
 [back (table of contents)](#table-of-contents)
 - lesson 205-223 (1hr 26min)
+- NOTE: the authentication is based on email/password combination and not oauth2.0 using socialmedia logins 
 
 ## 205. introduction
 ### overview
@@ -3742,11 +3743,25 @@ folder: `/09-user-authentication`
 - actions/ -> store server actions.
 - form (components/auth-form.js) using [useFormState hook](#126-useformstate--useactionstate)
 
+## 208. storing users in a database - WRONG WAY
+- TODO: valid input -> now store in db
+- WHY ITS WRONG? -> storing password as plain text in db is a major security risk.
+- FIX -> hash password so it cant be reversed back to a password
+
+## 209. hashing password and storing user data - RIGHT WAY
+- hashing passwords -> uses node crypto package
+- `lib/hash.js` has `hashUserPassword()` and `verifyPassword()` methods
+- the idea is that you take the user entered password and hash it and then store it in db
+- when user tries to log in THEN you take user entered password and you hash that 
+- and compare to whats in db if its the same password entered is correct.
+
 ```js
 //components/auth-form.js
 'use client';
+
 import {useFormState} from 'react-dom';
 import { signup } from '@/actions/auth-actions';
+//...
 
 export default function AuthForm() {
   const [formState, formAction] = useFormState(signup, {});
@@ -3788,6 +3803,9 @@ export default function AuthForm() {
 //actions/auth-actions.js
 'use server';
 
+import {createUser} from '@/lib/user';
+import { hashUserPassword } from '@/lib/hash';
+
 export async function signup(prevState, formData){
   const email = formData.get('email');
   const password = formData.get('password');
@@ -3808,10 +3826,25 @@ export async function signup(prevState, formData){
   }
   
   //store in db
+  
+  //wrong way -> directly call createUser() by passing 'password' value
+  // createUser(email, password);
 
+  //right way
+  const hashedPassword = hashUserPassword(password);
+  createUser(email, hashedPassword);
+  
 }
 ```
+```js
+//lib/user.js
+import db from './db';
 
+export function createUser(email, password){
+  const result = db.prepare('INSERT INTO users (email, password) VALUES (?, ?)').run(email, password);
+}
+
+```
 ---
 
 # Section 10 - round up and next steps
