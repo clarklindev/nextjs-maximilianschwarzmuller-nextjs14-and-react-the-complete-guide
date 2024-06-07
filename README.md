@@ -3861,6 +3861,27 @@ export function createUser(email, password){
 }
 
 ```
+
+## 211. authentication cycle - how does Authentication work
+- if user is not logged in, they cannot visit some pages.
+
+### PART 1
+- part 1 - be able to log users in (check email/password), remember successful login as authenticated
+1. user sends credentials (email+password) to server  
+2. server validates details
+3. if valid, server creates and stores user auth session (entry in db table - db entry has session `id`)
+4. server sends back cookie with session id
+5. browser stores session cookie
+
+### PART 2
+- part 2 - authorized access for users marked as authenticated
+- accessing protected resources
+- TODO: send request to protected route/resource
+- requests automatically contain session cookie
+- on SERVER: verify session cookie (valid active session id)
+- VALID -> send back requested resource to client 
+- INVALID -> send back error to client
+
 ---
 
 # Section 10 - round up and next steps
