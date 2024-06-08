@@ -3944,6 +3944,46 @@ const lucia = new Lucia(adapter, {
 }); 
 
 ```
+## 214. configuring a session and a session cookie
+- once user successfully logs in, the server creates a session to be added to session db table
+
+### Create auth session
+- after setting up a Lucia instance and an adapter you want to be able to `create auth session` for successfully logged in users.
+- lib/auth.js createAuthSession() creates and stores new session for new users
+
+- session -> `await lucia.createSession(userId, {})` -> creates new entry in "sessions" db table 
+  - 1st prop -> takes unique identifier (here we use userId) 
+  - 2nd prop -> AND anything else we want to store as an object as the second prop.
+  - returns a session object (function is async and should be awaited)
+
+
+```js
+//lib/auth.js
+const session = await lucia.createSession(userId, {});
+```
+### Create session cookie (sessionCookieData)
+- we can get the data that should be set by lucia on a session cookie by calling `.createSessionCookie(sessionId)`
+- it requires session id which we can pass from the session
+- will give us an object that should hold all data that will be set on session cookie
+
+### cookies()
+- create a cookie for outgoing response (setting the session cookie data)
+- `import {cookies} from 'next/headers';`
+- cookie() has .get() for read cookies and .set() new cookies
+- with lucia you can call .set() with the returned object properties from a call to createSessionCookie() (eg what will be our cookie name, value(session id), attributes eg. "secure")
+- sent back from server to user browser which auto stores cookie 
+- can then be used to authenticate on subsequent requests.
+
+```js
+//lib/auth.js
+import {cookies} from 'next/headers';
+export async function createAuthSession(userId){
+
+const session = await lucia.createSession(userId, {});
+const sessionCookieData = lucia.createSessionCookie(session.id);
+cookies().set(sessionCookieData.name, sessionCookieData.value, sessionCookieData.attributes);
+}
+```
 
 ---
 

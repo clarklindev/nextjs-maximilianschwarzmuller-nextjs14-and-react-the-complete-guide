@@ -19,3 +19,12 @@ const lucia = new Lucia(adapter, {
   }
 
 }); 
+
+//create session and session cookie
+import {cookies} from 'next/headers';
+export async function createAuthSession(userId){
+
+const session = await lucia.createSession(userId, {});
+const sessionCookieData = lucia.createSessionCookie(session.id);
+cookies().set(sessionCookieData.name, sessionCookieData.value, sessionCookieData.attributes);
+}
