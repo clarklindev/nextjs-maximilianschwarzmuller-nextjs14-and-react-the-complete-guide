@@ -1,6 +1,8 @@
 'use server';
+import { createAuthSession } from '@/lib/auth';
 import { hashUserPassword } from '@/lib/hash';
 import {createUser} from '@/lib/user';
+import { redirect } from 'next/navigation';
 
 export async function signup(prevState, formData){
   const email = formData.get('email');
@@ -8,7 +10,7 @@ export async function signup(prevState, formData){
 
   //validate data
   let errors = {}
-  if(!email.include('@')){
+  if(!email.includes('@')){
     errors.email = "Please enter a valid email";
   }
   if(password.trim().length < 8){
@@ -24,7 +26,12 @@ export async function signup(prevState, formData){
   //store in db
   const hashedPassword = hashUserPassword(password);
   try{
-    createUser(email, hashedPassword);
+    const id = createUser(email, hashedPassword);
+    //create auth session
+    await createAuthSession(id);
+    //no errors -> successfully created user
+    redirect('/training');
+  
   } catch(error){
     if(error.code === 'SQLITE_CONSTRAINT_UNIQUE'){
       return {errors: { email: 'invalid login details'}};
@@ -32,6 +39,5 @@ export async function signup(prevState, formData){
     throw error; //default error handling;
   }
 
-  //no errors -> successfully created user
-  redirect('/training');
+  
 }

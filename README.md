@@ -3985,6 +3985,44 @@ cookies().set(sessionCookieData.name, sessionCookieData.value, sessionCookieData
 }
 ```
 
+## 215. setting up an auth session
+- when do you create an auth session?
+  1. after loggin users in
+  2. after signup -> before redirect()
+
+- [github code](https://github.com/mschwarzmueller/nextjs-complete-guide-course-resources/blob/main/code/08-authentication/05-create-auth-cookie/lib/user.js) 
+- note: `import {createUser} from '@/lib/user';` //createUser() returns lastInsertRowid
+- now, if you restart server and login, you go to browser dev tools -> application -> cookies -> select the url address (eg. localhost:3000)
+ -> you should see the auth sesssion cookie created by lucia (value stored is the session id)
+- browser will automatically attach cookie to any outgoing requests
+- if you want to test login, you need to delete training.db so it wont throw errors from users that already exist
+
+```js
+//actions/auth-actions.js
+import { createAuthSession } from '@/lib/auth';
+import { hashUserPassword } from '@/lib/hash';
+import {createUser} from '@/lib/user';
+import { redirect } from 'next/navigation';
+
+export async function signup(prevState, formData){
+  //...
+
+  try{
+    const id = createUser(email, hashedPassword);
+    //create auth session
+    await createAuthSession(id);
+    //no errors -> successfully created user
+    redirect('/training');
+  } 
+  catch(error){
+    if(error.code === 'SQLITE_CONSTRAINT_UNIQUE'){
+      return {errors: { email: 'invalid login details'}};
+    }
+    throw error; //default error handling;
+  }
+
+}
+```
 ---
 
 # Section 10 - round up and next steps
