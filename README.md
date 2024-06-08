@@ -3882,6 +3882,69 @@ export function createUser(email, password){
 - VALID -> send back requested resource to client 
 - INVALID -> send back error to client
 
+## 212. Authentication with 3rd party (Lucia)
+- DOCUMENTATION: [lucia-auth](https://lucia-auth.com/)
+- alternatives: [nextAuth.js](https://next-auth.js.org/)
+
+### installing lucia
+```cmd
+pnpm i lucia @lucia-auth/adapter-sqlite
+```
+
+## 213. Creating a new Lucia Auth instance
+- after this lesson you will be able to create Lucia instance 
+- use this instance to create sessions and session cookies
+- and validate incoming request to see if they have a valid session cookie
+
+### Lucia
+- Import Lucia and initialize it with your adapter. 
+- Refer to the [Database](https://lucia-auth.com/database/) page to learn how to set up your database and initialize the adapter. 
+- Make sure you configure the sessionCookie option and register your Lucia instance type.
+
+### db Adapter
+- A database is required for storing your users and sessions. 
+- Lucia connects to your database via an adapter, which provides a set of basic, standardized querying methods that Lucia can use.
+- there are different adapters for different db setups eg. mongoDB, mongoose, mysql, postgreSQL, SQLite
+- lib/auth.js
+
+### adapter configuration
+1. create an adapter object and pass a reference to the db AND 
+2. second parameter is a config object where you can specify:
+  - 'users' -> name of table where it stores users (see db.js -> defines `users` table)
+  - 'session' -> name of table where it stores sessions (see db.js -> defines `sessions` table)
+
+### Lucia Instance
+- create a Lucia instance and pass it 
+  1. the adapter
+  2. configuration object where you can set attributes like 
+    - 'sessionCookie' (see code below eg. enforce cookie to work only across https)
+
+```js
+//lib/auth.js
+import { Lucia } from "lucia";
+import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
+
+import db from './db';
+const adapter = new BetterSqlite3Adapter(db, 
+{
+  user: 'users',
+  session: 'sessions'
+});
+
+//SQLite adapter 
+const lucia = new Lucia(adapter, {
+
+  sessionCookie: {
+    expires: false, 
+    attributes: {
+      secure: process.env.NODE_ENV === 'production'
+    }
+  }
+
+}); 
+
+```
+
 ---
 
 # Section 10 - round up and next steps
