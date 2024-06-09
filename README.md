@@ -4236,6 +4236,43 @@ export function getUserByEmail(email){
 }
 ```
 
+## 221. auth only layout with a route group
+- adding a header to a layout only authenticated users will see on the pages (DO NOT OVERRIDE ROOT LAYOUT)
+- we will use a [route group](#153-route-groups) 
+- create and move all pages that should have this layout we want into a route group `app/(auth)/` eg. move training folder `app/(auth)/training`
+- this will allow you to create a layout for all pages that belong to this route group
+- create `app/(auth)/layout.js`
+
+## 222. one root layout vs multiple root layouts
+- NOTE: route group layouts are actually nested into the main root layout unless there is no such root layout.
+- I.e., if you would create another route group (e.g., (unauth)) and move the layout.js file into that folder, you would end up with multiple root layouts.
+- nested layouts eg. app/(auth)/layout.js should not have its own `<html>` and `<body>` elements in the return
+
+```js
+//app/(auth)/layout.js
+import '../globals.css';
+
+export const metadata = {
+  title: 'Next Auth',
+  description: 'Next.js Authentication',
+};
+
+export default function AuthRootLayout({ children }) {
+  return (
+    <>
+      <header id="auth-header">
+        <p>welcome back!</p>
+        <form>
+          <button>Logout</button>
+        </form>
+      </header>
+      {children}
+    </>
+  );
+}
+
+```
+
 ---
 
 # Section 10 - round up and next steps
