@@ -26,8 +26,60 @@ const lucia = new Lucia(adapter, {
 export async function createAuthSession(userId){
   const session = await lucia.createSession(userId, {});
   const sessionCookieData = lucia.createSessionCookie(session.id);
-  cookies().set(sessionCookieData.name, sessionCookieData.value, sessionCookieData.attributes);
+  cookies().set(
+    sessionCookieData.name, 
+    sessionCookieData.value, 
+    sessionCookieData.attributes
+  );
 }
 
 
-export async
+export async function verifyAuth() {
+
+  const sessionCookie = cookies().get(lucia.sessionCookieName);
+
+  //if there is no session cookie
+  if(!sessionCookie){
+    return {
+      user: null,
+      session:null,
+    }
+  }
+
+  //assign cookie to sessionId
+  const sessionId = sessionCookie.value;
+  if(!sessionId){
+    return {
+      user: null,
+      session:null,
+    }
+  }
+
+  //validate session id
+  const result = await lucia.validateSession(sessionId);
+
+  //refresh cookie -> session cookie and still valid
+  try{
+    if(result.session && result.session.fresh){
+      const sessionCookieData = lucia.createSessionCookie(result.session.id);
+      cookies().set(
+        sessionCookieData.name, 
+        sessionCookieData.value, 
+        sessionCookieData.attributes
+      );
+    }
+
+    //invalid session
+    if(!result.session){
+      const sessionCookieData = lucia.createBlankSessionCookie();
+      cookies().set(
+        sessionCookieData.name, 
+        sessionCookieData.value, 
+        sessionCookieData.attributes
+      );
+    }
+  }
+  catch{}
+
+  return result;
+}

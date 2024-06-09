@@ -4023,6 +4023,81 @@ export async function signup(prevState, formData){
 
 }
 ```
+
+## 216. verifying an active auth session
+- verifyAuth() is for verifying auth sessions so you can use this for any route user wants to visit that is protected.
+- on server verify if an incoming request has a cookie and session cookie is valid (ie. it has a session cookie AND it is valid)
+- the result returned from lucia's `validateSession()` call is an object with {user, session}
+
+1. get session cookie 
+2. if there is no session cookie...return object with empty props
+3. if no cookie value...return object with empty props
+4. validate session id
+- try/catch is necessary -> nextjs will throw error because it doesnt like you setting cookies as part of page rendering
+5. session cookie and still valid -> refresh cookie
+- refresh session if validated...
+- if validated and result has a session (result.session) and it is valid session (result.session.fresh )
+- recreate cookie -> `const sessionCookie = lucia.createSessionCookie(result.session.id);`
+- set the .name, .value and .attributes properties again
+6. no session cookie -> invalidate cookie
+- if we dont have a session, then call `const sessionCookieData = createBlankSessionCookie()` 
+- and then clear the cookie using sessionCookieData (which is now a blank session cookie)
+  `cookies().set(sessionCookieData.name, sessionCookieData.value, sessionCookieData.attributes)` 
+
+```js
+//lib/auth.js
+export async function verifyAuth() {
+  
+  //1. get session cookie
+  const sessionCookie = cookies().get(lucia.sessionCookieName);
+
+  //2. if there is no session cookie
+  if(!sessionCookie){
+    return {
+      user: null,
+      session:null,
+    }
+  }
+
+  //3. if no cookie value...
+  const sessionId = sessionCookie.value;
+  if(!sessionId){
+    return {
+      user: null,
+      session:null,
+    }
+  }
+
+  //4. validate session id
+  const result = await lucia.validateSession(sessionId);
+
+  //5. session cookie and still valid -> refresh cookie
+  try{
+    if(result.session && result.session.fresh){
+      const sessionCookieData = lucia.createSessionCookie(result.session.id);
+      cookies().set(
+        sessionCookieData.name, 
+        sessionCookieData.value, 
+        sessionCookieData.attributes
+      );
+    }
+
+    //6. no session cookie -> invalidate cookie
+    if(!result.session){
+      const sessionCookieData = lucia.createBlankSessionCookie();
+      cookies().set(
+        sessionCookieData.name, 
+        sessionCookieData.value, 
+        sessionCookieData.attributes
+      );
+    }
+  }
+  catch{}
+
+  return result;
+}
+```
+
 ---
 
 # Section 10 - round up and next steps
