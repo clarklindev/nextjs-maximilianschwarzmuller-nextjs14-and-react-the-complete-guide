@@ -4128,6 +4128,16 @@ export default async function TrainingPage(){
 ### query params
 - all page components in nextjs get `searchParams` is an object that has a key for every query param on url
 - pass this into AuthForm component
+
+## 219. adding user login (via a server action)
+- TODO: change the form server action dynamically based on the mode
+- `actions/auth-actions.js` login() will call lib/user.js getUserByEmail()
+- import { hashUserPassword, verifyPassword } from '@/lib/hash';
+- look for existing user with email -> not found should return an error
+- verifyPassword() -> incorrect password should return an error
+- if found user and password is valid... createAuthSession()
+- then redirect to a page
+
 ```js
 //app/page.js
 import AuthForm from '@/components/auth-form';
@@ -4156,6 +4166,48 @@ export default function AuthForm({mode}) {
   </p>
 }
 ```
+
+```js
+//actions/auth-actions.js
+import { hashUserPassword, verifyPassword } from '@/lib/hash';
+
+//LOGIN
+export async function login(prevState, formData){
+  const email = formData.get('email');
+  const password = formData.get('password');
+
+  //look for existing user with email
+  const existingUser = getUserByEmail(email);
+  if(!existingUser){
+    return {
+      errors:{
+        email: 'could not authenticate user, please check your credentials'
+      }
+    }
+  }
+
+  const isValidPassword = verifyPassword(existingUser.password, password);
+  if(!isValidPassword){
+    return {
+      errors:{
+        password: 'could not authenticate user, please check your credentials'
+      }
+    }
+  }
+
+  await createAuthSession(existingUser.id);
+  redirect('/training');
+}
+```
+
+```js
+//lib/user.js
+//returns {id, email, hashed-password}
+export function getUserByEmail(email){
+  return db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+}
+```
+
 ---
 
 # Section 10 - round up and next steps
