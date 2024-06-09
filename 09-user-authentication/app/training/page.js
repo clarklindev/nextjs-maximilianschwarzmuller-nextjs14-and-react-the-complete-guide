@@ -2,7 +2,7 @@ import { verifyAuth } from '@/lib/auth';
 import { getTrainings } from '@/lib/training';
 
 export default async function TrainingPage() {
-  const result = await verifyAuthifyAuth();
+  const result = await verifyAuth();
   //if the user doesnt exist...redirect
   if(!result.user){
     return redirect('/');

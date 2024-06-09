@@ -4120,6 +4120,42 @@ export default async function TrainingPage(){
   }
 }
 ```
+
+## 218. switching auth modes with query parameters (searchParams)
+- ensure users can login using existing accounts
+- allow switching signup/login modes by using route params (?mode=login)
+- NOTE: alternative method you can also useState() to track which mode
+### query params
+- all page components in nextjs get `searchParams` is an object that has a key for every query param on url
+- pass this into AuthForm component
+```js
+//app/page.js
+import AuthForm from '@/components/auth-form';
+
+export default async function Home({searchParams}) {
+  const formMode = searchParams.mode || 'login'
+
+  return <AuthForm mode={formMode}/>;
+}
+
+```
+
+```js
+//components/auth-form.js
+export default function AuthForm({mode}) {
+  //....
+
+  <p>
+    <button type="submit">
+      {mode === 'login' ? 'login': 'create account'}
+    </button>
+  </p>
+  <p>
+    {mode === 'login' && <Link href="/?mode=signup">Create an account</Link>}
+    {mode === 'signup' && <Link href="/?mode=login">Login with existing account</Link>}
+  </p>
+}
+```
 ---
 
 # Section 10 - round up and next steps
