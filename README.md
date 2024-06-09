@@ -4138,6 +4138,18 @@ export default async function TrainingPage(){
 - if found user and password is valid... createAuthSession()
 - then redirect to a page
 
+## 220. triggering different server actions via query parameters
+- RESULT -> A working login page (login / or switch to signup)
+- //actions/auth-actions.js create a helper server action function: `auth(mode, prevState, formData){}`
+- helper server action to call appropriate server action depending on mode
+- then in auth form, use the auth() server action...
+
+### .bind() to add additional props to function to be called
+- BUT.. our auth() function in actions/auth-actions.js requires additional "mode" prop value to be passed in, you can do this with .bind() to preconfigure functions
+- note: bind(null, mode) is used to preconfigure functions in js before it is called
+- first argument is what "this" refers to, any other argument will be passed as a parameter into function
+
+
 ```js
 //app/page.js
 import AuthForm from '@/components/auth-form';
@@ -4152,23 +4164,31 @@ export default async function Home({searchParams}) {
 
 ```js
 //components/auth-form.js
-export default function AuthForm({mode}) {
-  //....
+import Link from 'next/link';
+import { auth } from '@/actions/auth-actions';
+import {useFormState} from 'react-dom';
 
-  <p>
-    <button type="submit">
-      {mode === 'login' ? 'login': 'create account'}
-    </button>
-  </p>
-  <p>
-    {mode === 'login' && <Link href="/?mode=signup">Create an account</Link>}
-    {mode === 'signup' && <Link href="/?mode=login">Login with existing account</Link>}
-  </p>
+export default function AuthForm({mode}) {
+  const [formState, formAction] = useFormState(auth.bind(null, mode), {});
+  return (
+    <form id="auth-form" action={formAction}>
+      <p>
+        <button type="submit">
+          {mode === 'login' ? 'login': 'create account'}
+        </button>
+      </p>
+      <p>
+        {mode === 'login' && <Link href="/?mode=signup">Create an account</Link>}
+        {mode === 'signup' && <Link href="/?mode=login">Login with existing account</Link>}
+      </p>
+    </form>
+  );
 }
 ```
 
 ```js
 //actions/auth-actions.js
+import {createUser, getUserByEmail} from '@/lib/user';
 import { hashUserPassword, verifyPassword } from '@/lib/hash';
 
 //LOGIN
@@ -4197,6 +4217,14 @@ export async function login(prevState, formData){
 
   await createAuthSession(existingUser.id);
   redirect('/training');
+}
+
+//helper server action to call appropriate server action depending on mode
+export async function auth(mode, prevState, formData){
+  if(mode === 'login'){
+    return login(prevState, formData);
+  }
+  return signup(prevState, formData);
 }
 ```
 
