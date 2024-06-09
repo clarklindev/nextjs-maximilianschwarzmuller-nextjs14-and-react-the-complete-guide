@@ -4272,6 +4272,62 @@ export default function AuthRootLayout({ children }) {
 }
 
 ```
+## 223. user logout 
+- logging user out, should clear the cookie and delete session from session db
+- lib/auth.js - add `destroySession()`
+- `await lucia.invalidateSession(session.id);` will reach out to session db table and delete the session
+- clear session cookie
+- then in actions/auth-actions.js add `logout()`
+- then the `(auth)/layout.js` should call logout() when logout button is clicked.
+
+```js
+//app/(auth)/layout.js
+import { logout } from '@/actions/auth-actions';
+
+export default function AuthRootLayout({ children }) {
+  return (
+    <>
+      <header id="auth-header">
+        <p>welcome back!</p>
+        <form action={logout}>
+          <button>Logout</button>
+        </form>
+      </header>
+      {children}
+    </>
+  );
+}
+```
+
+```js
+//actions/auth-actions.js
+export async function logout(){
+  await destroySession();
+  redirect('/');
+}
+```
+
+```js
+//lib/auth.js
+export async function destroySession(){
+  const {session} = await verifyAuth();
+
+  if(!session){
+    return {
+      error: 'unauthorized'
+    }
+  }
+
+  await lucia.invalidateSession(session.id);
+
+  const sessionCookieData = lucia.createBlankSessionCookie();
+  cookies().set(
+    sessionCookieData.name, 
+    sessionCookieData.value, 
+    sessionCookieData.attributes
+  );
+}
+```
 
 ---
 
