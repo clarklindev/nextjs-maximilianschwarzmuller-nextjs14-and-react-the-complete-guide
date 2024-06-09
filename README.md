@@ -4028,6 +4028,7 @@ export async function signup(prevState, formData){
 - verifyAuth() is for verifying auth sessions so you can use this for any route user wants to visit that is protected.
 - on server verify if an incoming request has a cookie and session cookie is valid (ie. it has a session cookie AND it is valid)
 - the result returned from lucia's `validateSession()` call is an object with {user, session}
+- the result of calling `verifyAuth()` is an object with {user, session}
 
 1. get session cookie 
 2. if there is no session cookie...return object with empty props
@@ -4098,6 +4099,27 @@ export async function verifyAuth() {
 }
 ```
 
+## 217. protect routes against unauthenticated access using verifyAuth()
+- using lib/auth.js verifyAuth() to protect pages
+- eg. we want to protect training page: app/training/page.js so inside the training page... 
+- we import: `import {verifyAuth}`
+- call verifyAuth at the start of component (returns promise {user, session}) 
+- if the result from verifyAuth() user doesnt exist...redirect
+- NOTE: to test, delete any cookies and re-attempt visiting training page
+
+```js
+//app/training/page.js
+import {verifyAuth} from '@/lib/auth';
+
+export default async function TrainingPage(){
+  const result = await verifyAuth();
+
+  //if the user doesnt even exist...redirect
+  if(!result.user){
+    return redirect('/');
+  }
+}
+```
 ---
 
 # Section 10 - round up and next steps
