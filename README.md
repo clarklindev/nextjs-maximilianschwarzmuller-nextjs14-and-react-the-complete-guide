@@ -3437,6 +3437,33 @@ export async function deliverMessage(message) {
 # Section 07 - Understanding & Configuring caching
 [back (table of contents)](#table-of-contents)
 
+- [nextjs caching](https://nextjs.org/docs/app/building-your-application/caching)
+- lesson 181-192 (12 lessons 52min)
+- folder: `07-caching/`
+- backend/ pnpm i -> `pnpm run start`
+- pnpm i (note updated dependency "better-sqlite3": "^11.0.0") -> `pnpm run dev`
+
+## 181. module introduction
+- nextjs does automatic caching
+- make nextjs revalidate data
+- manually control data cache depending on data source
+
+## 182. nextjs cache types
+
+### NextJS caching
+
+#### SERVER CACHE
+1. request memoirzation -> stores requests with same configuration -> avoids uneccesary duplicate fetches
+2. data cache -> storing and reusing data from data source if it hasnt changed -> persists until revalidated
+3. full route cache -> nextjs stores the rendered html & react server component at build time (avoids rerendering of entire page) -> persists until revalidated
+#### CLIENT CACHE
+4. router cache -> client side -> nextjs stores the RSC payload in memory in the browser -> fast navigation between pages
+
+## 183. project files
+- folder: `07-caching/`
+- backend/ pnpm i -> `pnpm run start`
+- pnpm i (note updated dependency "better-sqlite3": "^11.0.0") -> `pnpm run dev`
+
 ---
 
 # Section 08 - NextJs app optimization
