@@ -4651,6 +4651,11 @@ export async function destroySession(){
 
 # Section 10 - round up and next steps
 [back (table of contents)](#table-of-contents)
+- note: up to this point we have been using the newer `app router` which supports server side rendering 
+- but the old way which uses `page router` is still a valid alternative as it is very stable.
+- app router (introduced nextjs 13 + supports server components)
+- page router (stable - old way)
+- section 11 onwards teach using the page router (old course content)
 
 ---
 
