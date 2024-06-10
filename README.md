@@ -7,6 +7,7 @@
 
 ## Table of contents
 
+### APP ROUTER
 [Section 01 - getting started](#section-01---getting-started-22min)
 
 [Section 02 - OPTIONAL - React refresher](#section-02---optional---react-refresher)
@@ -27,6 +28,7 @@
 
 [Section 10 - round up and next steps](#section-10---round-up-and-next-steps)
 
+### PAGE ROUTER
 [Section 11 - Pages & File-based routing](#section-11---pages--file-based-routing)
 
 [Section 12 - Project Time: working with file-based routing](#section-12---project-time-working-with-file-based-routing)
@@ -3544,6 +3546,44 @@ export default async function MessagePage(){
 - starting production server... `npm start` will display pre-rendered pages (cached by nextjs)
 - running `export const dynamic = 'force-dynamic';` will disable full route caching (flagged as 'dynamic - server-rendered on demand')
 - alternative approach to "dynamic" const is to call `revalidatePath();`
+
+## 188. on-demand cache invalidation with revalidatePath & revalidateTag
+- revalidatePath() is a way to make sure cache data is thrown away
+- the difference to using dynamic "force-dynamic" or unstable_noStore() or config on fetch function is these either disable caching altogether or set caching for a time period.
+- vs. calling revalidatePath() tells nextjs to revalidate some piece of the cache on demand when we tell nextjs to do it.
+- can be more efficient than disabling cache forever or setting a time-frame for caching
+- `revalidatePath('/path', 'layout')` -> define the route path and all data related to path and route cache related to path will be deleted
+- NOTE: it does not delete nested pages/paths cache -> unless you specify "layout" -> which will revalidate the path AND any nested pages/route cache
+
+### clearing all cache on site
+- clears root path AND all nested pages cache.
+```js
+import {revalidatePath} from 'next/cache';
+revalidatePath('/', 'layout');
+```
+### revalidateTag
+- you can tag fetched data by adding to the fetch() config object
+- it associates tags (array) you define to the fetched data, with 'next' attribute 
+- if you want to revalidate the data, you can use `revalidateTag()` think git tags...
+- tags is an array of strings, and you can assign multiple tags to one request
+- the tags are connected to the cached data
+- eg. calling revalidateTag('abc') nextjs will revalidate and throw away any cached data that has that tag
+
+```js
+import {revalidatePath, revalidateTag} from 'next/cache';
+
+//...
+const response = await fetch('http://localhost:8000/messages', {
+  next:{
+    tags: ['abc']
+  }
+});
+
+//...
+//call revalidateTag to clear cache
+revalidateTag('abc');
+
+```
 
 ---
 # Section 08 - NextJs app optimization
