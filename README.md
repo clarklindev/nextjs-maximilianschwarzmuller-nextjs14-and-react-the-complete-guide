@@ -3505,8 +3505,39 @@ const response = await fetch('http://localhost:8080/messages', {
   }
 });
 ```
----
+## 186. controlling data caching
+- instead of fetch config settings, you can set up configuration for entire file by externalizing the settings to be used by all requests
 
+### OPTION 1 -> using nextjs reserved constants
+- special constants reserved keyword used by nextjs (must be exported)
+
+  - "revalidate" -> `export const revalidate = 5;` 
+  - "dynamic" -> `export const dynamic = 'force-dynamic'`;
+
+```js
+//nextjs resevered constant "revalidate"
+export const revalidate = 5;
+
+export const dynamic = 'force-dynamic'; //auto, force-dynamic same as 'no-store' ie. always refetch all requests
+
+export default async function MessagePage(){}
+```
+
+### OPTION 2 -> recommended method over OPTION 1
+- `import { unstable_noStore } from 'next/cache';`
+- you call unstable_noStore() inside the function where data should not cache
+- it applies to just the component, but for all data requests
+- eg. if you have multiple components in same page, and you want to cache data in some components, but not for one specific component. you can call this..to disable caching for just the component.
+
+```js
+import { unstable_noStore } from 'next/cache';
+
+export default async function MessagePage(){
+  unstable_noStore();
+}
+```
+
+---
 # Section 08 - NextJs app optimization
 [back (table of contents)](#table-of-contents)
 
