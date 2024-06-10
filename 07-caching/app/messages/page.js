@@ -7,6 +7,11 @@ export default async function MessagesPage() {
   //     'X-ID': 'page',
   //   },
   // }
+  ,{
+    next: {
+      revalidate: 5 //revalidate if 5 seconds has lapsed since previous fetch 
+    }
+  }
   );
   const messages = await response.json();
 

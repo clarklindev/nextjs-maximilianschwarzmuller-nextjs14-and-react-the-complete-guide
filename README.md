@@ -3478,7 +3478,33 @@ export async function deliverMessage(message) {
 ### clear cache 
 - NOTE: if you dont see the console logs, delete .next folder and restart servers.  
 
+## 185. data cache and cache settings
+- storing and reusing data from data source if it hasnt changed -> persists until revalidated
+- NEXTJS will store the response data from the fetch() in internally managed server-side cache and keep using this cached data until you tell it not to.
 
+- how do you tell nextjs not to use cached data? 
+
+### OPTION 1
+- after changing some data call `revalidatePath()`
+
+### OPTION 2
+- when client-side and serer-side -> setting the 'cache' setting on the fetch() request config object
+- "cache" attribute values: `default`, `force-cache` (default), `no-cache`, `no-store`, `only-if-cached`, `reload`
+  - `no-store` - data should not be cached (only in this fetch request..)
+- "next" is another way nextjs extends fetch() api {revalidate: seconds} is number of seconds it should use cache before refresh
+- eg. revalidate: 5 -> revalidate if 5 seconds has lapsed since previous fetch 
+
+```js
+const response = await fetch('http://localhost:8080/messages', {
+  cache: 'no-cache',
+
+  //OR 
+
+  next: {
+    revalidate: 5
+  }
+});
+```
 ---
 
 # Section 08 - NextJs app optimization
