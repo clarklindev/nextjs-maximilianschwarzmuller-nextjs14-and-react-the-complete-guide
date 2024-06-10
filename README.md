@@ -3585,6 +3585,55 @@ revalidateTag('abc');
 
 ```
 
+## 189 - CUSTOM DATA SOURCES - setting up request memoization
+- deals with caching when dealing with custom data source eg. db inside the application
+- eg. '@/lib/messages' getMessages() does sql call and returns data from db 
+- same getMessages() function call for `/messages/page.js` AND `/messages/layout.js`
+
+- ### react cache 
+- you should wrap the cache() around the function for which request de-duplication should occur (eg. /lib./messages.js getMessages())
+- Now we see that one request for every reload I perform, but it's just one request per page reload instead of two.
+- React cache is the data returned by that function when it's called the first time anywhere in our application, inside of one single request cycle.
+- the response by that function is reused in all the places that also call that function in that same single request cycle.
+
+```js
+//lib/messages.js
+import {cache} from 'react';
+
+//non-cached
+// export function getMessages() {
+//   console.log('Fetching messages from db');
+//   return db.prepare('SELECT * FROM messages').all();
+// }
+
+//cached with cache()
+export const getMessages = cache(function getMessages(){
+  console.log('Fetching messages from db');
+  return db.prepare('SELECT * FROM messages').all();
+});
+```
+
+```js
+//app/messages/page.js
+import {getMessages} from '@/lib/messages';
+export default function MessagesPage(){
+  const messsages = getMessages();  //does not need await because betterSQLLite is synchronous
+}
+```
+
+```js
+//app/messages/layout.js
+import {cache} from 'react';
+import {getMessages} from '@/lib/messages';
+
+export default function MessagesPage(){
+  const messsages = getMessages();  //does not need await because betterSQLLite is synchronous
+}
+```
+
+## 190 - CUSTOM DATA SOURCES - setting up data caching
+## 191 - CUSTOM DATA SOURCES - invalidating custom data source data
+
 ---
 # Section 08 - NextJs app optimization
 [back (table of contents)](#table-of-contents)
