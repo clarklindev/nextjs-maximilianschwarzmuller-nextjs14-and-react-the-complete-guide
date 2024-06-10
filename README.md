@@ -3537,6 +3537,14 @@ export default async function MessagePage(){
 }
 ```
 
+## 187. full route cache
+- full route cache is created and initiated at build time
+- nextjs pre-rendered pages 
+- running `npm run build` -> nextjs prerenders all pages unless dynamic
+- starting production server... `npm start` will display pre-rendered pages (cached by nextjs)
+- running `export const dynamic = 'force-dynamic';` will disable full route caching (flagged as 'dynamic - server-rendered on demand')
+- alternative approach to "dynamic" const is to call `revalidatePath();`
+
 ---
 # Section 08 - NextJs app optimization
 [back (table of contents)](#table-of-contents)
