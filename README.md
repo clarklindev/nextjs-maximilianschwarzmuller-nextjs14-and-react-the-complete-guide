@@ -3464,6 +3464,21 @@ export async function deliverMessage(message) {
 - backend/ pnpm i -> `pnpm run start`
 - pnpm i (note updated dependency "better-sqlite3": "^11.0.0") -> `pnpm run dev`
 
+## 184. Handling Request Memoization
+- localhost:3000/messages -> if you refresh the page, it should show in console output from log messages of the backend server.
+```console
+//output from refreshing page: localhost:3000/messages
+2024-06-10T03:34:55.860Z: EXECUTING /messages on backend from page
+2024-06-10T03:34:55.868Z: EXECUTING /messages on backend from layout
+```
+- EXPECTED OUTCOME: sending fetch requests with same url should only fetch once as NEXTJS should cache the requests BUT if the headers are different then it wont be cached.
+- `app/messages/layout.js` AND `app/messages/page.js` both have `fetch(http://localhost:8080/messages)` request but have different header configurations.
+- requests that are the same (has to also be same headers) get memoirized by nextjs
+- TODO: removing the header config from the fetch() request will result in only one fetch as nextjs will cache the result and return the cache for the second request to the same url.
+### clear cache 
+- NOTE: if you dont see the console logs, delete .next folder and restart servers.  
+
+
 ---
 
 # Section 08 - NextJs app optimization
