@@ -3585,9 +3585,9 @@ revalidateTag('abc');
 
 ```
 
-## 189 - CUSTOM DATA SOURCES - setting up request memoization
+## 189. CUSTOM DATA SOURCES - setting up request memoization
 - deals with caching when dealing with custom data source eg. db inside the application
-- eg. '@/lib/messages' getMessages() does sql call and returns data from db 
+- eg. '@/lib/messages.js' getMessages() does sql call and returns data from db 
 - same getMessages() function call for `/messages/page.js` AND `/messages/layout.js`
 
 - ### react cache 
@@ -3631,9 +3631,131 @@ export default function MessagesPage(){
 }
 ```
 
-## 190 - CUSTOM DATA SOURCES - setting up data caching
-## 191 - CUSTOM DATA SOURCES - invalidating custom data source data
+## 190. CUSTOM DATA SOURCES - setting up data caching
+### REMINDER Data cache
+- storing and reusing data from data source if it hasnt changed -> persists until revalidated
+- NEXTJS will store the response data from the fetch() in internally managed server-side cache and keep using this cached data until you tell it not to.
+### Data cache for custom data source
+- enable caching for our own data sources
+- `import {unstable_cache as nextCache} from 'next/cache'`
+- wrap unstable_cache() eg.nextCache() alias around any function calls whos data you want nextjs to cache with its data cache
+- ERROR? -> nextCache() always returns a promise so calling function needs to be async... ie change to async/await on `app/messages/page.js` and `app/messages/layout.js`
+- unstable_cache -> nextCache() has a second argument which you should specify, its an array of cached keys.. 
+- param 2: cached keys -> used internally by nextjs to identify cached data..(NOT SAME AS TAGS) it basically MAKES nextjs cache data from your own data source
 
+```js
+//lib/messages.js
+import {unstable_cache as nextCache} from 'next/cache';
+
+export default function MessagesPage(){
+
+  //cached with cache()
+  export const getMessages = nextCache(
+
+  cache(function getMessages(){
+    console.log('Fetching messages from db');
+    return db.prepare('SELECT * FROM messages').all();
+  })
+
+  , ['messages']
+
+  );
+
+}
+
+```
+
+```js
+//app/messages/page.js
+import {getMessages} from '@/lib/messages';
+export default async function MessagesPage(){
+  const messsages = await getMessages();  //does not need await because betterSQLLite is synchronous
+}
+```
+
+```js
+//app/messages/layout.js
+import {cache} from 'react';
+import {getMessages} from '@/lib/messages';
+
+export default async function MessagesPage(){
+  const messsages = await getMessages();  //does not need await because betterSQLLite is synchronous
+}
+```
+
+## 191. CUSTOM DATA SOURCES - invalidating custom data source data
+- in lesson 190. we learnt how to cache data from our own data source...
+- BUT now with this caching (even in development)...adding new data does not update the data
+- FIX OPTION 1: call revalidatePath() after addMessage() call
+- FIX OPTION 2: call revalidateTag() using tag name and add a tag when using `import {unstable_cache as nextCache} from 'next/cache';`
+  by using 3rd argument to nextCache() call: `lib/messages.js`
+- the third argument is a configuration object (can use `revalidate` or `tags`): {revalidate: 5, tags:['msg']}
+
+```js
+//app/messages/new/page.js
+import { redirect } from 'next/navigation';
+import { addMessage } from '@/lib/messages';
+import { revalidatePath, revalidateTag } from 'next/cache';
+
+export default function NewMessagePage() {
+  async function createMessage(formData) {
+    'use server';
+
+    const message = formData.get('message');
+    addMessage(message);
+    
+    //OPTION1 - revalidatePath()
+    revalidatePath("/messages");  //any cached data on page with be thrown 
+
+    //OPTION2 - revalidateTag()
+    revalidateTag('msg')
+    redirect('/messages');
+  }
+
+  return (
+    <>
+      <h2>New Message</h2>
+      <form action={createMessage}>
+        <p className="form-control">
+          <label htmlFor="message">Your Message</label>
+          <textarea id="message" name="message" required rows="5" />
+        </p>
+
+        <p className="form-actions">
+          <button type="submit">Send</button>
+        </p>
+      </form>
+    </>
+  );
+}
+
+```
+```js
+//lib/messages.js
+import {unstable_cache as nextCache} from 'next/cache';
+
+export default function MessagesPage(){
+
+  //cached with cache()
+  export const getMessages = nextCache(
+
+    cache(function getMessages(){
+      console.log('Fetching messages from db');
+      return db.prepare('SELECT * FROM messages').all();
+    }),
+
+    //cached keys (lesson 190)
+    ['messages'],
+
+    //third argument (lesson 191)
+    {
+      tags: ['msg']
+    }
+  );
+
+}
+
+```
 ---
 # Section 08 - NextJs app optimization
 [back (table of contents)](#table-of-contents)
