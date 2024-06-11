@@ -4737,6 +4737,34 @@ function AboutPage(){
 export default AboutPage;
 ```
 
+## 233. nested path
+- use folders to create nested file structure
+- pages/portfolio/index.js
+- localhost:3000/portfolio
+
+```js
+//pages/portfolio/index.js
+function PortfolioPage(){
+  return (
+    <h1>PortfolioPage</h1>
+  )
+}
+
+export default PortfolioPage;
+```
+
+- localhost:3000/portfolio/list
+```js
+//pages/portfolio/list.js
+function PortfolioListPage(){
+  return (
+    <h1>PortfolioListPage</h1>
+  )
+}
+
+export default PortfolioListPage;
+```
+
 ---
 
 # Section 12 - Project Time: working with file-based routing
