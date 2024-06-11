@@ -5094,6 +5094,22 @@ import AddressIcon from '../icons/address-icon';
 import ArrowRightIcon from '../icons/arrow-right-icon';
 ```
 
+## 254. event detail page (dynamic route) 
+- `pages/events/[eventId].js`
+- eg. http://localhost:3000/events/e1, localhost:3000/events/e2
+- TODO: use the eventId you retrieve from url then with dummy-data.js -> getEventById() 
+- use `import {useRouter} from 'next/router';`
+- added components/event-detail/
+
+components/event-detail/logistics-item.module.css
+components/event-detail/logistics-item.js
+components/event-detail/event-summary.module.css
+components/event-detail/event-summary.js
+components/event-detail/event-logistics.module.css
+components/event-detail/event-logistics.js
+components/event-detail/event-content.module.css
+components/event-detail/event-content.js
+
 ---
 
 # Section 13 - page pre-rendering and data-fetching
