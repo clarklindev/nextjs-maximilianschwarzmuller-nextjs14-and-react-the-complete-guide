@@ -5064,6 +5064,36 @@ import classes from './event-item.module.css';
 - `<Link/>`
 - NOTE: with nextjs LESS-THAN < v13 -> `<Link>` components needed child `<a/>` element tags.
 - NOTE: with nextjs MORE-THAN > v13 -> `<Link>` components do not have `<a/>` tags
+
+## 253. Adding Buttons & icons
+
+### Buttons
+- /components/ui/button.js
+- /components/ui/button.module.css
+
+```js
+//components/ui/button.js
+import Link from 'next/link';
+import classes from './button.module.css';
+
+function Button(props){
+  return <Link href={props.link} className={classes.btn}>{props.children}</Link>
+}
+
+export default Button;
+```
+
+### Icons
+- components/icons/address-icon.js
+- components/icons/arrow-right-icon.js
+- components/icons/date-icon.js
+
+```js
+import DateIcon from '../icons/date-icon';
+import AddressIcon from '../icons/address-icon';
+import ArrowRightIcon from '../icons/arrow-right-icon';
+```
+
 ---
 
 # Section 13 - page pre-rendering and data-fetching
