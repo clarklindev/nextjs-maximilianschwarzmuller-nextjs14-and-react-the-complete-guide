@@ -4687,6 +4687,23 @@ export async function destroySession(){
 git clone -b 01-getting-started-starting-project https://github.com/mschwarzmueller/nextjs-course-code.git
 ```
 
+### project folder
+- cloned the given exercise files into: `11-pages-router-pages-and-file-based-routing/`
+
+## 230. file-based routing
+- NEXTJS: using file-based-routing instead of code-based routing
+
+### React-Router-Dom
+- traditional react app you set up routing with `react-router-dom`
+
+### NextJS
+- HOW? with nextjs -> create component files and let nextjs infer the routes from folder structure 
+- routes are kept in `pages/` folder
+- pages/index.js //infered as starting page
+- pages/about.js  //localhost:3000/about
+- pages/products/index.js //localhost:3000/products
+- pages/products/[id].js  //dynamic route -> localhost:3000/products/1
+
 ---
 
 # Section 12 - Project Time: working with file-based routing
