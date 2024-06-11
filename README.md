@@ -4689,6 +4689,7 @@ export async function destroySession(){
 
 ```cmd
 git clone -b 01-getting-started-starting-project https://github.com/mschwarzmueller/nextjs-course-code.git
+git clone -b 03-prj-routing-starting-setup https://github.com/mschwarzmueller/nextjs-course-code.git
 ```
 
 ### project folder
@@ -4987,6 +4988,19 @@ export default NotFoundPage;
 
 # Section 12 - Project Time: working with file-based routing
 [back (table of contents)](#table-of-contents)
+
+## 245. Module introduction
+- this section is practical implementation of what was learnt in section 11.
+- static / dynamic routes
+
+## 246. project files
+- `12-pages-router-file-based-routing-project/`
+
+### Routes
+- / -> starting page (show featured events)
+- /events -> events page (show all events)
+- /events/<dyanmic-id> -> event detail page (show selected event)
+- /events/...slug -> filtered events page (show filtered events)
 
 ---
 
