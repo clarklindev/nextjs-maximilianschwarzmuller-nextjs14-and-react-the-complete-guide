@@ -4856,6 +4856,52 @@ import Link from 'next/link';
 <Link href="/clients" replace>Clients</Link>
 
 ```
+
+## 239. navigating to dynamic pages
+- to navigate to dynamic routes you would still use `<Link>` component
+- [http://localhost:3000/clients/](http://localhost:3000/clients/)
+
+```js
+//pages/clients/index.js
+
+import Link from 'next/link';
+
+//...
+<Link href="/clients/max">Max</Link>
+<Link href="/clients/manu">Manuel</Link>
+
+```
+
+- or dynamically
+
+```js
+import Link from "next/link";
+
+function ClientsPage() {
+  const clients = [
+    { id: "max", name: "Maximillian" },
+    { id: "manu", name: "Manuel" },
+  ];
+
+  return (
+    <>
+      <h1>ClientsPage</h1>
+      <ul>
+        {
+          clients.map(({id, name}) => {
+            return <li key={id}>
+              <Link href={`/clients/${id}`}>{name}</Link>
+            </li>
+          })
+        }
+      </ul>
+    </>
+  );
+}
+
+export default ClientsPage;
+
+```
 ---
 
 # Section 12 - Project Time: working with file-based routing
