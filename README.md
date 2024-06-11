@@ -5002,6 +5002,15 @@ export default NotFoundPage;
 - /events/<dyanmic-id> -> event detail page (show selected event)
 - /events/...slug -> filtered events page (show filtered events)
 
+## 247. setting up main pages
+- pages/index.js -> localhost:3000
+- pages/events/index.js -> localhost:3000/events
+- pages/events/[eventId].js -> eg. localhost:3000/e1
+- pages/events/[...slug].js -> eg. localhost:3000/2021/05
+
+- note: eventId and slug wont clash as long as slug has multiple segments
+
+
 ---
 
 # Section 13 - page pre-rendering and data-fetching
