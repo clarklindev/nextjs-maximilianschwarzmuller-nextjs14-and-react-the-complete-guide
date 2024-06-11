@@ -4815,7 +4815,30 @@ export default PortfolioProjectPage;
 - we can access these routes via:
   - localhost:3000/clients/max
   - localhost:3000/clients/max/firstproject
-  
+
+## 237. PagesRouter - catchall routes
+- catching all url formats
+- `[...slug]` syntax: where 'slug' can be anything eg. `pages/blog/[...slug].js`
+- `pages/blog[...slug].js`
+- route can be accessed via: `localhost:3000/blog/anything-you-want`
+- anything in url following `localhost:3000/blog/` would be the dynamic `[...slug]` segment
+- if you console.log(route.query) you will notice that it returns an object where key is the "catchall" name and value is the url segments as an array: eg. `localhost:3000/blog/2024/anything-you-want` {slug: ["2024", "anything-you-want"]}
+
+```js
+//pages/blog/[...slug].js
+import {useRouter} from 'next/router';
+
+function BlogPostsPage(){
+  const router = useRouter();
+
+  console.log(router.pathname);
+  console.log(router.query);
+
+  return <h1>BlogPostsPage</h1>
+}
+
+export default BlogPostsPage;
+```
 ---
 
 # Section 12 - Project Time: working with file-based routing
