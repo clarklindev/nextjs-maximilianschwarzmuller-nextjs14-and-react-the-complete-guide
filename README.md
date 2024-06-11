@@ -5060,8 +5060,10 @@ import classes from './event-item.module.css';
 //...
 ```
 
-
-
+## 252. Link Component
+- `<Link/>`
+- NOTE: with nextjs LESS-THAN < v13 -> `<Link>` components needed child `<a/>` element tags.
+- NOTE: with nextjs MORE-THAN > v13 -> `<Link>` components do not have `<a/>` tags
 ---
 
 # Section 13 - page pre-rendering and data-fetching
