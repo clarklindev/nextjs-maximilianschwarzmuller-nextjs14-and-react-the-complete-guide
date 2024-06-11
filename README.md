@@ -4704,6 +4704,26 @@ git clone -b 01-getting-started-starting-project https://github.com/mschwarzmuel
 - pages/products/index.js //localhost:3000/products
 - pages/products/[id].js  //dynamic route -> localhost:3000/products/1
 
+## 231. adding a first page
+- pages/index.js
+- nextjs associates folders and index.js with route path eg. pages/index.js is accessed via localhost:3000
+
+```js
+//pages/index.js
+function HomePage(){
+  return (
+    <div>
+      <h1>
+        HomePage
+      </h1>
+    </div>
+  );
+}
+export default HomePage;
+
+```
+
+
 ---
 
 # Section 12 - Project Time: working with file-based routing
