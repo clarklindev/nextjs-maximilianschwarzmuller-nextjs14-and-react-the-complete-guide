@@ -4765,6 +4765,21 @@ function PortfolioListPage(){
 export default PortfolioListPage;
 ```
 
+## 234. dynamic path and routes
+- [] syntax is used for dynamic path segments
+- portfolio/list.js can co-exist with a dynamic placeholder page
+- folder: `pages/portfolio/[id].js`
+- `localhost:3000/portfolio/hello` where 'hello' can be anything and it will be picked up because its a dynamic route
+
+```js
+//pages/portfolio/[id].js
+function PortfolioProjectPage(){
+  return <h1>PortfolioProjectPage</h1>
+}
+
+export default PortfolioProjectPage;
+```
+
 ---
 
 # Section 12 - Project Time: working with file-based routing
