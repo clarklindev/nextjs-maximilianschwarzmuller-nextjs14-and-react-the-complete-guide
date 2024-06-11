@@ -4961,6 +4961,20 @@ router.push({
   query:{id: "max", clientprojectid: "projecta"}
 })
 ```
+
+## 242. 404 page
+- 404 not found custom page
+- add 404.js to `pages/`
+- now if you try visit an invalid route that does not exist eg. localhost:3000/helloworld you will see the custom 404 page.
+ 
+```js
+//pages/404.js
+function NotFoundPage(){
+
+}
+export default NotFoundPage;
+
+```
 ---
 
 # Section 12 - Project Time: working with file-based routing
