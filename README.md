@@ -5010,6 +5010,14 @@ export default NotFoundPage;
 
 - note: eventId and slug wont clash as long as slug has multiple segments
 
+## 248. adding dummy data & static files
+- added to root /dummy-data.js (has dummy data and functions to query data)
+- can get from [unsplash](http://unsplash.com)
+- get images to add to project public/images
+
+### public folder
+- the public folder is used a static folder, whatever is put in public/ can be accessed as if it were in the root url
+- NOTE: files and folders outside of public/ are NOT made accessible by nextjs -> visitors cannot load files from there..
 
 ---
 
