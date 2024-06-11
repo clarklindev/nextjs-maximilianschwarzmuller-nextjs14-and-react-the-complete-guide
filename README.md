@@ -4780,6 +4780,32 @@ function PortfolioProjectPage(){
 export default PortfolioProjectPage;
 ```
 
+## 235. PagesRouter - extracting dynamic path segment data (dynamic routes)
+- getting the url value
+- `import {useRouter} from 'next/router';`
+- const router = useRouter();
+- you have access to `.pathname` and `.query`: 
+- .pathname prints `/portfolio/[id]` which is the project folder path
+- .query is an object which has the dynamic value (between the brackets []) as a key and its value is the actual value
+eg. router.query with `localhost:3000/portfolio/hello` would be logged as {id:'hello'} where 'id' is the label set between brackets [] in project folder
+- and the value of router.query.id is the url dynamic value 'hello'
+
+```js
+//pages/portfolio/[id].js
+import {useRouter} from 'next/router';
+
+function PortfolioProjectPage(){
+  const router = useRouter();
+
+  console.log(router.pathname);
+  console.log(router.query);
+
+  return <h1>PortfolioProjectPage</h1>
+}
+
+export default PortfolioProjectPage;
+```
+
 ---
 
 # Section 12 - Project Time: working with file-based routing
