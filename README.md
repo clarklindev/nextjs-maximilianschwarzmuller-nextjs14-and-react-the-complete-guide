@@ -4861,6 +4861,7 @@ import Link from 'next/link';
 - to navigate to dynamic routes you would still use `<Link>` component
 - [http://localhost:3000/clients/](http://localhost:3000/clients/)
 
+
 ```js
 //pages/clients/index.js
 
@@ -4890,7 +4891,19 @@ function ClientsPage() {
         {
           clients.map(({id, name}) => {
             return <li key={id}>
-              <Link href={`/clients/${id}`}>{name}</Link>
+
+              // lesson 239
+              // <Link href={`/clients/${id}`}>{name}</Link>
+
+              // lesson 240
+              <Link href={{
+                pathname: '/clients/[id]',
+                query: {
+                  id    //id:id (client's id)
+                }
+              }}>
+                {name}
+              </Link>
             </li>
           })
         }
@@ -4901,6 +4914,21 @@ function ClientsPage() {
 
 export default ClientsPage;
 
+```
+
+## 240. alternative way of setting Link hrefs
+- instead of providing string to `<Link href={``}>` you can pass an config object to href
+- set `pathname` attribute on the config object and its value is the path with reference to folder structure
+- set `query` attribute to let nextjs know what the concrete value should be of 'pathname' eg. would need to specify `query` attribute and a value for id -> `/clients/[id]` 
+- query is an object with key/value pairs where key is the dynamic segment id and the value 
+
+```js
+<Link href={{
+  pathname: '/clients/[id]',
+  query: {
+    id    //id:id (client's id)
+  }
+}}>{name}</Link>
 ```
 ---
 
