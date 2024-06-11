@@ -4667,18 +4667,18 @@ export async function destroySession(){
 - from this point onwards all sections use Page Router
 - NOTE: this is the old next course content where App Router has not been released yet. and everything is taught as if it is the only method.
 
-## 227. course notes
+## 227. PagesRouter - course notes
 - https://github.com/mschwarzmueller/nextjs-course-code
 
 ### cloning a specific branch
 - git clone -b <branch_name> <repository_url>
 
-## 228. module introduction
+## 228. PagesRouter - module introduction
 - routing in nextjs: code based routing -> file based routing
 - static / dynamic routes
 - navigate between pages
 
-## 229. project files
+## 229. PagesRouter - project files
 ### clone branch
 - 01-getting-started-starting-project
 - note: cloning will create an extra folder: `nextjs-course-code/`
@@ -4690,7 +4690,7 @@ git clone -b 01-getting-started-starting-project https://github.com/mschwarzmuel
 ### project folder
 - cloned the given exercise files into: `11-pages-router-pages-and-file-based-routing/`
 
-## 230. file-based routing
+## 230. PagesRouter - file-based routing
 - NEXTJS: using file-based-routing instead of code-based routing
 
 ### React-Router-Dom
@@ -4704,7 +4704,7 @@ git clone -b 01-getting-started-starting-project https://github.com/mschwarzmuel
 - pages/products/index.js //localhost:3000/products
 - pages/products/[id].js  //dynamic route -> localhost:3000/products/1
 
-## 231. adding a first page
+## 231. PagesRouter - adding a first page
 - pages/index.js
 - nextjs associates folders and index.js or filenames with route path eg. pages/index.js is accessed via localhost:3000
 
@@ -4722,7 +4722,7 @@ function HomePage(){
 export default HomePage;
 
 ```
-## 232. static route
+## 232. PagesRouter - static route
 - /pages/about.js 
 - the filename becomes the route path: http://localhost:3000/about
 
@@ -4737,7 +4737,7 @@ function AboutPage(){
 export default AboutPage;
 ```
 
-## 233. nested path
+## 233. PagesRouter - nested path
 - use folders to create nested file structure
 - pages/portfolio/index.js
 - localhost:3000/portfolio
@@ -4765,7 +4765,7 @@ function PortfolioListPage(){
 export default PortfolioListPage;
 ```
 
-## 234. dynamic path and routes
+## 234. PagesRouter - dynamic path and routes
 - [] syntax is used for dynamic path segments
 - portfolio/list.js can co-exist with a dynamic placeholder page
 - folder: `pages/portfolio/[id].js`
