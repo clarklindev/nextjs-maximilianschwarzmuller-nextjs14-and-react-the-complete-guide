@@ -4988,6 +4988,7 @@ export default NotFoundPage;
 
 # Section 12 - Project Time: working with file-based routing
 [back (table of contents)](#table-of-contents)
+- lesson 245 - 262
 
 ## 245. Module introduction
 - this section is practical implementation of what was learnt in section 11.
@@ -5018,6 +5019,48 @@ export default NotFoundPage;
 ### public folder
 - the public folder is used a static folder, whatever is put in public/ can be accessed as if it were in the root url
 - NOTE: files and folders outside of public/ are NOT made accessible by nextjs -> visitors cannot load files from there..
+
+## 249. adding regular react components
+- pages/index.js -> show featured events
+- dummy-data.js -> dummy data has `isFeatured` value (boolean)
+- dummy-data.js -> getFeaturedEvent() returns events with isFeatured equal true
+
+## 250. adding more react components and connecting components
+- NOTE: do not store components in pages/ folder as filenames are actual routes. 
+- create a `components/events` folder outside of pages/
+- create the event-list component
+- create the event-item component
+- [date in readable format](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString)
+- EventList -> loop through dummy items and pass the props to `<EventItem>` component
+- pages/index.js show the `<EventList/>` component
+
+## 251. styling components in nextjs 
+
+### Styling options
+- styledcomponents
+- regular html classes
+- cssmodules -> nextjs has built-in support for cssmodules (scoped css)
+
+### _app.js for global css imports
+NOTE: pages/_app.js imports styles/globals.css
+/styles/globals.css
+
+### CSS Modules
+- scoped css
+  - /components/events/event-item.module.css
+  - /components/events/event-list.module.css
+- `import classes from './event-item.module.css';`
+- css module via classes: `<li className={classes.item}>`
+
+```js
+import classes from './event-item.module.css';
+
+//...
+<li className={classes.item}>
+//...
+```
+
+
 
 ---
 
