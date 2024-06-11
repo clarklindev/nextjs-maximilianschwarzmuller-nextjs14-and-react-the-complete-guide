@@ -4839,6 +4839,23 @@ function BlogPostsPage(){
 
 export default BlogPostsPage;
 ```
+
+## 238. PagesRouter - Navigating with Link Component
+- navigating with `<Link>` component
+- normally you add a link with `<a>` tag but this way, new requests are sent, page refreshed and any application state (app-wide state) would be lost
+- NEXTJS WAY: 
+- note: `<Link>` has `href` which takes a string for route 
+`replace` -> so you cant go back on browser 
+- optimizations of using `<Link>` -> on hover over auto prefetch data of page we might navigate to
+
+```js
+import Link from 'next/link';
+
+//...
+<Link href="/portfolio" replace>Portfolio</Link>
+<Link href="/clients" replace>Clients</Link>
+
+```
 ---
 
 # Section 12 - Project Time: working with file-based routing
