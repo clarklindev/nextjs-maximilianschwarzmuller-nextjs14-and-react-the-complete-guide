@@ -4857,7 +4857,7 @@ import Link from 'next/link';
 
 ```
 
-## 239. navigating to dynamic pages
+## 239. PagesRouter - navigating to dynamic pages
 - to navigate to dynamic routes you would still use `<Link>` component
 - [http://localhost:3000/clients/](http://localhost:3000/clients/)
 
@@ -4916,7 +4916,7 @@ export default ClientsPage;
 
 ```
 
-## 240. alternative way of setting Link hrefs
+## 240. PagesRouter - alternative way of setting Link hrefs
 - instead of providing string to `<Link href={``}>` you can pass an config object to href
 - set `pathname` attribute on the config object and its value is the path with reference to folder structure
 - set `query` attribute to let nextjs know what the concrete value should be of 'pathname' eg. would need to specify `query` attribute and a value for id -> `/clients/[id]` 
@@ -4929,6 +4929,37 @@ export default ClientsPage;
     id    //id:id (client's id)
   }
 }}>{name}</Link>
+```
+
+## 241. PagesRouter - navigating programatically
+- when would you try navigate programatically? eg after form submit and you want to redirect
+- http://localhost:3000/clients/max
+- NOTE: use `router.push()` for programmatically navigating from client-side in a Next application.  
+- NOTE: `redirect()` function is for the same purpose, but from the server-side.
+
+### push() to navigate
+- you use the useRouter from next/router's `push()` method
+
+### replace() to navigate
+- [NEXTJS docs router.replace](https://nextjs.org/docs/pages/api-reference/functions/use-router#routerreplace)
+- if you use `replace()` instead of push() router.replace will prevent adding a new URL entry into the history stack.
+- you can also pass in an object instead of string [(see lesson 240)](#240-pagesrouter---alternative-way-of-setting-link-hrefs)
+
+```js
+//pages/clients/[id]/index.js
+
+import {useRouter} from 'next/router';
+//...
+const router = useRouter();
+
+router.push('/clients/max/projecta');
+router.replace('/clients/max/projecta');
+
+//alternative method
+router.push({
+  pathname: "/clients/[id]/[clientprojectid]",
+  query:{id: "max", clientprojectid: "projecta"}
+})
 ```
 ---
 
