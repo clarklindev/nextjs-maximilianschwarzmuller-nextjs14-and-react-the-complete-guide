@@ -4806,6 +4806,16 @@ function PortfolioProjectPage(){
 export default PortfolioProjectPage;
 ```
 
+## 236. PagesRouter - building nested dynamic routes and paths
+- pages/clients/index.js -> lists all clients
+- pages/clients/[id]/index.js -> client page which lists all projects of a client
+- pages/clients/[id]/[clientprojectid].js -> project details page
+- NOTE: the use of [] as a folder
+
+- we can access these routes via:
+  - localhost:3000/clients/max
+  - localhost:3000/clients/max/firstproject
+  
 ---
 
 # Section 12 - Project Time: working with file-based routing
