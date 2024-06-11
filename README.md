@@ -4706,7 +4706,7 @@ git clone -b 01-getting-started-starting-project https://github.com/mschwarzmuel
 
 ## 231. adding a first page
 - pages/index.js
-- nextjs associates folders and index.js with route path eg. pages/index.js is accessed via localhost:3000
+- nextjs associates folders and index.js or filenames with route path eg. pages/index.js is accessed via localhost:3000
 
 ```js
 //pages/index.js
@@ -4722,7 +4722,20 @@ function HomePage(){
 export default HomePage;
 
 ```
+## 232. static route
+- /pages/about.js 
+- the filename becomes the route path: http://localhost:3000/about
 
+```js
+//pages/about.js
+function AboutPage(){
+  return (
+    <h1>About Page</h1>
+  )
+}
+
+export default AboutPage;
+```
 
 ---
 
