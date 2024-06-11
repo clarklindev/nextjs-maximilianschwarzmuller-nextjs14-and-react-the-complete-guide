@@ -4662,6 +4662,31 @@ export async function destroySession(){
 # Section 11 - Pages & File-based routing
 [back (table of contents)](#table-of-contents)
 
+## 226. app router -> pages router
+- all previous lessons in course used App Router (newer NextJS Routing)
+- from this point onwards all sections use Page Router
+- NOTE: this is the old next course content where App Router has not been released yet. and everything is taught as if it is the only method.
+
+## 227. course notes
+- https://github.com/mschwarzmueller/nextjs-course-code
+
+### cloning a specific branch
+- git clone -b <branch_name> <repository_url>
+
+## 228. module introduction
+- routing in nextjs: code based routing -> file based routing
+- static / dynamic routes
+- navigate between pages
+
+## 229. project files
+### clone branch
+- 01-getting-started-starting-project
+- note: cloning will create an extra folder: `nextjs-course-code/`
+
+```cmd
+git clone -b 01-getting-started-starting-project https://github.com/mschwarzmueller/nextjs-course-code.git
+```
+
 ---
 
 # Section 12 - Project Time: working with file-based routing
