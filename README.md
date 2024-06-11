@@ -4662,6 +4662,9 @@ export async function destroySession(){
 # Section 11 - Pages & File-based routing
 [back (table of contents)](#table-of-contents)
 
+## PagesRouter - summary 
+- [module summary](#243-module-summary)
+
 ## 226. app router -> pages router
 - all previous lessons in course used App Router (newer NextJS Routing)
 - from this point onwards all sections use Page Router
@@ -4669,6 +4672,7 @@ export async function destroySession(){
 
 ## 227. PagesRouter - course notes
 - https://github.com/mschwarzmueller/nextjs-course-code
+- https://github.com/mschwarzmueller/nextjs-course-code/tree/02-file-based-routing
 
 ### cloning a specific branch
 - git clone -b <branch_name> <repository_url>
@@ -4975,6 +4979,10 @@ function NotFoundPage(){
 export default NotFoundPage;
 
 ```
+
+## 243. module summary
+[udemy lesson link](https://www.udemy.com/course/nextjs-react-the-complete-guide/learn/lecture/25145492)
+
 ---
 
 # Section 12 - Project Time: working with file-based routing
