@@ -5141,6 +5141,31 @@ function MyApp({ Component, pageProps }) {
 }
 export default MyApp;
 ```
+
+## 256. "all events" page
+- pages/events/index.js
+- localhost:3000/events
+
+```js
+//pages/events/index.js
+import { getAllEvents } from "../../dummy-data";
+import EventList from '../../components/events/event-list';
+
+function EventsPage(){
+
+  const events = getAllEvents();
+
+  return (
+    <div>
+      <h1>EventsPage</h1>
+      <EventList items={events}/>
+    </div>
+  )
+}
+
+export default EventsPage;
+```
+
 ---
 
 # Section 13 - page pre-rendering and data-fetching
