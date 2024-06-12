@@ -5166,6 +5166,70 @@ function EventsPage(){
 export default EventsPage;
 ```
 
+## 257. adding a filter for events
+- a filter above list of events page -> select year/month from dropdown
+- click on find events button
+- redirect to `pages/events/[...slug].js` to handle
+- adjust Button component -> if link prop is set... render a Link otherwise a normal button should be rendered.
+- create the `<EventsSearch>` component which has dropdowns to be used for filtering search results
+
+## 258. navigating to the filtered events programatically
+- REMINDER - this is the old way of handling form events...
+- components/events/EventsSearch handle form submit getting: `selectedYear` and `selectedMonth` -> want to pass these from the component to `pages/events/index.js`
+- navigate programatically by building a path and redirect
+- an url with more than one segment eg. `http://localhost:3000/events/2021/5` takes you to `pages/events[...slug].js` page
+
+```js
+//components/events/event-search.js
+//...
+import { useRouter } from 'next/router';
+
+function EventsSearch(props){
+
+  const yearInputRef = useRef();
+  const monthInputRef = useRef();
+
+  function submitHandler(event){
+    event.preventDefault();
+
+    const selectedYear = yearInputRef.current.value;
+    const selectedMonth = monthInputRef.current.value;
+
+    props.onSearch(selectedYear, selectedMonth);
+  }
+//...
+}
+```
+
+```js
+//pages/events/index.js
+import { useRouter } from 'next/router';
+
+import { getAllEvents } from "../../dummy-data";
+import EventsSearch from '../../components/events/events-search';
+import EventList from '../../components/events/event-list';
+
+function AllEventsPage(){
+  const router = useRouter();
+  const events = getAllEvents();
+  
+  function findEventsHandler(year, month){
+    const fullpath = `/events/${year}/${month}`;
+    router.push(fullpath);
+  }
+
+  return (
+    <>
+      <h1>EventsPage</h1>
+      <EventsSearch onSearch={findEventsHandler}/>
+      <EventList items={events}/>
+    </>
+  )
+}
+
+export default AllEventsPage;
+```
+
 ---
 
 # Section 13 - page pre-rendering and data-fetching
