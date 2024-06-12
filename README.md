@@ -5230,6 +5230,14 @@ function AllEventsPage(){
 export default AllEventsPage;
 ```
 
+## 259. extracting data on the catch-all page
+- `pages/events/[...slug].js` is the page that will land one if there is more than one segment after localhost:3000/events (catch-all-page)
+- TODO: extract dynamic segments from url
+- TODO: get the year/month and search the dummy-data for matching events: `getFilteredEvents({year,month})`
+- `pages/events/[...slug].js` can access route via router.query.slug;  
+
+## 260. final steps
+- add the components/ui/error-alert.js
 ---
 
 # Section 13 - page pre-rendering and data-fetching
