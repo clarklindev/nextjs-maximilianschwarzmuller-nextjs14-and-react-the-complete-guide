@@ -5110,6 +5110,37 @@ components/event-detail/event-logistics.js
 components/event-detail/event-content.module.css
 components/event-detail/event-content.js
 
+## 255. Layout Wrapper component
+- _app.js returns a `<Component>` 
+- we update by wrapping with a layout so that a component eg. navbar can be on all pages.
+- components/layout/layout.js
+- `components/layout/layout.js` imports `components/layout/main-header.js` (navbar)
+
+```js
+//components/layout/layout.js
+import MainHeader from './main-header';
+
+function Layout(props){
+  return (<>
+  <MainHeader/>
+  <main>{props.children}</main>
+  </>);
+}
+export default Layout;
+```
+
+```js
+//pages/_app.js
+import Layout from '../components/layout/layout'
+import '../styles/globals.css'
+
+function MyApp({ Component, pageProps }) {
+  return <Layout>
+    <Component {...pageProps} />
+  </Layout>
+}
+export default MyApp;
+```
 ---
 
 # Section 13 - page pre-rendering and data-fetching
