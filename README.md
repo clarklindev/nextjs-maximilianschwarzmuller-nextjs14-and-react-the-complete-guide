@@ -5427,9 +5427,30 @@ export async function getStaticProps(){
 export default HomePage;
 ```
 
+## 271. Utilizing Incremental Static Generation (ISR)
+- so nextjs prebuilds pages at build-time on machine but this way, if data changes frequenty...
 
+### OPTION 1 - fetch new data to replace loaded data
+- NEXJS -> solution is to use react (useEffecg) to fetch updated data from server and replace the initially loaded data
 
+### OPTION 2 (PREFERRED METHOD) - incremental static generation 
+- nextjs doesnt just generate page statically once after initial build -> continuously updated even after deployment (without redeployment)
+- you can tell nextjs to regenerate a page on every request (at most every x seconds)
+- ie. a request made (less than last generated time) will serve existing page -> or a new page will be generated on server...
 
+### how to activate?
+- in getStaticProps() function, the return object -> as a second key, pass `revalidate` and its value should be time in seconds it should wait before recreating new page (ie. low value for highly dynamic site)
+- NOTE: in development...page will be regenerated for every request (no matter what is set in `revalidate`)
+
+```js
+export async function getStaticProps(){
+  return {
+    props:{},
+    revalidate: 10  //seconds
+  }
+} 
+
+```
 
 ---
 
