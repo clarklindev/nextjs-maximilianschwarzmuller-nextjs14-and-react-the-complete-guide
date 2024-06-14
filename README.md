@@ -5273,8 +5273,58 @@ export default AllEventsPage;
 - hydrates pre-rendered page with React code -> any further interactivity happens on frontend with react.
 
 ### 2 forms of pre-rendering
-1. static generation -> all pages pre-rendered at build time
+1. static generation -> all pages pre-rendered at BUILD-TIME
 2. server-side rendering -> pages are created just-in-time after deployment when request reaches server
+
+## 266. static generation with "getStaticProps"
+- pregenerate page (html + data) at build time
+- because pages prepared ahead of time, they can be cached by server/cdn
+- incoming requests can be served instantly with these pages
+
+### getStaticProps()
+- only from inside `pages/` Page components -> can export a function getStaticProps()
+- `getStaticProps(context)` function - you can run any code that would normally run on the server side only.
+- eg. dont have access to window object
+- code you write inside getStaticProps() will NOT be included in bundle that gets sent back to client.
+
+```js
+export async function getStaticProps(context){}
+```
+
+## 267. nextjs prerenders by default example
+- note: page source will show the `<ul>` element because (by default) nextjs pre-renders all pages that have no dynamic data
+
+### project files
+- 13-page-prerendering-and-data-fetching
+- git clone -b <branch_name> <repository_url>
+- `git clone -b 04-data-fetching-starting-project https://github.com/mschwarzmueller/nextjs-course-code.git`
+
+```js
+/pages/index.js
+function HomePage(props) {
+  return (
+    <ul>
+      <li>Product 1</li>
+      <li>Product 2</li>
+      <li>Product 3</li>
+    </ul>
+  );
+}
+
+export default HomePage;
+
+```
+
+
+
+
+
+
+
+
+
+
+
 
 ---
 
