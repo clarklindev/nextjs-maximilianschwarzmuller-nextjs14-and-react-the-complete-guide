@@ -21,10 +21,25 @@ export async function getStaticProps(){
   const jsonData = await fs.readFile(filePath); 
   const data = JSON.parse(jsonData);
 
+  //redirect
+  // if(!data){
+  //   return {
+  //     redirect:{
+  //       destination: '/'
+  //     }
+  //   }
+  // }
+
+  //404
+  // if(data.products.length === 0){
+  //   return {notFound: true}
+  // }
+
   return {
     props:{
       products:data.products
     },
-    revalidate: 10
+    revalidate: 10,
+
   }
 }

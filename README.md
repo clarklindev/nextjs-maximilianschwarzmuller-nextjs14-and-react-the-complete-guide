@@ -5331,10 +5331,10 @@ export default HomePage;
 }
 ```
 - now we want to load this dummy data, but not from client-side after inital load...
-- we can prefetch data with getStaticProps() and needs to return an object with key called 'props'
+- we can prefetch data with getStaticProps(context) and needs to return an object with key called 'props'
 - fetches data and exposes data to the page component (eg. HomePage)
 - this all happens at build time on server
-- NOTE: so getStaticProps() code can do server side things... eg. use credentials, and run code you wouldnt be able to run on client-side like access the file system
+- NOTE: so getStaticProps(context) code can do server side things... eg. use credentials, and run code you wouldnt be able to run on client-side like access the file system
 
 ```js
 //index.js
@@ -5353,7 +5353,7 @@ function HomePage(props){
   )
 }
 
-export async function getStaticProps(){
+export async function getStaticProps(context){
   return {
     props:{
       products:[{id: 'p1', title:'Product 1'}]
@@ -5368,14 +5368,14 @@ export default HomePage;
 
 ## 269. Running Server-side Code & Using the Filesystem
 - running server side code eg. load the data from data/dummy-backend.json on serverside via filesytem
-- change the getStaticProps():
+- change the getStaticProps(context):
 - `import fs from 'fs';`  
 - NB: if you import `import fs from 'fs/promises'`, it returns a promise which you can just await
 - NOTE: fs is server-only and nextjs will see which libraries are used in server-side code and strip that from client side bundle
 - code would be "split": 
   client side -> component function 
   vs 
-  server-side -> getStaticProps() and the imports it used.
+  server-side -> getStaticProps(context) and the imports it used.
 - fs.readFileSync() //synchronously reads file and blocks execution until its done 
 - fs.readFile() //expects a callback to continue -> if import `import fs from 'fs'` but returns a promise if `import fs from 'fs/promises'`;
 - to get path: `import path from 'path';`
@@ -5391,7 +5391,7 @@ await fs.readFile(filePath);
 - rest of params: each folder/file segment
 - .readFile() -> readFile returns json data.
 - const data = `JSON.parse(jsonData)` converts json data to regular js object
-- getStaticProps() return object gets passed into the component function as props by nextjs
+- getStaticProps(context) return object gets passed into the component function as props by nextjs
 
 ```js
 //pages/index.js
@@ -5412,7 +5412,7 @@ function HomePage(props){
   )
 }
 
-export async function getStaticProps(){
+export async function getStaticProps(context){
   const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
   const jsonData = await fs.readFile(filePath); 
   const data = JSON.parse(jsonData);
@@ -5439,16 +5439,41 @@ export default HomePage;
 - ie. a request made (less than last generated time) will serve existing page -> or a new page will be generated on server...
 
 ### how to activate?
-- in getStaticProps() function, the return object -> as a second key, pass `revalidate` and its value should be time in seconds it should wait before recreating new page (ie. low value for highly dynamic site)
+- in getStaticProps(context) function, the return object -> as a second key, pass `revalidate` and its value should be time in seconds it should wait before recreating new page (ie. low value for highly dynamic site)
 - NOTE: in development...page will be regenerated for every request (no matter what is set in `revalidate`)
 
 ```js
-export async function getStaticProps(){
+export async function getStaticProps(context){
   return {
     props:{},
     revalidate: 10  //seconds
   }
 } 
+
+```
+
+## 273. A Closer Look At "getStaticProps" & Configuration Options
+- getStaticProps(context) actually receives an object as a prop "context", it contains extra information about the page when function is executed by nextjs
+- context has info like dynamic path segments
+
+### other returns from getStaticProps()
+- `notFound`: true 
+- `redirect`: {destination: '/'} //404 - redirects to another route
+
+```js
+  //redirect
+  if(!data){
+    return {
+      redirect:{
+        destination: '/'
+      }
+    }
+  }
+
+  //404
+  if(data.products.length === 0){
+    return {notFound: true}
+  }
 
 ```
 
