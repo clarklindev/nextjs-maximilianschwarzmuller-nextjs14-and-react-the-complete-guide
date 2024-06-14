@@ -5366,9 +5366,66 @@ export default HomePage;
 
 ```
 
+## 269. Running Server-side Code & Using the Filesystem
+- running server side code eg. load the data from data/dummy-backend.json on serverside via filesytem
+- change the getStaticProps():
+- `import fs from 'fs';`  
+- NB: if you import `import fs from 'fs/promises'`, it returns a promise which you can just await
+- NOTE: fs is server-only and nextjs will see which libraries are used in server-side code and strip that from client side bundle
+- code would be "split": 
+  client side -> component function 
+  vs 
+  server-side -> getStaticProps() and the imports it used.
+- fs.readFileSync() //synchronously reads file and blocks execution until its done 
+- fs.readFile() //expects a callback to continue -> if import `import fs from 'fs'` but returns a promise if `import fs from 'fs/promises'`;
+- to get path: `import path from 'path';`
+-  path.join(); takes first param starting directory 
 
+```js
+//example of path.join()
+const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
+await fs.readFile(filePath); 
+```
 
+- 1st param: using node: get current working directory (process.cwd() returns project dir) 
+- rest of params: each folder/file segment
+- .readFile() -> readFile returns json data.
+- const data = `JSON.parse(jsonData)` converts json data to regular js object
+- getStaticProps() return object gets passed into the component function as props by nextjs
 
+```js
+//pages/index.js
+import fs from 'fs/promises';
+import path from 'path';
+
+function HomePage(props){
+  const {products} = props;
+
+  return (
+    <ul>
+      {
+        products.map(product=>(
+          <li key={product.id}>{product.title}</li>
+        ))
+      }
+    </ul>
+  )
+}
+
+export async function getStaticProps(){
+  const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
+  const jsonData = await fs.readFile(filePath); 
+  const data = JSON.parse(jsonData);
+
+  return {
+    props:{
+      products:data.products
+    }
+  }
+}
+
+export default HomePage;
+```
 
 
 
