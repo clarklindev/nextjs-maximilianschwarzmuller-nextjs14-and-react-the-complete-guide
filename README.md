@@ -5242,6 +5242,39 @@ export default AllEventsPage;
 
 # Section 13 - page pre-rendering and data-fetching
 [back (table of contents)](#table-of-contents)
+- lessons 263 -> 292 (30 lessons)
+- 2hr 36min
+
+## 263. module introduction
+- NextJS allows pre-rendering of pages on server (Server Side Rendering (SSR))
+- nextjs helps running code on client-side and server-side
+- eg. loading data needed by page 
+- blending server-side and client-side code
+- static vs server-side page generation
+- fetching data with nextjs vs tradition react apps
+
+## 264. traditional react apps (and data fetching)
+- CLIENT SIDE: react app fetches data from backend using `fetch()` 
+- page source does not have data (only empty div)
+- ONLY if you inspect the page -> you see the dom elements (but its after the initial html-code initially rendered by server)
+- disadvantage -> fetching data takes time and 
+- disadvantage -> its done AFTER the initial data was loaded
+- disadvantage -> SEO: search engines only see the initial data sent back from server
+
+## 265. how nextjs prepares and pre-renders pages
+- nextjs does pre-rendering
+
+### Initial page load
+- REACT: server returns html page and js code which runs and any data needed is loaded from server 
+- client-side user interactivity
+
+- NEXTJS: when a request is sent to a route -> nextjs returns pre-rendered page
+- good for seo
+- hydrates pre-rendered page with React code -> any further interactivity happens on frontend with react.
+
+### 2 forms of pre-rendering
+1. static generation -> all pages pre-rendered at build time
+2. server-side rendering -> pages are created just-in-time after deployment when request reaches server
 
 ---
 
