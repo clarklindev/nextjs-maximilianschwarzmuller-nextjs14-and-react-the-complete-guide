@@ -5314,9 +5314,57 @@ function HomePage(props) {
 export default HomePage;
 
 ```
+## 268. adding getStaticProps() to pages
+- getStaticProps() can be added to page files, 
+- will run at buildtime on server 
+- nextjs will call this function on your behalf when it pre-generates a page
+- this function also signals/confirms to nextjs that page should be pregenerated
 
+```json
+//data/dummy-backend.json
+{
+  "products": [
+    { "id": "p1", "title": "Product 1", "description": "This is product 1" },
+    { "id": "p2", "title": "Product 2", "description": "This is product 2" },
+    { "id": "p3", "title": "Product 3", "description": "This is product 3" }
+  ]
+}
+```
+- now we want to load this dummy data, but not from client-side after inital load...
+- we can prefetch data with getStaticProps() and needs to return an object with key called 'props'
+- fetches data and exposes data to the page component (eg. HomePage)
+- this all happens at build time on server
+- NOTE: so getStaticProps() code can do server side things... eg. use credentials, and run code you wouldnt be able to run on client-side like access the file system
 
+```js
+//index.js
 
+function HomePage(props){
+  const {products} = props;
+
+  return (
+    <ul>
+      {
+        products.map(product=>(
+          <li key={product.id}>{product.title}</li>
+        ))
+      }
+    </ul>
+  )
+}
+
+export async function getStaticProps(){
+  return {
+    props:{
+      products:[{id: 'p1', title:'Product 1'}]
+      products:[{id: 'p2', title:'Product 2'}]
+    }
+  }
+}
+
+export default HomePage;
+
+```
 
 
 
