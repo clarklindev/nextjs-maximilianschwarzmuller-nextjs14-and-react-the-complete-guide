@@ -5783,6 +5783,19 @@ export async function getServerSideProps(context){
 }
 ```
 
+## 286. client-side data fetching
+- test link: http://localhost:3000/last-sales
+- when working with data when pre-fetching doesnt make sense
+  - eg. changes with high frequency
+  - highly specific data (seo not necessary)
+  - partial data (only part of page)
+
+### useEffect() and fetch()
+- nextjs standard way for client fetching data
+- clientside data fetching with nextjs
+- exercise uses google firebase as dummy backend -> will use https://jsonplaceholder.typicode.com/
+- pages/last-sales.js
+
 ---
 
 # Section 14 - project time: page pre-rendering & data-fetching
