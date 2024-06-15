@@ -5431,7 +5431,7 @@ export default HomePage;
 - so nextjs prebuilds pages at build-time on machine but this way, if data changes frequenty...
 
 ### OPTION 1 - fetch new data to replace loaded data
-- NEXJS -> solution is to use react (useEffecg) to fetch updated data from server and replace the initially loaded data
+- NEXJS -> solution is to use react (useEffect) to fetch updated data from server and replace the initially loaded data
 
 ### OPTION 2 (PREFERRED METHOD) - incremental static generation 
 - nextjs doesnt just generate page statically once after initial build -> continuously updated even after deployment (without redeployment)
@@ -5477,6 +5477,144 @@ export async function getStaticProps(context){
 
 ```
 
+## 274. dynamic parameters
+- dynamic segments in nextjs using pages router has [] syntax when naming folders eg `pages/[pid].js`
+- 'context' exposed by nextjs to get hold of concrete param values
+- the dynamic key is accessible via context property `params`
+- the difference between getting values in component function...
+### dynamic values client-side
+- getting values in component function using useRouter() router.query hook 
+- useRouter() is client-side (hook) 
+
+### dynamic values server-side
+- server-side context destructuring
+- getStaticProps() is server-side 
+
+### getStaticProps()
+- example shows how the getStaticProps() receives a context prop which is destructed and `params` is retrieved and used to get 'pid'.
+```js
+//pages/[pid].js
+import fs from 'fs/promises';
+import path from 'path';
+//...
+export default ProductDetailPage;
+
+export async function getStaticProps(context){
+  const {params} = context;
+
+  const productId = params.pid
+
+  const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
+  const jsonData = await fs.readFile(filePath); 
+  const data = JSON.parse(jsonData);
+
+  const product = data.products.find(product=> product.id === productId);
+  
+  return {
+    props:{
+      loadedProduct: product
+    },
+    revalidate: 10,
+
+  }
+}
+```
+
+## 275. Introducing "getStaticPaths" For Dynamic Pages
+- if page is dynamic page [] syntax eg. `[pid].js` -> nextjs doesnt automatically generate pages because it is dynamic and doesnt know what the pages will be
+- the pages are generated just-in-time and you can tell nextjs which pages are pre-generated (which id's values) using getStaticPaths()
+- with getStaticPaths(), you can list the concrete dynamic pages `pages/[pid]` so nextjs CAN pre-generate the pages for you. 
+- dynamic path `[x]` with 1 as the concrete value
+```js
+export async function getStaticPaths(){
+  return {
+    paths:[
+      { params: {x: '1'}},
+    ],
+    fallback: false
+  }
+}
+```
+## 276. getStaticPaths()
+- functions purpose is to tell NextJS which dynamic pages should be pre-rendered.
+- you use the `paths` key which takes an array of objects with `params` key whose value is an object with the key name being the dynamic identifier name and the value is the concrete value for the dynamic page.
+- NOTE: `params` value is an object with its key name (dynamic placeholder label) eg. pid 
+- here in below eg. 3x dynamic pages will be pre-generated on server: 
+- there also a fallback key 
+
+```js
+//pages/[pid].js
+export async function getStaticPaths(){
+  return {
+    paths:[
+      { params: {pid: 'p1'}},
+      { params: {pid: 'p2'}},
+      { params: {pid: 'p3'}},
+    ],
+    fallback: false
+  }
+}
+``` 
+
+## 277. walkthrough getSStaticPaths() + Link prefetching
+- `pnpm run build` 
+- you can see the build output in .next/server/pages: p1.json, p1.html etc...
+
+## 278. fallback pages
+- if you have a lot of dynamic pages that need to be pre-generated
+
+### fallback: true/false
+- `fallback: true` -> then you can decide to only pre-render some pages...
+- this means if you havent specified the other id's in getStaticPaths()'s return object {paths:[]} it will still load (generated just-in-time)
+- but the problem is if you set fallback to true, data might not be available immediately so in the component function you need to do a check for the data received..
+#### CONS
+- the downside of this method is if data loads quickly you see only a flash of the transient loading state `<p>loading...</p>` which may appear more like a page glitch. 
+
+```js
+//pages/[pid].js using fallback: true/false
+function ProductDetailsPage(props){
+  const {loadedProduct} = props;
+
+  //check if data exists yet
+  if(!loadedProduct){
+    return <p>Loading...</p>
+  }
+}
+
+export async function getStaticPaths(){
+  return {
+    paths:[
+      { params: {pid: 'p1'}},
+    ],
+    fallback: true
+  }
+}
+``` 
+
+### fallback: 'blocking'
+- instead of setting fallback to `true/false`, setting fallback to `blocking` 
+- with setting blocking you dont have to check if data is loaded, 
+- NEXTJS waits until page is fully loaded on server -> it "blocks" showing anything until data is loaded..
+- you dont need to check if data has been passed from props...it will wait
+
+```js
+//pages/[pid].js using fallback:'blocking'
+function ProductDetailsPage(props){
+  const {loadedProduct} = props;
+  // if(!loadedProduct){
+  //   return <p>Loading...</p>
+  // }
+}
+
+export async function getStaticPaths(){
+  return {
+    paths:[
+      { params: {pid: 'p1'}},
+    ],
+    fallback: 'blocking'    //fallback set as 'blocking'
+  }
+}
+``` 
 ---
 
 # Section 14 - project time: page pre-rendering & data-fetching
