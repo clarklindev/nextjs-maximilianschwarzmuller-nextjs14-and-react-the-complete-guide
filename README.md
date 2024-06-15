@@ -3840,7 +3840,7 @@ export default function Page() {
 - NOTE: but if you dont know the width and height, you can use `fill` prop
 - ERROR: you may be an error because -> setting a src that loads from an external image hosting site requires additional setup
 
-<img src="./08-nextjs-app-optimization/public/loading-unknown-images-error.jpg" alt="loading-unknown-images-error"/>
+<img src="./app-router/08-nextjs-app-optimization/public/loading-unknown-images-error.jpg" alt="loading-unknown-images-error"/>
 
 - `next.config.mjs` hostname "res.cloudinary.com" is not configured under images
 - nextjs for security reasons blocks loading from external sites. 
@@ -5478,7 +5478,7 @@ export async function getStaticProps(context){
 ```
 
 ## 274. dynamic parameters
-- dynamic segments in nextjs using pages router has [] syntax when naming folders eg `pages/[pid].js`
+- dynamic segments in nextjs using pages router has [] syntax when naming folders eg `pages/products/[pid].js`
 - 'context' exposed by nextjs to get hold of concrete param values
 - the dynamic key is accessible via context property `params`
 - the difference between getting values in component function...
@@ -5493,7 +5493,7 @@ export async function getStaticProps(context){
 ### getStaticProps()
 - example shows how the getStaticProps() receives a context prop which is destructed and `params` is retrieved and used to get 'pid'.
 ```js
-//pages/[pid].js
+//pages/products/[pid].js
 import fs from 'fs/promises';
 import path from 'path';
 //...
@@ -5523,13 +5523,13 @@ export async function getStaticProps(context){
 ## 275. Introducing "getStaticPaths" For Dynamic Pages
 - if page is dynamic page [] syntax eg. `[pid].js` -> nextjs doesnt automatically generate pages because it is dynamic and doesnt know what the pages will be
 - the pages are generated just-in-time and you can tell nextjs which pages are pre-generated (which id's values) using getStaticPaths()
-- with getStaticPaths(), you can list the concrete dynamic pages `pages/[pid]` so nextjs CAN pre-generate the pages for you. 
-- dynamic path `[x]` with 1 as the concrete value
+- with getStaticPaths(), you can list the concrete dynamic pages `pages/products/[pid]` so nextjs CAN pre-generate the pages for you. 
+- dynamic path `[pid]` with `p1` as the concrete value
 ```js
 export async function getStaticPaths(){
   return {
     paths:[
-      { params: {x: '1'}},
+      { params: {pid: 'p1'}},
     ],
     fallback: false
   }
@@ -5543,7 +5543,7 @@ export async function getStaticPaths(){
 - there also a fallback key 
 
 ```js
-//pages/[pid].js
+//pages/products/[pid].js
 export async function getStaticPaths(){
   return {
     paths:[
@@ -5571,7 +5571,7 @@ export async function getStaticPaths(){
 - the downside of this method is if data loads quickly you see only a flash of the transient loading state `<p>loading...</p>` which may appear more like a page glitch. 
 
 ```js
-//pages/[pid].js using fallback: true/false
+//pages/products/[pid].js using fallback: true/false
 function ProductDetailsPage(props){
   const {loadedProduct} = props;
 
@@ -5598,7 +5598,7 @@ export async function getStaticPaths(){
 - you dont need to check if data has been passed from props...it will wait
 
 ```js
-//pages/[pid].js using fallback:'blocking'
+//pages/products/[pid].js using fallback:'blocking'
 function ProductDetailsPage(props){
   const {loadedProduct} = props;
   // if(!loadedProduct){
@@ -5621,7 +5621,7 @@ export async function getStaticPaths(){
 - this is because we dont really ever know which pages should be pre-loaded 
 
 ```js
-//pages/[pid].js
+//pages/products/[pid].js
 export async function getData(){
   const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
   const jsonData = await fs.readFile(filePath); 
@@ -5669,6 +5669,8 @@ export async function getStaticPaths(){
 - check `if(!product){ return {notFound: true}}`
 
 ```js
+//pages/products/[pid].js
+
 function ProductDetailPage(props){
 
   //check if data exists yet
@@ -5695,6 +5697,87 @@ export async function getStaticProps(context){
   return {
     props:{
       loadedProduct: product
+    }
+  }
+}
+```
+
+## 281. getServerSideProps() for server-side rendering (SSR)
+
+- 2 forms of rendering
+- should choose either getStaticProps()/ getStaticPaths() OR getServerSideProps()
+- they fulfil the same purpose (get props for the component) but run at different point of time.
+<img src="./pages-router/13-page-prerendering-and-data-fetching/public/server-side-rendering.jpg" alt="page pre-rendering choices" height="300"/>
+
+
+### static-site generation 
+- getStaticProps()
+- getStaticPaths() (for dynamic page generation..)
+- getStaticProps() and getStaticPaths() dont have access to the request incoming..because they are called at buildtime
+
+### server-side-rendering
+- somtimes you need to pre-render page for every request or you need access to the request object.. (eg. for cookies)
+- NEXTJS allows you to run 'real server-side' code for any incoming request.
+
+## 282. server-side-rendering: getServerSideProps()
+- nextjs has a function which you add to pages/ page component files. 
+- runs whenever a request for the page reaches the server
+- ie. runs only after code is deployed and only for incoming request...
+- getServerSideProps has the same function signature as getStaticProps()
+
+## 283. getServerSideProps() and its context
+- with getServerSideProps(context) -> you get access to "params", "req", "res"
+- http://localhost:3000/user-profile shows that you get access to server props via context directly.
+- NOTE: note using this function getServerSideProps() ensures its code runs for every incoming request (never static data served -> for highly dynamic data)
+- NOTE: with getServerSideProps() nextjs does not pre-generate pages at all because we run this server-side code for every request anyway..
+
+### nodejs default objects
+- req -> incoming request -> can read headers attached to request eg. cookie data
+- res -> can manipulate response before sent back by add extra headers eg. a cookie
+
+### dynamic params
+- params -> eg if on a dynamic page []
+
+```js
+//pages/user-profile.js
+function UserProfilePage(props){
+  return <h1>{props.username}</h1>
+}
+
+export default UserProfilePage;
+
+export async function getServerSideProps(context){
+  const {params, req, res} = context;
+
+  return {
+    props:{
+      username: 'Max'
+    }
+  }
+}
+
+```
+## 284. getServerSideProps() with dynamic pages
+- using getServerSideProps() for dynamic pages
+- `pages/[uid].js` 
+- http://localhost:3000/u1
+- NOTE: getStaticPaths() is for telling nextjs which pages should be pre-generated.
+- with getServerSideProps() we dont need and cant use getStaticPaths() - you get access to params directly from context.
+
+```js
+//pages/[uid].js
+function UserIdPage(props){
+  return <h1>{props.id}</h1>
+}
+export default UserIdPage;
+
+export async function getServerSideProps(context){
+  const {params} = context;
+  const userId = params.uid;
+
+  return {
+    props:{
+      id: 'userid-' + userId
     }
   }
 }

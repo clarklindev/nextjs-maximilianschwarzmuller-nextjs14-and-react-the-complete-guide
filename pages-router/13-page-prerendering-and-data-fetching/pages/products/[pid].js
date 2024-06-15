@@ -1,7 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-
 function ProductDetailPage(props){
   const {loadedProduct} = props;
 
@@ -18,7 +17,7 @@ function ProductDetailPage(props){
   )
 }
 
-export async function getData(){
+async function getData(){
   const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
   const jsonData = await fs.readFile(filePath); 
   const data = JSON.parse(jsonData);
