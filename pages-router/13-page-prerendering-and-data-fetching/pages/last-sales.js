@@ -1,14 +1,13 @@
 import { useEffect, useState} from "react";
 import useSWR from 'swr';
 
-function LastSalesPage(){
-  const [todos, setTodos] = useState();
+function LastSalesPage(props){
+  const [todos, setTodos] = useState(props.todos);
 
   //useSWR
   const {data, error} = useSWR(`https://jsonplaceholder.typicode.com/todos?_limit=10`, (url) => fetch(url).then(res => res.json()));
 
   useEffect(()=>{
-    console.log('data: ', data);
     if(data){
       
       const transformedTodos = [];
@@ -28,7 +27,7 @@ function LastSalesPage(){
     return <p>failed to load</p>
   }
 
-  if(!data || !todos){
+  if(!data && !todos){
     return <p>loading</p>
   }
 
@@ -81,6 +80,27 @@ function LastSalesPage(){
     todos.map(todo=> <li key={todo.id}>{todo.title}</li>)
   }
   </ul>);
+}
+
+export async function getStaticProps(){
+  const response = await fetch('https://jsonplaceholder.typicode.com/todos?_limit=5');
+  const data = await response.json();
+
+  //change from object to array
+  const transformedTodos = [];
+  for(const key in data){
+    transformedTodos.push({
+      id: data[key].id,
+      title: data[key].title
+    });
+  }
+
+  return {
+    props:{
+      todos:transformedTodos
+    },
+    revalidate: 10
+  }
 }
 
 export default LastSalesPage;

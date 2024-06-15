@@ -5820,6 +5820,75 @@ function Profile() {
   return <div>hello {data.name}!</div>
 }
 ```
+ 
+## 290. mixing pre-fetch and client-side fetch
+- using the previous lesson and adapting it so it pre-fetches data as well (using getStaticProps() or getServerSideProps())
+- here we use getStaticProps() and adjust the code a bit so that the result from getStaticProps is passed as props to the page component.
+
+```js
+//pages/last-sales.js
+import { useEffect, useState} from "react";
+import useSWR from 'swr';
+
+function LastSalesPage(props){
+  const [todos, setTodos] = useState(props.todos);
+
+  //useSWR
+  const {data, error} = useSWR(`https://jsonplaceholder.typicode.com/todos?_limit=10`, (url) => fetch(url).then(res => res.json()));
+
+  useEffect(()=>{
+    if(data){
+      
+      const transformedTodos = [];
+
+      for(const key in data){
+        transformedTodos.push({
+          id: data[key].id,
+          title: data[key].title
+        })
+      }
+
+      setTodos(transformedTodos);
+    }
+  }, [data]);
+  
+  if(error){
+    return <p>failed to load</p>
+  }
+
+  if(!data && !todos){
+    return <p>loading</p>
+  }
+  return (<ul>
+  {
+    todos.map(todo=> <li key={todo.id}>{todo.title}</li>)
+  }
+  </ul>);
+}
+
+export async function getStaticProps(){
+  const response = await fetch('https://jsonplaceholder.typicode.com/todos?_limit=5');
+  const data = await response.json();
+
+  //change from object to array
+  const transformedTodos = [];
+  for(const key in data){
+    transformedTodos.push({
+      id: data[key].id,
+      title: data[key].title
+    });
+  }
+
+  return {
+    props:{
+      todos:transformedTodos
+    },
+    revalidate: 10
+  }
+}
+
+export default LastSalesPage;
+```
 
 ---
 
