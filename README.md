@@ -5890,6 +5890,10 @@ export async function getStaticProps(){
 export default LastSalesPage;
 ```
 
+## 291. module summary
+- [module summary from udemy](https://www.udemy.com/course/nextjs-react-the-complete-guide/learn/lecture/25145790)
+- https://github.com/mschwarzmueller/nextjs-course-code/tree/04-data-fetching
+
 ---
 
 # Section 14 - project time: page pre-rendering & data-fetching
