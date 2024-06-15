@@ -5796,6 +5796,31 @@ export async function getServerSideProps(context){
 - exercise uses google firebase as dummy backend -> will use https://jsonplaceholder.typicode.com/
 - pages/last-sales.js
 
+## 288. + 290. useSWR()
+- SWR (stale-while-revalidate)
+- `pnpm i swr`
+
+- nextjs / vercel created a SWR hook to fetch data pattern in lesson 287.
+- has caching, retry on error, auto-revalidation, uses fetch api
+- [vercel documentation for SWR hook](https://swr.vercel.app/)
+
+- In this example, the useSWR hook accepts a key string and a fetcher function. key is a unique identifier of the data (normally the API URL) and will be passed to fetcher. fetcher can be any asynchronous function which returns the data, you can use the native fetch or tools like Axios.
+- The hook returns 3 values: data, isLoading and error, based on the status of the request.
+
+- NOTE: a fetcher function is now required!!! `useSWR(<request-url>, (url) => fetch(url).then(res => res.json()))`
+
+```js
+import useSWR from 'swr'
+ 
+function Profile() {
+  const { data, error, isLoading } = useSWR('/api/user', (url) => fetch(url).then(res => res.json()))
+ 
+  if (error) return <div>failed to load</div>
+  if (isLoading) return <div>loading...</div>
+  return <div>hello {data.name}!</div>
+}
+```
+
 ---
 
 # Section 14 - project time: page pre-rendering & data-fetching
