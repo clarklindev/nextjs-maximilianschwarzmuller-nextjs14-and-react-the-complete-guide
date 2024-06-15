@@ -5615,6 +5615,51 @@ export async function getStaticPaths(){
   }
 }
 ``` 
+
+## 279. loading paths dynamically
+- setting fallback back to `fallback:false` and mapping through ALL loaded data to create dynamic paths.
+- this is because we dont really ever know which pages should be pre-loaded 
+
+```js
+//pages/[pid].js
+export async function getData(){
+  const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
+  const jsonData = await fs.readFile(filePath); 
+  const data = JSON.parse(jsonData);
+  return data;
+}
+
+
+export async function getStaticProps(context){
+  const {params} = context;
+
+  const productId = params.pid
+  const data = await getData();
+
+  const product = data.products.find(product=> product.id === productId);
+  
+  return {
+    props:{
+      loadedProduct: product
+    }
+  }
+}
+
+export async function getStaticPaths(){
+  const data = await getData();
+
+  const ids = data.products.map(product => product.id);
+  const pathsWithParams = ids.map(id => ({params:{pid: id}}));
+
+  return {
+    paths: pathsWithParams, 
+    // fallback: true
+    // fallback: 'blocking'
+    fallback: false,
+  }
+}
+
+```
 ---
 
 # Section 14 - project time: page pre-rendering & data-fetching
