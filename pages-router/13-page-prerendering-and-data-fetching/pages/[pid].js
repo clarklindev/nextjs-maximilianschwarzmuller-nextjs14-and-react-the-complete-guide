@@ -33,6 +33,11 @@ export async function getStaticProps(context){
 
   const product = data.products.find(product=> product.id === productId);
   
+  //not found
+  if(!product){
+    return {notFound: true}
+  }
+
   return {
     props:{
       loadedProduct: product

@@ -5660,6 +5660,46 @@ export async function getStaticPaths(){
 }
 
 ```
+
+## 280. fallback "Not found" page
+- trying to load a page that does not exist, eg. if you try load a detailed page where pid is not actually part of the stored data
+- so setting: `fallback: true` even if data not found you could still render a page 
+- NOTE: with fallback: true, you need to check if data exists...
+- ERROR: trying to load data where the id does not exist... should show 404 page
+- check `if(!product){ return {notFound: true}}`
+
+```js
+function ProductDetailPage(props){
+
+  //check if data exists yet
+  if(!loadedProduct){
+    return <p>Loading...</p>
+  }
+
+//...
+}
+
+export async function getStaticProps(context){
+  const {params} = context;
+
+  const productId = params.pid
+  const data = await getData();
+
+  const product = data.products.find(product=> product.id === productId);
+  
+  //not found
+  if(!product){
+    return {notFound: true}   //404 notFound page
+  }
+
+  return {
+    props:{
+      loadedProduct: product
+    }
+  }
+}
+```
+
 ---
 
 # Section 14 - project time: page pre-rendering & data-fetching
