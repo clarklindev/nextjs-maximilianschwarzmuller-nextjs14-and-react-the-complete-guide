@@ -5959,6 +5959,7 @@ export async function getStaticProps(){
 - page should be search-engine crawlable (contains details about events)
 - currently its also fetching client-side -> lets update to load the data server-side with getStaticProps()
 - update `helpers/api-util.js`
+
 ```js
 //helpers/api-util.js
 export async function getAllEvents(){
@@ -5993,6 +5994,17 @@ export async function getEventById(id) {
 - order of execution getStaticPaths() -> getStaticProps() -> page component
 - with getStaticPaths() use getAllEvents() and then extract their id's then derive the to be generated paths from that..
 - NOTE: fallback: false -> unknown eventId's will get 404 page 
+
+## 297. Optimizing Data Fetching
+- optimizable? well, currently the landing index page prefetches from db and will only update if we build again -> redeployed to reflect new data
+- pages/index.js (featured events)
+- `pages/events/[eventId].js` events page
+- optimize by getStaticProps() `revalidate` and set time on landing to 1800 (sec) and in `[eventId].js` to 30
+- and fallback: `blocking`
+
+
+## 298. Working on the "All Events" Page
+- pages/events/index.js - same here..use getStaticProps()
 
 ---
 
