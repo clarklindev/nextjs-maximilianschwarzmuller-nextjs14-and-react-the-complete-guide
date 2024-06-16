@@ -6024,6 +6024,51 @@ because getServerSideProps() gets called with every new request anyway
 
 # Section 15 - optimizing Next.js apps
 [back (table of contents)](#table-of-contents)
+- lessons 303->315 (13 lessons)
+- 41min
+- pages-router/15-optimizing-nextjs
+- continuation of project from Events project in section folder: `14-page-prerendering-and-data-fetching-project`
+- clone: `git clone -b <branch_name> <repository_url>`
+- `git clone -b 05-prj-data-fetching https://github.com/mschwarzmueller/nextjs-course-code.git`
+
+## 303. module introduction
+- page optimizations -> meta + head tags
+- reusing components ,logic, configurations
+- optimizing images
+
+## 304. "head" metadata
+- head needs "title", "description" but nextjs doesnt automatically put it in.
+
+## 305. Configuring the "head" content
+- if you want to add content between `<head>` tags on page, you can import head class
+- `import Head from 'next/head';`
+- you can then add this Head component anywhere in JSX code
+- nextjs will inject this content you add into the head of the page.
+- for SEO you can add title and meta-description tags
+
+## 306. dynamic "head" content
+- you can also have dynamic content within the head: `<title>{event.title}</title>`
+- eg. `pages/[eventId].js`
+
+```js
+import Head from 'next/head'
+
+//...
+
+return (
+  <Head>
+    <title>{event.title}</title>
+    <meta name="description" content="description text"/>
+  </Head>
+)
+```
+
+
+
+
+
+
+
 
 ---
 
