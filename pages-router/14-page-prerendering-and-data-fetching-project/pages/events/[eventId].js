@@ -1,17 +1,17 @@
-import { Fragment } from 'react';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
+// import { getEventById } from '../../data/dummy-data';
+import EventSummary from "../../components/event-detail/event-summary";
+import EventLogistics from "../../components/event-detail/event-logistics";
+import EventContent from "../../components/event-detail/event-content";
+import ErrorAlert from "../../components/ui/error-alert";
+import { getEventById, getAllEvents } from "../../helpers/api-util";
 
-import { getEventById } from '../../data/dummy-data';
-import EventSummary from '../../components/event-detail/event-summary';
-import EventLogistics from '../../components/event-detail/event-logistics';
-import EventContent from '../../components/event-detail/event-content';
-import ErrorAlert from '../../components/ui/error-alert';
+function EventDetailPage(props) {
+  // const router = useRouter();
+  // const eventId = router.query.eventId;
+  // const event = getEventById(eventId);
 
-function EventDetailPage() {
-  const router = useRouter();
-
-  const eventId = router.query.eventId;
-  const event = getEventById(eventId);
+  const event = props.event;
 
   if (!event) {
     return (
@@ -22,7 +22,7 @@ function EventDetailPage() {
   }
 
   return (
-    <Fragment>
+    <>
       <EventSummary title={event.title} />
       <EventLogistics
         date={event.date}
@@ -33,8 +33,36 @@ function EventDetailPage() {
       <EventContent>
         <p>{event.description}</p>
       </EventContent>
-    </Fragment>
+    </>
   );
+}
+
+export async function getStaticProps(context) {
+  const eventId = context.params.eventId; //because -> pages/events/[eventId].js
+  const event = await getEventById(eventId);
+
+  if (!event) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      event,
+    },
+    revalidate: 30,
+  };
+}
+
+export async function getStaticPaths() {
+  const events = await getAllEvents();
+  const paths = events.map((event) => ({ params: { eventId: event.id } }));
+
+  return {
+    paths: paths,
+    fallback: 'blocking',
+  };
 }
 
 export default EventDetailPage;

@@ -5929,6 +5929,71 @@ export default LastSalesPage;
 - https://firebase.google.com/docs/database/rest/retrieve-data#section-rest-filtering
 - helpers/api-util.js (fetch from firebase then fiter with js)
 
+```js
+// import { getFeaturedEvents } from '../data/dummy-data';
+import { getFeaturedEvents } from '../helpers/api-util';
+import EventList from '../components/events/event-list';
+
+function HomePage(props) {
+  // const featuredEvents = getFeaturedEvents(); //client-side fetch
+  return (
+    <div>
+      <EventList items={props.events} />
+    </div>
+  );
+}
+export default HomePage;
+
+export async function getStaticProps(){
+  const featuredEvents = await getFeaturedEvents(); //server-side 
+  return {
+    props:{
+      events:featuredEvents
+    }
+  }  
+}
+```
+
+## 296. loading data and paths for dynamic pages
+- `pages/events/[eventId].js`
+- page should be search-engine crawlable (contains details about events)
+- currently its also fetching client-side -> lets update to load the data server-side with getStaticProps()
+- update `helpers/api-util.js`
+```js
+//helpers/api-util.js
+export async function getAllEvents(){
+  const response = await fetch('https://udemy-nextjs14-maximillian-default-rtdb.asia-southeast1.firebasedatabase.app/events.json');
+  const data = await response.json();
+  const events = [];
+  for(const key in data){
+    events.push({
+      id: key, 
+      ...data[key]
+    })
+  }
+
+  return events;
+}
+
+export async function getFeaturedEvents() {
+  const allEvents = await getAllEvents();
+
+  return allEvents.filter((event) => event.isFeatured);
+}
+
+
+export async function getEventById(id) {
+  const allEvents = await getAllEvents();
+  return allEvents.find((event) => event.id === id);
+}
+
+```
+- because `[eventId].js` is dynamic page -> server-side rending cant anticipate the page to preload BUT we can fix this with getStaticPaths()
+- getStaticPaths() -> will tell nextjs which eventId's it should pre-render `pages/events/[eventId].js`
+- order of execution getStaticPaths() -> getStaticProps() -> page component
+- with getStaticPaths() use getAllEvents() and then extract their id's then derive the to be generated paths from that..
+- NOTE: fallback: false -> unknown eventId's will get 404 page 
+
 ---
 
 # Section 15 - optimizing Next.js apps
