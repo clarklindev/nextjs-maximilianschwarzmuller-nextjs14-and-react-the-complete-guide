@@ -6006,6 +6006,13 @@ export async function getEventById(id) {
 ## 298. Working on the "All Events" Page
 - pages/events/index.js - same here..use getStaticProps()
 
+## 299. Using Server-side Rendering (SSR)
+- `pages/events/[...slug].js`
+- best solution is just-in-time getServerSideProps()
+- because its dynamic with multi-path segments, getStaticProps() is not ideal as there is high combination of possibilities. 
+- with filter of dates (year/month) there is equal chance of visits
+- 
+
 ---
 
 # Section 15 - optimizing Next.js apps
