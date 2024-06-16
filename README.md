@@ -6011,7 +6011,14 @@ export async function getEventById(id) {
 - best solution is just-in-time getServerSideProps()
 - because its dynamic with multi-path segments, getStaticProps() is not ideal as there is high combination of possibilities. 
 - with filter of dates (year/month) there is equal chance of visits
-- 
+
+## 300. Adding Client-Side Data Fetching
+- here in this project -> filtered event list page probably doesnt need server-pre-rendered pages
+- initial data missing (will need loading state)
+- its ideal for client-side loading as page will load quickly
+- having both getServerSideProps() and client-side data fetching doesnt make much sense -> remove getServerSideProps()
+because getServerSideProps() gets called with every new request anyway
+- this Client-Side Data Fetching approach is optional because it would be fine to use just getServerSideProps()
 
 ---
 
