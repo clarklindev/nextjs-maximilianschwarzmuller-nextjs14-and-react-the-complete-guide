@@ -6076,6 +6076,36 @@ let pageHeadData = (
 );
 ```
 
+## 308. working with _app.js (reusing Logic across pages)
+- `_app.js` is the root app component that is rendered for every page that is being displayed
+- so you can add the Head element in the _app.js
+- eg. you can add the meta tag to ensure all pages display/scale correctly
+- `<meta name="viewport" content="initial-scale=1.0, width=device-width">`
+
+## 309. merge head content
+- duplication of `<Head>` in _app.js and page component files
+- the contents of `<Head>` get merged -> when in conflict...always picks the latest content 
+- adding `<title>` and `<meta name="description" content=""/>` in _app.js ensures there's a general usecase title on every page (by default)
+ 
+```js
+//pages/_app.js
+import Head from 'next/head';
+
+function MyApp({ Component, pageProps }) {
+  return (
+    <Layout>
+      <Head>
+        <title>default title for all pages</title>
+        <meta name="description" content="default description for all pages"/>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+      </Head>
+      <Component {...pageProps} />
+    </Layout>
+  );
+}
+export default MyApp;
+```
+
 
 ---
 
