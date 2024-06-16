@@ -6105,8 +6105,41 @@ function MyApp({ Component, pageProps }) {
 }
 export default MyApp;
 ```
+## 310. _document.js
+- `_document.js` must be placed in `pages/`
+- file is not there by default but if it is, nextjs will work with it.
+- must have class component which extends 'next/document';
+`import Document, {Html, Head, Main, NextScript} from 'next/document';`
+- class has render() method -> with JSX that takes on specific structure
+- NOTE: `<Head>` here from `next/document` is different from the Head imported from `next/head`; and should only be used inside `_document.js`
+- NOTE: the default DOM structure below (if you dont override), if you want to override it, you need to re-create this structure.
 
+### html lang=''
+reason why you want to recreate the structure? maybe you want to add "lang" attribute to `<html lang="en">` (server needs to restart)
 
+### additional HTML
+maybe you want to add `<div id="overlays"/>` useful with eg. portals for modals..
+
+```js
+//pages/_document.js
+import Document, {Html, Head, Main, NextScript} from 'next/document';
+class MyDocument extends Document{
+  render(){
+    return (
+      <Html>
+        <Head/>
+        <div id="overlays"/>
+        <body>
+          <Main/>
+          <NextScript/>
+        </body>
+      </Html>
+    );
+  }
+}
+export default MyDocument;
+
+```
 ---
 
 //FULL STACK REACT
