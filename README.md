@@ -5899,6 +5899,24 @@ export default LastSalesPage;
 # Section 14 - project time: page pre-rendering & data-fetching
 [back (table of contents)](#table-of-contents)
 
+## 293. module introduction
+- git branch: `03-prj-routing`
+- git clone -b 03-prj-routing https://github.com/mschwarzmueller/nextjs-course-code
+- revisiting the events manager [section 12-pages-router-project](#section-12---project-time-working-with-file-based-routing)
+- transition project from dummy data to an external data source
+
+## 294. project files
+- migrate data/dummy-data.js to firebase backend realtime database
+
+### firebase realtime db
+- firebase google console -> create project -> realtime database -> create database
+- start in test mode
+- firebase db: https://udemy-nextjs14-maximillian-default-rtdb.asia-southeast1.firebasedatabase.app/
+- firebase -> add sales table -> add child object: eg "s1", "s2", "s3" -> with `username` (string) and `volume` (number)
+- an example of what db structure looks like in firebase: data/udemy-nextjs14-maximillian-default-rtdb-export.json
+
+<img src="./pages-router/14-page-prerendering-and-data-fetching-project/public/firebase-db.jpg" alt="firebase db screenshot" height="300">
+
 ---
 
 # Section 15 - optimizing Next.js apps
