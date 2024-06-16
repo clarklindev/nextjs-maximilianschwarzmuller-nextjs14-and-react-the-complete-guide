@@ -6063,11 +6063,18 @@ return (
 )
 ```
 
+## 307. Reusing Logic Inside A Component
+- reuse Head code by extracting and assign to a reassignable variable (with defaults)
+- `page/events/[...slug].js`
 
-
-
-
-
+```js
+let pageHeadData = (
+  <Head>
+    <title>Filtered Events</title>
+    <meta name="description" content={`A list of filtered events`}/>
+  </Head>
+);
+```
 
 
 ---
