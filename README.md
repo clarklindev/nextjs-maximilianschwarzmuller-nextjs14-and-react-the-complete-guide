@@ -5917,6 +5917,18 @@ export default LastSalesPage;
 
 <img src="./pages-router/14-page-prerendering-and-data-fetching-project/public/firebase-db.jpg" alt="firebase db screenshot" height="300">
 
+## 295. adding static site generation (SSG) on the home page
+- TODO: pages/index.js -> load featured events using getStaticProps()
+- static page generation at build
+
+### getStaticProps() 
+- it makes sense to use server-side rendering to pre-load
+- REQUIRED landing page support seo
+- content wont continuously update on every request...just new data at build with revalidate:10  -> use getStaticProps() 
+- with firebase you can filter the data you are retrieving with parameters
+- https://firebase.google.com/docs/database/rest/retrieve-data#section-rest-filtering
+- helpers/api-util.js (fetch from firebase then fiter with js)
+
 ---
 
 # Section 15 - optimizing Next.js apps
