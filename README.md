@@ -6443,7 +6443,56 @@ function HomePage() {
 
 export default HomePage;
 ```
+## 323. Using API Routes For Pre-Rendering Pages
+- test: http://localhost:3000/feedback
+- you can still have `pages/feedback/index.js` and `api/feedback.js` coexist 
+- AND at same time have pages/feedback/index.js pre-render using getStaticProps()
+- note when working with external apis (eg. firebase) -> you CAN use fetch directly inside getStaticProps()
+- BUT when its your own apis, you should not use getStaticProps() or getServerSideProps() to talk to your own apis via api route.. 
+- TODO: you export the api functions (`api/feedback.js`) and import them in the page component (`pages/feedback/index.js`) because you can leverage the fact that code already running on server.
+- ie. instead of doing a fetch() and hitting the api routes... you are going to be calling server side function directly from getStaticProps() or getServerSideProps()
+- ie. to work with our API routes inside of getStaticProps. We don't send the request there, we just execute the code directly in getStaticProps() or getServerSideProps()
 
+```js
+//api/feedback.js
+export function buildFeedbackPath(){
+  return path.join(process.cwd(), 'data', 'feedback.json');
+}
+
+export function extractFeedback(filePath){
+  const fileData = fs.readFileSync(filePath);
+  const data = JSON.parse(fileData);
+  return data;
+}
+
+```
+
+```js
+//pages/feedback/index.js
+import {buildFeedbackPath, extractFeedback} from '../api/feedback';
+
+function FeedbackPage(props){
+  return (
+    <ul>
+      {props.feedbackItems.map(item=> <li key={item.id}>{item.feedback}</li>)}
+    </ul>
+  )
+
+}
+
+export default FeedbackPage;
+
+export async function getStaticProps(){
+  const filePath = buildFeedbackPath();
+  const data = extractFeedback(filePath);
+
+  return {
+    props:{
+      feedbackItems: data
+    }
+  }
+}
+```
 ---
 
 # Section 17 - Project time: API Routes
