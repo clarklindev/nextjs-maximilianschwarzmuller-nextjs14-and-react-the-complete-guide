@@ -6257,6 +6257,74 @@ export default HomePage;
 
 ```
 
+## 320. Parsing The Incoming Request & Executing Server-side Code
+- with the frontend form sent, you can handle the data with api route
+- pages/api/feedback.js
+- TODO: figure out the request method eg. GET, POST, PUT, DELETE
+- you want to store the incoming data..so look for POST method
+- req.body -> body is the already parsed body sent with request (form) eg. send request with body {email:"", feedback:""}
+- NOTE: id of incoming request is just for learning...it is possible to have clashing id's using Date()
+
+### store data in file 
+- NOTE: we store in a file in development but ideally use a database
+- TODO: store form data in a file: `data/feedback.json`
+- feedback.json starts off with empty array [] (we designed it this way...)
+- because its server-side code we can run node code like 'fs' in pages/api/feedback.js
+
+### read data in file / write to file
+- read what is in db first
+- we want to read whatever is in the file and then update with newer content
+
+```js
+//pages/index.js
+
+//...
+function submitHandler(event){
+  event.preventDefault();
+
+  const enteredEmail = emailRef.current.value;
+  const enteredFeedback = feedbackRef.current.value;
+  // console.log(enteredEmail, enteredFeedback);
+
+  fetch(); //{email: enteredEmail, feedback: enteredFeedback}
+}
+
+```
+
+```js
+//pages/api/feedback.js
+import fs from 'fs';
+import path from 'path';
+
+function handler(req, res){
+  if(req.method === 'POST'){
+    const emailText = req.body.email;
+    const feedbackText = req.body.feedback;
+
+    const newFeedback = {
+      id: new Date().toISOString(),
+      email:enteredEmail, 
+      feedback:enteredFeedback
+    };
+    
+    //read data/feedback.json
+    const filePath = path.join(process.cwd(), 'data', 'feedback.json');
+    const fileData = fs.readFileSync(filePath);
+    const data = JSON.parse(fileData);
+    data.push(newFeedback);//add new data
+    
+    //store in file data/feedback.json write with 'blocking' (synchronously)
+    fs.writeFileSync(filePath, JSON.stringify(data));
+    res.status(201).json({message: 'success', feedback: newFeedback});
+
+  }
+  else{
+    res.status(200).json({message: "testing testing 123"});
+  }
+}
+export default handler;
+```
+
 ---
 
 # Section 17 - Project time: API Routes

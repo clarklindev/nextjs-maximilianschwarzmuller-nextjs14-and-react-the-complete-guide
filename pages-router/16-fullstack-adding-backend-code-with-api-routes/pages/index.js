@@ -10,8 +10,9 @@ function HomePage() {
 
     const enteredEmail = emailRef.current.value;
     const enteredFeedback = feedbackRef.current.value;
-
     // console.log(enteredEmail, enteredFeedback);
+
+    fetch();  //{email: enteredEmail, feedback: enteredFeedback}
   }
 
   return (
