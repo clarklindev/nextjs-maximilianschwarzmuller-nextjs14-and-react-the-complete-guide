@@ -6362,6 +6362,88 @@ async function submitHandler(event){
   console.log('response: ', data);
 }
 ```
+
+## 322. Using API Routes To Get Data
+- on server you can handle get requests too by returning data 
+- `localhost:3000/api/feedback` 
+- adjust server code pages/api/feedback.js so it returns data with incoming GET requests.
+- TODO: instead of access to url -> change code so pressing button sends GET request to `/api/feedback` to load data from feedback.json
+- then on client-side save the returned data from the request in state and display list.
+
+ ```js
+ //pages/index.js
+ import {useRef, useState} from 'react';
+
+function HomePage() {
+
+  const emailRef = useRef();
+  const feedbackRef = useRef();
+
+  const [feedbackItems, setFeedbackItems] = useState([]);
+
+  async function submitHandler(event){
+    event.preventDefault();
+  
+    const enteredEmail = emailRef.current.value;
+    const enteredFeedback = feedbackRef.current.value;
+    // console.log(enteredEmail, enteredFeedback);
+  
+    const requestBody = {
+      email: enteredEmail,
+      feedback: enteredFeedback
+    }
+  
+    const response = await fetch('/api/feedback', {
+      method: "POST",
+      body: JSON.stringify(requestBody),
+      headers:{
+        'Content-Type':'application/json'
+      }
+    });
+  
+    const data = await response.json();
+    console.log('response: ', data);
+  }
+
+  async function loadFeedbackHandler(){
+    const response = await fetch('/api/feedback');
+    const data = await response.json();
+    setFeedbackItems(data.feedback);  //access feedback prop from response
+  }
+
+  return (
+    <div>
+      <h1>The Home Page</h1>
+      <form onSubmit={submitHandler}>
+        <div>
+          <label htmlFor="email">your email address</label>
+          <input ref={emailRef} type="email" id="email"/>
+        </div>
+        <div>
+          <label htmlFor="feedback">your feedback</label>
+          <textarea ref={feedbackRef} rows="5" id="feedback"/>
+        </div>
+        <button>send feedback</button>
+      </form>
+      <hr/>
+      <button onClick={loadFeedbackHandler}>load</button>
+
+      <ul>
+        {
+          feedbackItems.map(item => (
+          <li key={item.id}>
+            {item.feedback}
+          </li>)
+          )
+        }
+      </ul>
+    </div>
+  );
+}
+
+export default HomePage;
+```
+
 ---
 
 # Section 17 - Project time: API Routes
