@@ -6493,6 +6493,93 @@ export async function getStaticProps(){
   }
 }
 ```
+
+## 324. Creating & Using Dynamic API Routes
+- dynamic api routes eg. `api/feedback/[feedbackId].js` (to fetch single piece of data of feedback with feedbackId) 
+- dynamic routes use same file/folder naming syntax `[]` as dynamic pages eg. `api/feedback/[feedbackId].js` 
+- `pages/api/feedback/[feedbackId].js`: use the `feedbackId` to retrieve specific feedback
+- then in `pages/feedback/index.js` you can use this dynamic api route: when the show details `<button>` is clicked -> loads more data but just for the `feedbackId` item
+- test: `http://localhost:3000/feedback` clicking on button causes visit to `api/feedback/[feedbackId].js` returning single feedback
+- initial feedbackItems is loaded from getStaticProps();
+- NOTE: in this example, there is actually no need to send another request in `pages/feedback/index.js` loadFeedbackHandler() because getStaticProps() already has passed all data (including the one clicked) passed-in to the component page as `props.feedbackItems` so it makes the fetch loadFeedbackHandler() redundant. 
+- this exercise was to show how dynamic api routes work.
+
+```js
+//pages/api/feedback/[feedbackId].js
+//localhost:3000/feedback/
+import { buildFeedbackPath, extractFeedback } from "./index";
+
+function handler(req, res) {
+  if (req.method === "POST") {
+  }
+  if (req.method === "DELETE") {
+  }
+
+  //GET
+  const feedbackId = req.query.feedbackId;
+
+  const filePath = buildFeedbackPath();
+  const feedbackData = extractFeedback(filePath);
+  const selectedFeedback = feedbackData.find(
+    (feedback) => feedback.id === feedbackId
+  );
+  res.status(200).json({
+    items: {
+      feedback: selectedFeedback,
+    },
+  });
+}
+
+export default handler;
+
+```
+```js
+//pages/feedback/index.js
+import {useState} from 'react';
+
+import {buildFeedbackPath, extractFeedback} from '../api/feedback';
+
+function FeedbackPage(props){
+  const [feedbackData, setFeedbackData] = useState();
+
+  //this id {"id":"2024-06-17T04:59:10.939Z","email":"test@gmail.com","feedback":"testing"}
+  async function loadFeedbackHandler(id){
+    const response = await fetch(`/api/feedback/${id}`); 
+    const data = await response.json();
+    setFeedbackData(data.feedback);
+  }
+
+  return (
+    <>
+      {feedbackData && <p>email: {feedbackData.email}</p>}
+      <ul>
+        {
+          props.feedbackItems.map(item=> 
+          <li key={item.id}>
+            {item.feedback}
+            <button onClick={loadFeedbackHandler.bind(null, item.id)}>show details</button>
+          </li>)
+        }
+      </ul>
+    </>
+  )
+
+}
+
+export default FeedbackPage;
+
+export async function getStaticProps(){
+  const filePath = buildFeedbackPath();
+  const data = extractFeedback(filePath);
+
+  return {
+    props:{
+      feedbackItems: data
+    }
+  }
+}
+```
+
 ---
 
 # Section 17 - Project time: API Routes
