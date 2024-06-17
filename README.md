@@ -6210,6 +6210,52 @@ export default handler;
 
 ```
 
+## 319. preparing the frontend form 
+- pages/index.js
+- http://localhost:3000/ -> shows this basic html form
+- TODO: when form is sent, the data should be sent to some database
+- should not talk directly to db (insecure) -> what you should do is send a request to your own api route where the action is handled on the server (backend)
+
+```js
+//pages/index.js
+import {useRef} from 'react';
+
+function HomePage() {
+
+  const emailRef = useRef();
+  const feedbackRef = useRef();
+
+  function submitHandler(event){
+    event.preventDefault();
+
+    const enteredEmail = emailRef.current.value;
+    const enteredFeedback = feedbackRef.current.value;
+
+    // console.log(enteredEmail, enteredFeedback);
+  }
+
+  return (
+    <div>
+      <h1>The Home Page</h1>
+      <form onSubmit={submitHandler}>
+        <div>
+          <label htmlFor="email">your email address</label>
+          <input ref={emailRef} type="email" id="email"/>
+        </div>
+        <div>
+          <label htmlFor="feedback">your feedback</label>
+          <textarea ref={feedbackRef} rows="5" id="feedback"/>
+        </div>
+        <button>send feedback</button>
+      </form>
+    </div>
+  );
+}
+
+export default HomePage;
+
+
+```
 
 ---
 
