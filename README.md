@@ -6171,6 +6171,45 @@ import classes from './event-item.module.css';
 
 # Section 16 - adding backend code with API Routes (fullstack react)
 [back (table of contents)](#table-of-contents)
+- 12 lessons (316->327)
+- 1hr 14min
+
+## 316. module introduction
+- api routes
+- adding and working with api routes
+- requests/ responses
+
+## 317. what are api routes
+- api routes -> when you work with urls to sending/receiving data instead of page content
+- REST APIs - accept data and send response 
+- responses can be any data -> can be any format of choice eg. JSON is the default standard for api information exchange
+- apis allow us to create our own api endpoints in nextjs application
+
+## 318. writing an api
+- `16-fullstack-adding-backend-code-with-api-routes/`
+
+### clone github project files
+- git clone -b 07-api-routes-starting-project https://github.com/mschwarzmueller/nextjs-course-code.git
+
+- MUST be folder called: `api/` ie. 'pages/api'
+- pages put inside api folder will be treated a special way
+- you name the files anything you want eg. `feedback.js`
+- they should have a function: `function handler(req,res){}` and export the function as default: `export default handler;`
+- NOTE: this is server side code, any code in api/ will never be exposed to client-side code bundle
+- NOTE: you can handle any server-side code of choice in this handler()
+- res.status().json() -> send back status code eg. res.status(200).json(); as json data
+- you pass an object into json()... any data you want to send (the whole object is up to you to decide)
+- http://localhost:3000/api/feedback will send back json data where headers `content-type:application/json`
+
+```js
+//pages/api/feedback.js
+function handler(req, res){
+  res.status(200).json({message: "testing testing 123"});
+}
+export default handler;
+
+```
+
 
 ---
 
