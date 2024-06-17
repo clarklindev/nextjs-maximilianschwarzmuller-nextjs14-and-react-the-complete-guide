@@ -6257,7 +6257,7 @@ export default HomePage;
 
 ```
 
-## 320. Parsing The Incoming Request & Executing Server-side Code
+## 320. Parsing The Incoming Request & Executing Server-side Code (backend)
 - with the frontend form sent, you can handle the data with api route
 - pages/api/feedback.js
 - TODO: figure out the request method eg. GET, POST, PUT, DELETE
@@ -6325,6 +6325,43 @@ function handler(req, res){
 export default handler;
 ```
 
+### 321. sending requests to api routes (from frontend)
+- this part is frontend where form data is sent.
+- pages/index.js
+- since we are hosting backend too the request url is sent to "/api/feedback" 
+- NOTE: '/' makes path absolute (which is appended directly after domain)
+- NB: set method to `method:'POST'`
+- headers -> content type is set.. `headers:{'Content-Type':'application/json'}`
+
+```js
+//pages/index.js "fontend"
+
+//...
+
+async function submitHandler(event){
+  event.preventDefault();
+
+  const enteredEmail = emailRef.current.value;
+  const enteredFeedback = feedbackRef.current.value;
+  // console.log(enteredEmail, enteredFeedback);
+
+  const requestBody = {
+    email: enteredEmail,
+    feedback: enteredFeedback
+  }
+
+  const response = await fetch('/api/feedback', {
+    method: "POST",
+    body: JSON.stringify(requestBody),
+    headers:{
+      'Content-Type':'application/json'
+    }
+  });
+
+  const data = await response.json();
+  console.log('response: ', data);
+}
+```
 ---
 
 # Section 17 - Project time: API Routes

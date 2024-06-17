@@ -5,14 +5,28 @@ function HomePage() {
   const emailRef = useRef();
   const feedbackRef = useRef();
 
-  function submitHandler(event){
+  async function submitHandler(event){
     event.preventDefault();
-
+  
     const enteredEmail = emailRef.current.value;
     const enteredFeedback = feedbackRef.current.value;
     // console.log(enteredEmail, enteredFeedback);
-
-    fetch();  //{email: enteredEmail, feedback: enteredFeedback}
+  
+    const requestBody = {
+      email: enteredEmail,
+      feedback: enteredFeedback
+    }
+  
+    const response = await fetch('/api/feedback', {
+      method: "POST",
+      body: JSON.stringify(requestBody),
+      headers:{
+        'Content-Type':'application/json'
+      }
+    });
+  
+    const data = await response.json();
+    console.log('response: ', data);
   }
 
   return (

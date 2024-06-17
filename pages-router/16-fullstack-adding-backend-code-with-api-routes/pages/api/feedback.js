@@ -8,8 +8,8 @@ function handler(req, res){
 
     const newFeedback = {
       id: new Date().toISOString(),
-      email:enteredEmail, 
-      feedback:enteredFeedback
+      email: emailText, 
+      feedback: feedbackText
     };
     
     //read data/feedback.json
