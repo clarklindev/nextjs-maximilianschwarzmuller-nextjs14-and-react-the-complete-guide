@@ -6580,10 +6580,15 @@ export async function getStaticProps(){
 }
 ```
 
+## 325. Exploring Different Ways Of Structuring API Route Files
+- you can also have catch all api routes `/[...id]`
+- how filenaming affects priority? files with specific name (eg. exact match) takes precendence over dynamic file api if both in same folder.
+
 ---
 
 # Section 17 - Project time: API Routes
 [back (table of contents)](#table-of-contents)
+
 
 ---
 
