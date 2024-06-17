@@ -6140,6 +6140,31 @@ class MyDocument extends Document{
 export default MyDocument;
 
 ```
+
+## 312. Optimizing images
+- `import Image from 'next/image'`
+- `<Image/>` replaces `<img>` -> nextjs creates mulitple versions of the image on the fly.
+- images are optimized for the devices making the request
+- REQUIRED: `width` and `height` as it should display on screen
+- NOTE: images are lazy loaded, so if not visible on screen, nextjs will not load them
+- you can use objectFit but associated as a className you link via css.
+
+```js
+//components/events/event-item.js
+import Image from 'next/image';
+import classes from './event-item.module.css';
+
+//...
+<Image src="" alt="" width="250" height="130" className={classes.fill}/>
+```
+
+```css
+/* components/events/event-item.module.css */
+.fill{
+  object-fit:fill;
+}
+```
+
 ---
 
 //FULL STACK REACT
