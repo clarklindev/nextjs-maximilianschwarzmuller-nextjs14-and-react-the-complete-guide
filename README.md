@@ -6588,7 +6588,21 @@ export async function getStaticProps(){
 
 # Section 17 - Project time: API Routes
 [back (table of contents)](#table-of-contents)
+- 17-fullstack-api-routes-project/
+- 15 lessons (1hr 25min)
+- Events project
+- `git clone -b 08-prj-api-routes-starting-project https://github.com/mschwarzmueller/nextjs-course-code.git`
 
+## 328. Module introduction
+- newletter registration flow -> store email address (api routes)
+- a "comments" section
+  - api routes -> store comments on backend (api routes)
+  - load single event -> load comments (view comments)
+
+## 239. setting up project
+- input/ (new -> contains components)
+- `pages/event/[eventId].js` uses `<Comments/>`
+- `pages/index.js` uses `<NewsletterRegistration/>`
 
 ---
 
