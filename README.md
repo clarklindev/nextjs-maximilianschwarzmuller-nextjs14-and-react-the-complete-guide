@@ -6615,6 +6615,20 @@ export async function getStaticProps(){
 - pages/api/newsletter.js (api)
 - components/input/newsletter-registration.js
 
+## 331-332. adding comments api routes + Connecting the Frontend To the Comments API Routes
+- ERROR: if you get a build error "Warning: React does not recognize the `fetchPriority` prop on a DOM element." downgrade react and react-dom to 18.2.0
+- note: `pages/api/comments/[eventId].js` the eventId is part of the url so we retrieve this eventId   
+- the endpoint works for "POST" and "GET"
+
+``
+
+```js
+//pages/api/comments/[eventId].js
+handler(req,res){
+  const eventId = req.query.eventId;  //because folder is -> pages/api/comments/[eventId]
+} 
+```
+
 
 ---
 

@@ -44,10 +44,10 @@ function EventDetailPage(props) {
 }
 
 export async function getStaticProps(context) {
-  const eventId = context.params.eventId;
+  const eventId = context.params.eventId; //get params from url -> pages/events/[eventId].js
 
   const event = await getEventById(eventId);
-
+  
   return {
     props: {
       selectedEvent: event
