@@ -6590,19 +6590,31 @@ export async function getStaticProps(){
 [back (table of contents)](#table-of-contents)
 - 17-fullstack-api-routes-project/
 - 15 lessons (1hr 25min)
-- Events project
+- Events project with api routes
 - `git clone -b 08-prj-api-routes-starting-project https://github.com/mschwarzmueller/nextjs-course-code.git`
 
 ## 328. Module introduction
-- newletter registration flow -> store email address (api routes)
-- a "comments" section
+1. newletter registration flow -> store email address (api routes)
+2. a "comments" feature
   - api routes -> store comments on backend (api routes)
   - load single event -> load comments (view comments)
 
-## 239. setting up project
+## 329. setting up project
 - input/ (new -> contains components)
 - `pages/event/[eventId].js` uses `<Comments/>`
 - `pages/index.js` uses `<NewsletterRegistration/>`
+- set up database url for fetch() in `helpers/api-util.js` and `page/events/[...slug].js`
+
+### TODO
+1. add API route -> newsletter signup
+2. add API route -> comments -> route to allow users to add comments -> dynamic route -> 
+- id of event to which submitted comment belongs is part of url of api route 
+- handle incoming requests -> extract submitted data 
+
+## 330. Adding a Newsletter Route
+- pages/api/newsletter.js (api)
+- components/input/newsletter-registration.js
+
 
 ---
 
