@@ -95,7 +95,7 @@ async function handler(req, res) {
     //mongodb
     let documents;
     try{
-      documents = await getAllDocuments(client, 'comments', {_id:-1});
+      documents = await getAllDocuments(client, 'comments', {_id:-1}, {eventId:eventId});
       res.status(200).json({comments: documents});
     }catch(error){
       res.status(500).json({message: "getting comments failed"});
