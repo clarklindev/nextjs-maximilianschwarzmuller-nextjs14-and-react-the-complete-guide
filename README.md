@@ -6620,13 +6620,63 @@ export async function getStaticProps(){
 - note: `pages/api/comments/[eventId].js` the eventId is part of the url so we retrieve this eventId   
 - the endpoint works for "POST" and "GET"
 
-``
-
 ```js
 //pages/api/comments/[eventId].js
 handler(req,res){
   const eventId = req.query.eventId;  //because folder is -> pages/api/comments/[eventId]
 } 
+```
+
+## 333. setting up mongodb backend
+- using mongodb atlas -> production ready cloud db
+- login
+- create project -> udemy-maximilian-nextjs-complete-guide
+- create cluster -> free tier
+- cloud provider -> aws
+- create deployment
+- create db user
+
+### set up local environment variables with .env.local
+- to protect passwords and sensitive information...create `.env.local`
+- then in your code you can access the variable
+- make sure `.gitignore` has .env.local included so it doesnt push it to repsitory
+- NOTE: `.env.local.template` has been included so you know how to set up environment variables... DO NOT PUT CREDENTIALS IN THIS FILE as it is included in git repository and is meant for reference only.
+
+```.env.local
+MY_SECRET_VAR=abc
+```
+
+```js
+console.log(process.env.MY_SECRET_VAR);
+```
+
+### install mongodb driver
+```
+pnpm i mongodb
+```
+
+## 334. Running MongoDB Queries From Inside API Routes
+- mongodb will be used in api/ routes (server side)
+- connection url (each project unique) -> `mongodb+srv://<username>:<password>@cluster0.zj9aoqq.mongodb.net/<dbname>?retryWrites=true&w=majority&appName=Cluster0`
+- note: added environment vars for username, password and dbname
+
+### the code 
+1. uses MONGO_DBNAME -> `newsletter` db
+2. `emails` collection table
+3. email key
+
+### example entry in database
+{_id:6673876fe7bb788c5445c054, email: "hello@gmail.com"}
+
+```js
+import {MongoClient} from 'mongodb';
+
+//...
+const client = await MongoClient.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.zj9aoqq.mongodb.net/${process.env.MONGO_DBNAME}?retryWrites=true&w=majority&appName=Cluster0`);
+const db = client.db();
+await db.collection('newsletter').insertOne({email}) //collection is like a db table
+
+client.close();
 ```
 
 
