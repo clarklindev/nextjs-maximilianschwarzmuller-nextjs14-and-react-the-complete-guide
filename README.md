@@ -6695,6 +6695,52 @@ const documents = await db.collection('comments').find().sort({_id:-1}).toArray(
 res.status(200).json({comments: documents});
 ```
 
+## 337+338. error handling
+- use try/catch
+- `pages/api/newsletter.js`
+- `pages/api/comments/[eventId].js`
+- externalize connection functions to `helpers/db-util.js`
+
+```js
+//helpers/db-util.js
+async function connectDatabase(){
+  const client = await MongoClient.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.zj9aoqq.mongodb.net/${process.env.MONGO_DBNAME}?retryWrites=true&w=majority&appName=Cluster0`);
+  return client;
+}
+
+export async function insertDocument(client, collection, document){
+  const db = client.db();
+  const result = await db.collection(collection).insertOne(document); //collection is like a db table
+  return result;
+}
+```
+```js
+//pages/api/newsletter.js
+
+try{
+  client = await connectDatabase();
+}
+catch(error){
+  res.status(500).json({message: "connecting failed"});
+  return;
+}
+
+try{
+  await insertDocument(client, {email});
+  client.close();
+}
+catch(error){
+  res.status(500).json({message: "inserting data failed"});
+  return;
+}
+
+```
+
+## 339. mongodb connections
+- If you build an application where your MongoDB-related code will execute frequently (e.g. the API route will be hit frequently), you might want to take advantage of MongoDB's "connection pooling" though.
+
+- For this, simply remove all client.close() calls from your code. The connection will then NOT be closed and will be re-used across requests.
+
 ---
 
 # Section 18 - App-wide state (react context)
