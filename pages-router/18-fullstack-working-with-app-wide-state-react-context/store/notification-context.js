@@ -1,0 +1,70 @@
+import { createContext, useReducer } from "react";
+
+//prop is the initial context
+const initialState = {blogPosts:[], activeNotification:''}
+
+const NotificationContext = createContext({
+  showNotification: function (notificationData) {},
+  hideNotification: function () {},
+  addBlogPost: function(text){}
+});
+
+ //reducer
+ const reducer = (state, action) => {
+  switch (action.type) {
+    case "add_blogpost":
+      return {
+        ...state, 
+        blogPosts:[ 
+          ...state.blogPosts, 
+          action.payload
+        ],
+      };
+    case 'set_active_notification':
+      return {
+        ...state,
+        activeNotification: action.payload
+      };
+    default:
+      return state;
+  }
+};
+
+export function NotificationContextProvider(props) {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  //actions
+  function addBlogPost(text) {
+    dispatch({ type: "add_blogpost", payload:{title: `post #${state.blogPosts.length + 1}`, text} });
+  };
+
+  function setActiveNotification(notification){
+    dispatch({
+      type: 'set_active_notification', payload: notification
+    });
+  }
+
+  function showNotificationHandler(notificationData){
+    setActiveNotification(notificationData);
+  }
+
+  function hideNotificationHandler(){
+    setActiveNotification(null);
+  }
+
+  //this context has the structure of the initial context...
+  const context = {
+    notification: state.activeNotification,
+    showNotification: showNotificationHandler,
+    hideNotification: hideNotificationHandler,
+    addBlogPost
+  }
+
+  return (
+    <NotificationContext.Provider value={ context }>
+      {props.children}
+    </NotificationContext.Provider>
+  );
+}
+
+export default NotificationContext;

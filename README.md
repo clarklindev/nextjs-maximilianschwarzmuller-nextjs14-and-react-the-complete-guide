@@ -6746,6 +6746,101 @@ catch(error){
 # Section 18 - App-wide state (react context)
 [back (table of contents)](#table-of-contents)
 
+## 343. module introduction
+- folder: `18-working-with-app-wide-state-react-context/`
+- tracking app-wide stat with react context to avoid prop drilling
+- TODO: showing a notification component depending on state
+
+## 344. starting project
+- clone folder: `17-fullstack-api-routes-project`
+- NEW: components/ui/notifications.js
+- pages/_app.js -> Notification component: `<Notification title="" message="" status=""/>` 
+- what it should do?
+- it should show pending while busy
+- and status=`success` or `error` state once result 
+- createContext({}) takes an initial object which defines structure of the context
+
+## 345-346. creating a new react context + adding context state
+- full example of using context with a react reducer and state
+- think the idea is not to pass the whole state object into context but to pass required parts of the state in context (make state less exposed by exposing on the required parts)
+- NOTE: here the dispatched payload defines the structure of the passed object
+- the reducer updates the state in an immutable way
+
+```js
+//store/notification-context.js
+import { createContext, useReducer } from "react";
+
+//prop is the initial context
+const initialState = {blogPosts:[], activeNotification:''}
+
+const NotificationContext = createContext({
+  showNotification: function (notificationData) {},
+  hideNotification: function () {},
+  addBlogPost: function(text){}
+});
+
+ //reducer
+ const reducer = (state, action) => {
+  switch (action.type) {
+    case "add_blogpost":
+      return {
+        ...state, 
+        blogPosts:[ 
+          ...state.blogPosts, 
+          action.payload
+        ],
+      };
+    case 'set_active_notification':
+      return {
+        ...state,
+        activeNotification: action.payload
+      };
+    default:
+      return state;
+  }
+};
+
+export function NotificationContextProvider(props) {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  //actions
+  function addBlogPost(text) {
+    dispatch({ type: "add_blogpost", payload:{title: `post #${state.blogPosts.length + 1}`, text} });
+  };
+
+  function setActiveNotification(notification){
+    dispatch({
+      type: 'set_active_notification', payload: notification
+    });
+  }
+
+  function showNotificationHandler(notificationData){
+    setActiveNotification(notificationData);
+  }
+
+  function hideNotificationHandler(){
+    setActiveNotification(null);
+  }
+
+  //this context has the structure of the initial context...
+  const context = {
+    notification: state.activeNotification,
+    showNotification: showNotificationHandler,
+    hideNotification: hideNotificationHandler,
+    addBlogPost
+  }
+
+  return (
+    <NotificationContext.Provider value={ context }>
+      {props.children}
+    </NotificationContext.Provider>
+  );
+}
+
+export default NotificationContext;
+
+```
+
 ---
 
 # Section 19 - complete app example (build a full blog A-Z)
