@@ -8,6 +8,12 @@ function NewComment(props) {
   const nameInputRef = useRef();
   const commentInputRef = useRef();
 
+  function clearFormHandler(event){
+    emailInputRef.current.value = "";
+    nameInputRef.current.value = "";
+    commentInputRef.current.value = "";
+  }
+
   function sendCommentHandler(event) {
     event.preventDefault();
 
@@ -33,6 +39,9 @@ function NewComment(props) {
       name: enteredName,
       text: enteredComment,
     });
+
+    //clear form after sumbit
+    clearFormHandler();
   }
 
   return (
@@ -52,7 +61,7 @@ function NewComment(props) {
         <textarea id='comment' rows='5' ref={commentInputRef}></textarea>
       </div>
       {isInvalid && <p>Please enter a valid email address and comment!</p>}
-      <button>Submit</button>
+      <button className={classes.submit}>Submit</button>
     </form>
   );
 }

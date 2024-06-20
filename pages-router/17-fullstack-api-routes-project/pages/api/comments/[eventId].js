@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import {MongoClient} from 'mongodb';
 
 export function buildCommentPath(){
   return path.join(process.cwd(), 'data', 'comments.json');
@@ -12,8 +13,11 @@ export function extractComments(filePath){
 }
 
 //this endpoint is hit from /pages/events/[eventId] -> components/input/comments -> to this current page (pages/api/events/index.js)
-function handler(req, res) {
+async function handler(req, res) {
   const eventId = req.query.eventId;  //pages/api/comments/[eventId]
+
+  //connect to mongodb
+  const client = await MongoClient.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.zj9aoqq.mongodb.net/${process.env.MONGO_DBNAME}?retryWrites=true&w=majority&appName=Cluster0`);
 
   if(req.method === 'POST'){
 
@@ -39,11 +43,13 @@ function handler(req, res) {
     console.log(email, name, text);
 
     const newComment = {
-      id: new Date().toISOString(),
       name, 
       email, 
-      text
+      text,
+      eventId
     };
+
+    
     
     //read data/comments.json
     // const filePath = buildCommentPath();
@@ -51,9 +57,14 @@ function handler(req, res) {
     // data.push(newComment);//add new data
     //store in file data/comments.json write with 'blocking' (synchronously)
     // fs.writeFileSync(filePath, JSON.stringify(data));
+  
+    //write to db
+    const db = client.db();
+    const result = await db.collection('comments').insertOne(newComment); //collection is like a db table
+    console.log(result);
+    newComment.id = result.insertedId;
 
     res.status(201).json({message: 'success', comment: newComment});
-
   }
 
   //return all coments
@@ -67,6 +78,9 @@ function handler(req, res) {
 
     res.status(200).json({comments: dummyList});
   }
+
+  client.close();
+
 }
 
 export default handler;

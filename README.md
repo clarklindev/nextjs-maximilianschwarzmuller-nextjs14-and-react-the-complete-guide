@@ -6679,6 +6679,10 @@ await db.collection('newsletter').insertOne({email}) //collection is like a db t
 client.close();
 ```
 
+## 335. inserting comments into db
+- `pages/api/comments/[eventId].js`
+- note: we are going to use same database MONGO_DBNAME 'events' but different collections 'newsletter' and 'comments'
+- mongodb auto assigns id's
 
 ---
 

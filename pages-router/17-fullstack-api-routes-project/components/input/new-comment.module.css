@@ -37,6 +37,11 @@
   background-color: #dcfff9;
 }
 
-.form button {
-  background-color: white;
+.form button.submit {
+  border-color: white;
+  color: white;
+}
+
+.form button.submit:hover{
+  color: #03be9f;
 }
