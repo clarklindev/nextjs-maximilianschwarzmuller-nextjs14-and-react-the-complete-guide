@@ -6968,6 +6968,11 @@ catch(error){
 # Section 19 - complete app example (build a full blog A-Z)
 [back (table of contents)](#table-of-contents)
 
+## 353. module introduction
+- project -> build a full blog using nextjs
+- github starting project repo: 
+`git clone -b 10-prj-blog-starting-setup https://github.com/mschwarzmueller/nextjs-course-code.git`
+
 ---
 
 # Section 20 - Deploying Nextjs apps
