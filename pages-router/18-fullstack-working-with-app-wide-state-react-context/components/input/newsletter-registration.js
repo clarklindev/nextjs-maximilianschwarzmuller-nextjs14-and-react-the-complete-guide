@@ -19,19 +19,14 @@ function NewsletterRegistration() {
     // send valid data to API
     const enteredEmail = newsletterRef.current.value;
     
-    const requestBody = {
-      email: enteredEmail
-    }
-
-    notificationCtx.showNotification({title:"Signup", message:"registering for newsletter", status:"pending"});
-
     let response;
-
+    
     try{
+      notificationCtx.showNotification({title:"Signup", message:"registering for newsletter", status:"pending"});
       //do email validation...
       response = await fetch('/api/newsletter', {
         method: 'POST',
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({email: enteredEmail}),
         headers:{
           'Content-Type':'application/json'
         }
