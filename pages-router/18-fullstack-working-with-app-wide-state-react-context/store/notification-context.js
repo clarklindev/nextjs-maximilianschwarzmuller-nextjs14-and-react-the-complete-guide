@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useEffect } from "react";
 
 //prop is the initial context
 const initialState = {blogPosts:[], activeNotification:''}
@@ -32,6 +32,19 @@ const NotificationContext = createContext({
 
 export function NotificationContextProvider(props) {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(()=>{
+    if(state.activeNotification && (state.activeNotification.status === 'success'|| state.activeNotification.status === 'error')){
+      const timer = setTimeout(()=> {
+        console.log('hide');
+        setActiveNotification(null);
+      }, 3000);
+
+      return ()=>{
+        clearTimeout(timer);
+      }
+    }
+  }, [state.activeNotification]);
 
   //actions
   function addBlogPost(text) {
