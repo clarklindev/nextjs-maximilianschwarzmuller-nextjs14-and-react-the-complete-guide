@@ -6,34 +6,26 @@ async function handler(req, res){
     
     
     if(!email || !email.includes('@')){
-      return res.status(422, {message: 'invalid email'});
+      return res.status(422).json({message: 'invalid email'});
     }
 
-    let client;
+    let client = await connectDatabase();
 
-    try{
-      client = await connectDatabase();
-    }
-    catch(error){
-      res.status(500).json({message: "connecting failed"});
-      return;
-    }
+    // catch(error){
+    //   res.status(500).json({message: "connecting failed"});
+    //   return;
+    // }
 
-    try{
-      await insertDocument(client, "newsletter", {email});
+    // try{
+      await insertDocument(client, "newsletter", {email: email});
       client.close();
-    }
-    catch(error){
-      res.status(500).json({message: "inserting data failed"});
-      return;
-    }
+    // }
+    // catch(error){
+    //   res.status(500).json({message: "inserting data failed"});
+    //   return;
+    // }
 
-    return res.status(201).json({
-      message: 'signedup',
-      props:{
-        email:email
-      }   
-    });
+    return res.status(201).json({message: 'signedup',props:{email:email}});
   }
 }
 
