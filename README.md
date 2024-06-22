@@ -6989,6 +6989,18 @@ catch(error){
 - components/home-page/feature-posts.js -> feature posts
 - components use css modules (css variables are in styles/global.css)
 
+## 356. hero component
+
+### Image
+- image -> `public/images/site/profile.png` (content in public folder is exposed as root)
+  NOTE: `layout` prop -> layout behavior of image as viewport changes size. default is `intrinsic`
+    - layout="intrinsic" -> image will scale down but wont scale up.
+    - layout="responsive" -> image will scale up/down depending on viewport
+    - layout="fill" -> image will stretch both width and height to dimensions of parent element. usually pairs with "object-fit" 
+- heading
+- description
+
+
 
 ---
 
@@ -7011,3 +7023,10 @@ catch(error){
 [back (table of contents)](#table-of-contents)
 
 ---
+
+# Optimizations
+## Image
+- using Nextjs `<Image>` component gives automatic optimizations
+- lazy load
+- different images used for different device sizes
+- specify width={} height={}
