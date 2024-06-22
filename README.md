@@ -7000,7 +7000,11 @@ catch(error){
 - heading
 - description
 
-
+## 357. Adding Layout & Navigation
+- adding a navbar in a layout so its on all pages: pages/_app.js 
+- components/layout/layout.js 
+- components/layout/main-navigation.js -> navigation bar (buttons)
+- components/layout/logo.js
 
 ---
 
@@ -7030,3 +7034,11 @@ catch(error){
 - lazy load
 - different images used for different device sizes
 - specify width={} height={}
+
+## Navbar
+- use nextjs Link component with href attributes
+- LOGO should be clickable
+
+## Link
+- before... nextjs Link components -> if you pass only text, Link creates `<a>` tags automatically
+- but if you pass anything else, then you need to add your own anchor tags `<a>`. but this was canned and now you dont need to add anchor tags for anything. 
