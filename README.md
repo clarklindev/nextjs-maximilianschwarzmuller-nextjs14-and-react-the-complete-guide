@@ -6969,9 +6969,18 @@ catch(error){
 [back (table of contents)](#table-of-contents)
 
 ## 353. module introduction
+- 29 lessons (3hrs 15min)
+- lesson 353 -> lesson381
 - project -> build a full blog using nextjs
 - github starting project repo: 
 `git clone -b 10-prj-blog-starting-setup https://github.com/mschwarzmueller/nextjs-course-code.git`
+
+## 354. the core pages
+
+- pages/index.js -> starting page (feature posts)
+- pages/contact.js -> contact form
+- pages/posts/index.js -> all blog posts
+- pages/posts/[slug].js -> individual blog posts (post detail page)
 
 ---
 
