@@ -6978,9 +6978,17 @@ catch(error){
 ## 354. the core pages
 
 - pages/index.js -> starting page (feature posts)
+  - 1. hero
+  - 2. featured-posts
 - pages/contact.js -> contact form
 - pages/posts/index.js -> all blog posts
 - pages/posts/[slug].js -> individual blog posts (post detail page)
+
+## 355. the home page
+- components/home-page/hero.js -> hero component -> bio / introduction
+- components/home-page/feature-posts.js -> feature posts
+- components use css modules (css variables are in styles/global.css)
+
 
 ---
 
