@@ -7006,6 +7006,11 @@ catch(error){
 - components/layout/main-navigation.js -> navigation bar (buttons)
 - components/layout/logo.js
 
+### ERROR
+- if you get the error:
+`Warning: React does not recognize the fetchPriority prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase fetchpriority instead.`
+- FIX: `pnpm update next@^13`
+
 ---
 
 # Section 20 - Deploying Nextjs apps

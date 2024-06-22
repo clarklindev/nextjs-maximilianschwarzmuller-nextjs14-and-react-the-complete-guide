@@ -1,11 +1,13 @@
 import Link from 'next/link';
 
 import Logo from "./logo";
+import styles from './main-navigation.module.css';
+
 
 function MainNavigation() {
   return (
-    <header>
-      <Link href="/"><Logo /></Link>
+    <header className={styles.header}>
+      <Link href="/"><Logo/></Link>
       <nav>
         <ul>
           <li><Link href="/posts">Posts</Link></li>
