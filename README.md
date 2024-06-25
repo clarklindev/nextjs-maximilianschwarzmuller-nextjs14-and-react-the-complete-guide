@@ -7011,6 +7011,17 @@ catch(error){
 `Warning: React does not recognize the fetchPriority prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase fetchpriority instead.`
 - FIX: `pnpm update next@^13`
 
+## 358. logo and styling
+
+## 359. featured posts
+- pages/index.js uses featured-posts
+- components/home-page/featured-posts.js -> uses posts-grid which renders post-items. 
+- posts/post-grid -> this will be used in "featured posts" and "all posts" -> renders post-items
+- posts/post-item -> note: image fit is not right... fix -> Image should get `layout="responsive"`
+
+
+
+
 ---
 
 # Section 20 - Deploying Nextjs apps
