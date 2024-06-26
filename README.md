@@ -7029,6 +7029,20 @@ catch(error){
 - components/posts/post-content.js -> imports PostHeader
 - components/posts/post-header.js
 
+## 364. rendering markdown as JSX
+- `pnpm i react-markdown`
+- takes markdown and outputs it as jsx
+
+```js
+//post-detail/post-content.js
+import ReactMarkdown from 'react-markdown';
+
+//...
+return(
+  <ReactMarkdown></ReactMarkdown>
+)
+```
+
 
 ---
 
