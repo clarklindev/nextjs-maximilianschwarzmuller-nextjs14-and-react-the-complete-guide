@@ -6972,6 +6972,7 @@ catch(error){
 - 29 lessons (3hrs 15min)
 - lesson 353 -> lesson381
 - project -> build a full blog using nextjs
+  - translate mark-down to React jsx elements.
 - github starting project repo: 
 `git clone -b 10-prj-blog-starting-setup https://github.com/mschwarzmueller/nextjs-course-code.git`
 
@@ -7022,6 +7023,11 @@ catch(error){
 ## 362. all posts 
 - pages/posts/index.js
 - components/posts/all-posts.js
+
+## 363. The "Post Detail" Page
+- `pages/posts/[slug].js` -> PostDetailPage() -> turning [markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) into jsx 
+- components/posts/post-content.js -> imports PostHeader
+- components/posts/post-header.js
 
 
 ---
