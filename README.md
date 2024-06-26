@@ -7013,13 +7013,15 @@ catch(error){
 
 ## 358. logo and styling
 
-## 359. featured posts
+## 359-361. featured posts
 - pages/index.js uses featured-posts
 - components/home-page/featured-posts.js -> uses posts-grid which renders post-items. 
 - posts/post-grid -> this will be used in "featured posts" and "all posts" -> renders post-items
 - posts/post-item -> note: image fit is not right... fix -> Image should get `layout="responsive"`
 
-
+## 362. all posts 
+- pages/posts/index.js
+- components/posts/all-posts.js
 
 
 ---
