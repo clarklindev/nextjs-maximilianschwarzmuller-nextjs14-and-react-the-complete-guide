@@ -4664,6 +4664,7 @@ export async function destroySession(){
 
 ## PagesRouter - summary 
 - [module summary](#243-module-summary)
+- [Nextjs official docs - learn pages router](https://nextjs.org/learn-pages-router/basics/create-nextjs-app)
 
 ## 226. app router -> pages router
 - all previous lessons in course used App Router (newer NextJS Routing)
@@ -7028,9 +7029,10 @@ catch(error){
 - `pages/posts/[slug].js` -> PostDetailPage() -> turning [markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) into jsx 
 - components/posts/post-content.js -> imports PostHeader
 - components/posts/post-header.js
+note: latest version is react-markdown@^12 but its giving errors, if you uninstall and install ^5.0.3 it will work
 
 ## 364. rendering markdown as JSX
-- `pnpm i react-markdown`
+- `pnpm i react-markdown@^5.0.3`
 - takes markdown and outputs it as jsx
 
 ```js
@@ -7042,6 +7044,94 @@ return(
   <ReactMarkdown></ReactMarkdown>
 )
 ```
+
+## 365. adding markdown files as a data source
+### storing the data
+- the idea is that if we are creating a blog, we own the source code and file-system so might as well use the file system to store our blog posts which will only be used by end-user for fetching...
+- posts/"post filename".md
+- you put markdown files inside eg. posts/getting-started-with-nextjs.md
+
+### markdown dynamic content
+- markdown has a concept "grey-matter" which is where you list your metadata (see below)
+- the syntax for this grey-matter is in YAML format of key/value pairs
+
+### project architecture
+- NOTE: the naming of the markdown file should be the same as folder named in public/images/posts/*slug* 
+- eg. posts/getting-started-with-nextjs.md -> public/images/posts/getting-started-with-nextjs/
+
+\````markdown
+---
+title: 'Getting started with nextjs'
+date: '2022-10-15'
+image: 'getting-started-nextjs.png'
+excerpt: nextjs is the react framework for production
+isFeatured: true
+---
+
+# This is a title
+
+this is some regular text with a [link](https://google.com)
+\````
+
+### 366. adding functions to read & fetch data from markdown files
+- the idea is to read the files from posts/ and use that as a data source and then pull the data from the files
+- `lib/posts-util.js` -> functionality for fetching data and extracting metadata (fetch all posts, fetch feature posts, single post)
+- `pnpm i gray-matter` -> package allows reading markdown file and slip it into metadata and markdown content
+- NOTE: `process.cwd()` is the project directory
+- readdireSync() returns an array of strings (filenames)
+- TODO: the go through all the postFiles and extract metadata and markdown content 
+- TODO: use filename as slug (without the extension .md)
+- getPostData() gets data for single post from the filename
+- fileContent = fs.readFileSync(filePath, 'utf-8'); gives the contents of the file as text (string)
+- use gray-matter to split this up: `import matter from 'gray-matter';`
+- matter(fileContent); returns an object with 2 properties -> `data` (metadata as a javascript object) + `content` property (markdown as a string)
+- postData = create an object {} that contains the returned data AND a slug field
+- getAllPosts() should then call getPostData() for every post. ie. its mapping an array of postFiles into an array of postData objects
+
+
+```js
+//lib/post-util.js
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+
+const postsDirectory = path.join(process.cwd(), 'posts');
+
+
+function getPostData(fileName){
+  const filePath = path.join(postsDirectory, fileName);
+  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  const {data, content} = matter(fileContent);
+
+  const postSlug = fileName.replace(/\.md$/, ''); //removes file extension
+  const postData = {
+    slug : postSlug, 
+    ...data,
+    content
+  };
+
+  return postData;
+}
+
+export function getAllPosts(){
+  const postFiles = fs.readdirSync(postsDirectory);  //read all contents of directory synchronously
+
+  const allPosts = postFiles.map(postFile=>{
+    return getPostData(postFile);
+  });
+
+  const sortedPosts = allPosts.sort((postA, postB)=> postA.date > postB.date ? -1: 1);
+  return sortedPosts;
+}
+
+export function getFeaturedPosts(){
+  const allPosts = getAllPosts();
+
+  const featuredPosts = allPosts.filter(post => post.isFeatured);
+  return featuredPosts;
+}
+```
+
 
 
 ---

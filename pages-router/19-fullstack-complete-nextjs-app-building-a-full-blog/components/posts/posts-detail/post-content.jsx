@@ -3,7 +3,7 @@ import PostHeader from "./post-header";
 import ReactMarkdown from 'react-markdown';
 
 const DUMMY_POST = {
-  slug: "getting-started",
+  slug: "getting-started-with-nextjs",
   title: "getting started",
   image: "getting-started-nextjs.png",
   date: "2022-02-10",
