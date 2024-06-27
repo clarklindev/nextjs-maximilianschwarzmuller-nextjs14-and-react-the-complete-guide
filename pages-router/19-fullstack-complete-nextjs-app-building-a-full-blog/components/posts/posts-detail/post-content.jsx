@@ -44,12 +44,14 @@ function PostContent(props) {
     },
 
     code(code) {
-      const { language, value } = code;
+      const { className, children } = code;
+      const language = className.split('-')[1];
+      
       return (
         <SyntaxHighlighter
           style={atomDark}
           language={language}
-          children={value}
+          children={children}
         />
       );
     },

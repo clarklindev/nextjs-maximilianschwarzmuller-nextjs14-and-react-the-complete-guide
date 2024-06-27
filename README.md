@@ -7243,6 +7243,44 @@ const customRenderers = {
 ## 371. rendering code snippets from markdown
 - use syntax highlighting
 - `pnpm i react-syntax-highlighter`
+- note the code is updated for `react-markdown@^6`
+
+```js
+//components/posts/post-detail/post-content.jsx
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+
+//...
+
+function PostContent(props) {
+  
+  //...
+  
+  const customRenderers = {
+    //...
+
+    code(code) {
+      const { className, children } = code;
+      const language = className.split('-')[1];
+      
+      return (
+        <SyntaxHighlighter
+          style={atomDark}
+          language={language}
+          children={children}
+        />
+      );
+    },
+  }
+
+  return (
+    <article className={classes.content}>
+      <PostHeader title={post.title} image={imagePath} />
+      <ReactMarkdown components={customRenderers}>{post.content}</ReactMarkdown>
+    </article>
+  );
+}
+```
 
 ---
 
