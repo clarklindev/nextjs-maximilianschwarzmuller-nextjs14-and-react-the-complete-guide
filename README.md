@@ -7131,8 +7131,9 @@ export function getFeaturedPosts(){
   return featuredPosts;
 }
 ```
-
-
+## 367. using markdown data for rendering posts
+- HomePage and AllPostsPage use getStaticProps() to call these server functions and return the data as props to the page function component.
+- replaced dummy data with server functions in helper file: `lib/posts-util.js`
 
 ---
 
