@@ -7162,7 +7162,87 @@ export function getStaticPaths(){
 }
 ```
 - in lib/posts-util.js -> getPostsFiles() refactored from getAllPosts()
+
+## 369. rendering custom HTML elements with React Markdown
+- up till now using react-markdown@^5.0.3 
+- TODO: updates: https://github.com/mschwarzmueller/nextjs-course-code/commit/950fece551e5560f6967f3d44d0cfcbbf46565f4
+- TODO: use "react-markdown": "^6.0.0"
+- NOTE: latest version is 9.
+
+- https://github.com/remarkjs/react-markdown
 - 
+
+## 370. rendering images with the 'Next image' component (from markdown) 
+- markdown -> problems with rendering images... they are not taking advantage of nextjs image optimizations when using normal markdown syntax
+- even changing image size in css will still end up loading original file (3000px x 2000px) 
+- normal markdown doesnt have lazyloading -> loading image when you scroll to where the image should be.
+- TODO: fix markdown image ![Create routes via your file + folder structure](nextjs-file-based-routing.png)
+- `<ReactMarkdown renderers={}>` ReactMarkdown takes a special prop 'renderers' which is an object that you can specify the markdown element tags and return what to override it with (see markdown documentation -> [Appendix B: Components](https://github.com/remarkjs/react-markdown?tab=readme-ov-file#appendix-b-components))
+- the 'image' prop is an object with image data ReactMarkdown got from the markdown text
+
+### markdown image
+- alt -> its the text between [] accessed via 'alt'
+- src -> the markdown text between () accessed via 'src' giving the filename -> then build the path 
+- width -> hardcode
+- height -> hardcode
+- NOTE: React Markdown has other elements as part of the rendered elements when rendering image.
+  - so as part of the custom returned element, we check for paragraphs instead and check that if their children are 'img' elements 
+
+
+
+```js
+//components/posts/posts-detail/post-content.jsx
+import Image from 'next/image';
+
+const {post} = props;
+//...
+const customRenderers = {
+  // img(image) {
+  //   return (
+  //     <Image
+  //       src={`/images/posts/${post.slug}/${image.src}`}
+  //       alt={image.alt}
+  //       width={600}
+  //       height={300}
+  //     />
+  //   );
+  // },
+  p(paragraph) {
+    const { node } = paragraph;
+
+    if (node.children[0].tagName === 'img') {
+      const image = node.children[0];
+
+      return (
+        <div className={classes.image}>
+          <Image
+            src={`/images/posts/${post.slug}/${image.properties.src}`}
+            alt={image.alt}
+            width={600}
+            height={300}
+          />
+        </div>
+      );
+    }
+
+    return <p>{paragraph.children}</p>;
+  },
+
+  code(code) {
+    const { language, value } = code;
+    return (
+      <SyntaxHighlighter
+        style={atomDark}
+        language={language}
+        children={value}
+      />
+    );
+  },
+};
+```
+## 371. rendering code snippets from markdown
+- use syntax highlighting
+- `pnpm i react-syntax-highlighter`
 
 ---
 
