@@ -7135,6 +7135,35 @@ export function getFeaturedPosts(){
 - HomePage and AllPostsPage use getStaticProps() to call these server functions and return the data as props to the page function component.
 - replaced dummy data with server functions in helper file: `lib/posts-util.js`
 
+## 368. rendering dynamic post pages & paths
+- fetching post data for single post
+- lib/posts-util.js has a `getPostData(filename){}` function but it expects a filename
+- TODO: `pages/posts/[slug].jsx` get filename from the slug...  see [project architecture](#project-architecture) 
+- ie. filename -> the slug with the file extension.
+- update getPostData() in lib/posts-util.js
+- in `pages/posts[slug].jsx` -> PostDetailsPage() create getStaticProps(context) which receives context
+- use context -> to get params -> to get the slug from params
+- because its a dynamic page, getStaticProps() needs to work with [getStaticPaths()](#275-introducing-getstaticpaths-for-dynamic-pages) to let nextjs know which concrete slug values should be pre-generated.
+- getStaticPaths() returns an object with 'paths' which is an array of all the paths that should be prepared -> and passes it to `function PostDetailPage(props){}`
+- with fallback set to 'true' -> data fetched on demand...but you need to render some fallback content...
+- with fallback set to 'blocking' -> it "blocks" showing anything until data is loaded..you dont need to check if data has been passed from props...it will wait
+- but architecture wise went with definining the page we need to load by using the slug and getStaticPaths() so we dont need a fallback
+
+```js
+export function getStaticPaths(){
+  const postFilenames = getPostsFiles();
+
+  const slug = postFilenames.map(fileName=> fileName.replace(/\.md$/, '')); //removes file extension)
+
+  return {
+    paths: slug.map(slug=> ({params: {slug: slug}})),
+    fallback: false
+  }
+}
+```
+- in lib/posts-util.js -> getPostsFiles() refactored from getAllPosts()
+- 
+
 ---
 
 # Section 20 - Deploying Nextjs apps
