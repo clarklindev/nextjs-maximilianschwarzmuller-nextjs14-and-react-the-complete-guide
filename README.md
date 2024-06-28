@@ -7464,6 +7464,31 @@ export default MyApp
 
 ```
 
+## 378. adding _document.js
+- `_document.jsx` allows you access to the full page dom giving access to `<html>` element as well
+- allows extra entrypoints for nextjs app where you can use react portal.
+
+```js
+//pages/_document.jsx
+import Document, {Html, Head, Main, NextScript} from 'next/document';
+
+class MyDocument extends Document {
+  render(){
+    return (
+      <Html lang="en">
+        <Head/>
+        <body>
+          <Main/>
+          <NextScript/>
+        </body>
+      </Html>
+    )  
+  }
+}
+
+export default MyDocument;
+```
+
 ---
 # Section 20 - Deploying Nextjs apps
 [back (table of contents)](#table-of-contents)
