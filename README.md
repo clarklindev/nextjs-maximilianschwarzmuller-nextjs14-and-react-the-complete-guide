@@ -7337,7 +7337,106 @@ async function handler(req, res) {
   res.status(201).json({message: 'successfully stored message!', message: newMessage});
 }
 ```
+## 376. adding UI feedback with notifications
+- show notification feedback when user performs action that interacts with server
+- components/ui/notifications -> previously this component used context api -> here its only needed for contact form
+- note: fetch() here uses async/await whereas before the tutorial uses then/catch
+- components/contact/contact-form.js -> import Notification
+- make the notification dissapear with useEffect() 
+- run a function when status changes with setTimeout() dont forget the cleanup in the return of useEffect() *for when it runs again
 
+```js
+//components/contact/contact-form.jsx
+import {useEffect} from 'react';
+import Notification from '../ui/notification';
+
+//...
+async function sendContactData(contactDetails){
+  //...
+}
+
+function ContactForm(){
+  const [enteredEmail, setEnteredEmail] = useState('');
+  const [enteredName, setEnteredName] = useState('');
+  const [enteredMessage, setEnteredMessage] = useState('');
+  const [requestStatus, setRequestStatus] = useState(); //'pending', 'success', 'error'
+  const [requestError, setRequestError] = useState();
+
+  async function sendMessageHandler(event){
+      event.preventDefault();
+
+      //optional -> add client-side validation
+
+      //set status to pending
+      setRequestStatus('pending');
+
+      try{
+        await sendContactData({
+          email: enteredEmail, 
+          name: enteredName,
+          message: enteredMessage
+        });
+        setRequestStatus('success');
+      }
+      catch(error){
+        setRequestError(error.message);
+        setRequestStatus('error');
+      }
+      
+  }
+
+  let notification;
+  if(requStatus === 'pending'){
+    notification = {
+      status: 'pending',
+      title: 'sending message...',
+      message: 'your message is on its way!'
+    }
+  }
+  if(requestStatus === 'success'){
+    notification = {
+      status: 'success',
+      title: 'Success!',
+      message: 'message sent successfully'
+    }
+  }
+  if(requestStatus === 'error'){
+    notification = {
+      status: 'error',
+      title: 'Error!',
+      message: requestError
+    }
+  }
+
+
+  return <section className={styles.contact}>
+    <h1>How can i help?</h1>
+    
+    <form className={styles.form} onSubmit={sendMessageHandler}>
+      <div className={styles.controls}>
+        <div className={styles.control}>
+          <label htmlFor="email">your email</label>
+          <input type="email" id="email" required value={enteredEmail} onChange={event=> setEnteredEmail(event.target.value)}/>
+        </div>
+        <div className={styles.control}>
+          <label htmlFor="name">your name</label>
+          <input type="text" id="name" required value={enteredName} onChange={event=> setEnteredName(event.target.value)}/>
+        </div>
+      </div>
+      <div className={styles.control}>
+        <label htmlFor="message">your message</label>
+        <textarea id="message" rows="5" required value={enteredMessage} onChange={event=> setEnteredMessage(event.target.value)}></textarea>  
+      </div>
+      <div className={styles.actions}>
+        <button>send message</button>
+      </div>
+    </form>
+    {
+      notification && <Notification status={notification.status} title={notification.title} message={notification.message}/>
+    }
+  </section>
+}
+```
 ---
 
 # Section 20 - Deploying Nextjs apps
