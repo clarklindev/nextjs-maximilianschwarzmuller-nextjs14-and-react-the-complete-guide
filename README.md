@@ -7296,6 +7296,48 @@ function PostContent(props) {
 - adding form submit handlers
 - contact form here uses react useState() instead of useRef() but either method would work..
 
+## 375. storing message in db
+- using mongodb to store message sent from client-side
+- me i created a mongodb project already (MAXIMILIANSCHWARZMULLER-NEXTJS-THE-COMPLETE-GUIDE).. set one up if you havent
+- `pnpm i mongodb`
+- using MongoClient -> api/contact.js -> connect to mongoclient after the data is received and passed validation and you have the newMessage
+- helpers/db-util.js - > we already created a helper file with db to connect connectDatabase() which reads from .env.local
+- database name -> 'my-blog'
+
+```js
+//pages/api/contact.js
+import { connectDatabase } from "../../helpers/db-util";
+
+//...
+async function handler(req, res) {
+  
+  //...
+  
+  try{
+    client = await connectDatabase();
+  }
+  catch(error){
+    res.status(500).json({message: 'could not connect to database'});
+    return;
+  }
+
+  const db = client.db();
+  try{
+    const result = await db.collection('messages').insertOne(newMessage);
+    newMessage.id = result.id;
+  }
+  catch(error){
+    client.close();
+    res.status(500).json({message: 'storing message failed'});
+    return;
+  }
+
+  client.close();
+
+  res.status(201).json({message: 'successfully stored message!', message: newMessage});
+}
+```
+
 ---
 
 # Section 20 - Deploying Nextjs apps

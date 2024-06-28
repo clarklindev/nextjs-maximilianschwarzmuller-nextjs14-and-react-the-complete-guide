@@ -1,6 +1,8 @@
 // /api/contact
 
-function handler(req, res) {
+import { connectDatabase } from "../../helpers/db-util";
+
+async function handler(req, res) {
   if (req.method === "POST") {
     const { email, name, message } = req.body;
 
@@ -22,8 +24,31 @@ function handler(req, res) {
     }
 
     console.log(newMessage);
+    let client;
+
+    try{
+      client = await connectDatabase();
+    }
+    catch(error){
+      res.status(500).json({message: 'could not connect to database'});
+      return;
+    }
+
+    const db = client.db();
+    try{
+      const result = await db.collection('messages').insertOne(newMessage);
+      newMessage.id = result.id;
+    }
+    catch(error){
+      client.close();
+      res.status(500).json({message: 'storing message failed'});
+      return;
+    }
+    
+    client.close();
 
     res.status(201).json({message: 'successfully stored message!', message: newMessage});
+
   }
 }
 
