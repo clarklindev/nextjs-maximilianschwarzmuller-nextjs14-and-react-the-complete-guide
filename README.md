@@ -7281,6 +7281,13 @@ function PostContent(props) {
   );
 }
 ```
+## 372. contact form
+- pages/contact.jsx -> basic form
+
+## 373. contact form api route
+- TODO: create api route -> send form details to be processed on backend api route
+- pages/api/contact.js
+- the api returns a status code and message
 
 ---
 
