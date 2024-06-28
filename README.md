@@ -7482,12 +7482,52 @@ class MyDocument extends Document {
           <NextScript/>
         </body>
       </Html>
-    )  
+    )
   }
 }
 
 export default MyDocument;
 ```
+
+## 379. using react portals for notification 
+- using the _document.jsx 
+- so for the notification component, instead of putting the notification code somewhere in the page (components/contact/contact-form.jsx) use react portal so you can render a component anywhere by injecting code in the DOM tree.
+- add the div for the notification in the _document (this will be used by the react portal)
+- components/ui/notifications.jsx -> create portal (see code below), 
+- the second prop passed to `createPortal()` is the html dom where to render.
+
+```js
+//pages/_document.jsx
+import Document, {Html, Head, Main, NextScript} from 'next/document';
+
+class MyDocument extends Document {
+  render(){
+    return (
+      <Html lang="en">
+        <Head/>
+        <body>
+          <Main/>
+          <NextScript/>
+          <div id="notifications"></div>
+        </body>
+      </Html>
+    )
+  }
+}
+```
+```js
+//components/ui/notification.js
+
+import ReactDOM from 'react-dom';
+
+//...
+return ReactDOM.createPortal(
+  (<div>some html</div>), document.getElementById('notifications')
+) 
+
+```
+
+
 
 ---
 # Section 20 - Deploying Nextjs apps
