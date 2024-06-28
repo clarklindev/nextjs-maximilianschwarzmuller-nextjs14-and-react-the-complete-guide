@@ -7527,11 +7527,45 @@ return ReactDOM.createPortal(
 
 ```
 
-
-
 ---
 # Section 20 - Deploying Nextjs apps
 [back (table of contents)](#table-of-contents)
+- 11 lessons (1hr)
+
+## 382. module introduction
+- deploying a nextjs app
+- steps to prep for deployment
+- deploy a website
+
+## 383. building nextjs apps
+### OPTION 1 -> standard build 
+- `next build` 
+- optimized serverside app (needs nodejs (server required))
+- prerenders static pages when possible
+- nodejs required for api routes
+- need this build for -> server side pages / page validations
+- deployed to host that is able to run nodejs
+- redeploy when code changes
+
+### OPTION 2 -> full static build
+- `next export` -> add this to package.json under scripts
+
+```json
+//...
+"scripts": {"export": "next export"}
+//...
+```
+- produces optimized production version
+- produces 100% static applicaiton
+- dont need nodejs server
+- static host
+- redeploy when content changes
+
+#### DONT USE IF...
+- relies on api routes
+- uses getServerSideProps
+- page revalidations
+- fallback set to 'true' or 'blocking'
 
 ---
 
