@@ -7283,11 +7283,18 @@ function PostContent(props) {
 ```
 ## 372. contact form
 - pages/contact.jsx -> basic form
+- components/contact/contact-form.jsx
 
 ## 373. contact form api route
 - TODO: create api route -> send form details to be processed on backend api route
 - pages/api/contact.js
 - the api returns a status code and message
+
+## 374. sending data from client to api route
+- sending data from client to api route
+- back on pages/contact.jsx
+- adding form submit handlers
+- contact form here uses react useState() instead of useRef() but either method would work..
 
 ---
 
