@@ -7437,8 +7437,34 @@ function ContactForm(){
   </section>
 }
 ```
----
 
+## 377. adding 'head' data - metadata
+- adding metadata to pages _app.jsx
+- if you add metadata in _app.jsx -> it gets added to all pages
+
+```js
+//pages/_app.jsx
+import Head from 'next/head';
+
+import '../styles/globals.css';
+import Layout from '../components/layout/layout';
+
+function MyApp({ Component, pageProps }) {
+  return (
+    <Layout>
+      <Head>
+        <meta name="viewport" content='width=device-width, initial-scale=1'/>
+      </Head>
+      <Component {...pageProps} />
+    </Layout>
+  )
+}
+
+export default MyApp
+
+```
+
+---
 # Section 20 - Deploying Nextjs apps
 [back (table of contents)](#table-of-contents)
 
