@@ -7772,6 +7772,11 @@ module.exports = nextConfig
 # Section 21 - Adding Authentication
 [back (table of contents)](#table-of-contents)
 
+## 394. Starting Project
+- clone starting project: `git clone -b 12-auth-starting-project https://github.com/mschwarzmueller/nextjs-course-code.git`
+
+- project folder: `21-authentication/`
+
 ---
 
 # Section 22 - Optional Nextjs Summary
