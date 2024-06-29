@@ -7531,6 +7531,7 @@ return ReactDOM.createPortal(
 # Section 20 - Deploying Nextjs apps
 [back (table of contents)](#table-of-contents)
 - 11 lessons (1hr)
+- note the project folder is still: `19-fullstack-complete-nextjs-app-building-a-full-blog` with added improvements
 
 ## 382. module introduction
 - deploying a nextjs app
@@ -7681,8 +7682,26 @@ export async function connectDatabase(){
 - .env.local (use .gitignore to ignore this file)
 - .env.local.template (do not add this to .gitignore to let users use this as a reference for the .env.local file they should create)
 
+## 387. running a test build and reducing code size
+- `pnpm run build`
+- next gives summary of the deployment
+- red -> bad (sometimes its 3rd party library)
+- NOTE: the default SyntaxHightLighter import has syntax highlighting support for all languages
+- FIX: explicit state languages to support `SyntaxHighlighter.registerLanguage('jsx', jsx);`
+- FIX: adjust import so it only imports the atomDark style
 
+```js
+//components/posts/post-detail/post-content.js
+import {PrismLight as SyntaxHighlighter} from 'react-syntax-highlighter';
+import atomDark from 'react-syntax-highlighter/dist/cjs/styles/prism/atom-dark';
+import js from 'react-syntax-highlighter/dist/cjs/languages/prism/javascript';
+import css from 'react-syntax-highlighter/dist/cjs/languages/prism/css';
 
+//...
+SyntaxHighlighter.registerLanguage('js', js);
+SyntaxHighlighter.registerLanguage('css', css);
+
+```
 ---
 
 
