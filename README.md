@@ -7567,7 +7567,124 @@ return ReactDOM.createPortal(
 - page revalidations
 - fallback set to 'true' or 'blocking'
 
+## 384. Key Deployment Steps
+### Steps to deploy checklist
+- step 1. checking and optimizing code -> add page metadata, optimize code, remove unnecessary dependencies
+- step 2. nextjs config file + working with environment variables for variable data (db credentials, api keys)
+- step 3. do a test build and test production ready app locally or on a test server
+- step 4. deploy
+
+## 385. step1 - checking and optimizing code
+### Image
+- using Nextjs `<Image>` component gives automatic optimizations
+- lazy load (built in)
+- different images used for different device sizes
+- specify width={} height={}
+
+### Navbar
+- use nextjs Link component with href attributes
+- LOGO should be clickable
+
+### Link
+- before... nextjs Link components -> if you pass only text, Link creates `<a>` tags automatically
+- but if you pass anything else, then you need to add your own anchor tags `<a>`. but this was canned and now you dont need to add anchor tags for anything. 
+
+### Meta
+- we added meta to pages
+- added to _app
+- and _document
+
+## 386. step2 - nextjs config file + working with environment variables
+- using environment variables
+- nextjs has built in support
+- you can configure nextjs with [next.config.js](https://nextjs.org/docs/pages/api-reference/next-config-js) in root of project
+- here you can:
+  - environment variables
+  - base path (if hosting website in a nested path)
+  - rewrites / redirects
+  - custom headers
+
+### environment variables 
+- can be set inside next.config.js -> using 'env' key 
+- then you can access them in apis or components
+- access variable -> {process.env.customKey}
+- NOTE: the env variables are swopped out at BUILD TIME not dynamically resolved after
+
+```js
+//next.config.js
+module.exports = {
+  env: {
+    mongodb_username: '',
+    mongodb_password: '',
+    mongodb_clustername: 'cluster0',
+    mongodb_database: 'my-blog'
+  }
+}
+```
+- the benefit of using environment variables comes when you can swop out different values for production and development
+- `npm run dev` -> development
+- `npm run build/ npm run export` -> production
+- you can check the "set" mode via require('next/constants') and then export a function (receives 'phase' as a prop) which returns the object 
+- use the constants to check state
+`const {PHASE_DEVELOPMENT_SERVER, PHASE_EXPORT, PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER} = require('next/constants');`
+- this way you can set different values for the variables when in the respective phases.
+- helpers/db-util.js -> connectDatabase() is where i extracted the connect to database function to.
+
+```js
+//UPDATED: next.config.js
+const {PHASE_DEVELOPMENT_SERVER, PHASE_EXPORT, PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER} = require('next/constants');
+
+module.exports = (phase)=>{
+  
+  //development
+  if(phase === PHASE_DEVELOPMENT_SERVER){
+    return {
+      env: {
+        mongodb_username: '',
+        mongodb_password: '',
+        mongodb_clustername: 'nextjs',
+        mongodb_database: 'my-blog-dev-test'
+      }
+    }
+  }
+
+  //not in development eg. production
+  return {
+    env: {
+      mongodb_username: '',
+      mongodb_password: '',
+      mongodb_clustername: 'nextjs',
+      mongodb_database: 'my-blog'
+    }
+  }
+}
+```
+
+
+```js
+//helpers/db-util.js
+
+import {MongoClient} from 'mongodb';
+
+export async function connectDatabase(){
+
+  const connectionString = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.mongodb_clustername}.qcg4anj.mongodb.net/${process.env.mongodb_database}?retryWrites=true&w=majority&appName=nextjs`;
+
+  const client = await MongoClient.connect(connectionString);
+  return client;                                                                                                     
+}
+
+```
+### .env.local
+- NOTE [environment variables](https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables) can also be used instead of next.config.js
+- [how-to-use-different-env-files-with-nextjs](https://stackoverflow.com/questions/59462614/how-to-use-different-env-files-with-nextjs)
+- .env.local (use .gitignore to ignore this file)
+- .env.local.template (do not add this to .gitignore to let users use this as a reference for the .env.local file they should create)
+
+
+
 ---
+
 
 # Section 21 - Adding Authentication
 [back (table of contents)](#table-of-contents)
@@ -7583,18 +7700,3 @@ return ReactDOM.createPortal(
 [back (table of contents)](#table-of-contents)
 
 ---
-
-# Optimizations
-## Image
-- using Nextjs `<Image>` component gives automatic optimizations
-- lazy load
-- different images used for different device sizes
-- specify width={} height={}
-
-## Navbar
-- use nextjs Link component with href attributes
-- LOGO should be clickable
-
-## Link
-- before... nextjs Link components -> if you pass only text, Link creates `<a>` tags automatically
-- but if you pass anything else, then you need to add your own anchor tags `<a>`. but this was canned and now you dont need to add anchor tags for anything. 
