@@ -7702,6 +7702,70 @@ SyntaxHighlighter.registerLanguage('js', js);
 SyntaxHighlighter.registerLanguage('css', css);
 
 ```
+
+## 388. full deployment
+- deployment options -> standard option because our site is not static
+- the .next folder contains the production output
+
+### deploy steps
+- you deploy by taking whole project folder and putting it on some remote server that supports nodejs
+- `pnpm install`
+- `pnpm start` -> executes command 'next start' -> uses build output and spins up production server 
+- hosting provider that supports nodejs -> vercel, netlify
+- have to forward port 3000 to port 8
+
+#### github repository
+- push code to github repository
+- then in the host provider, create project and deploy the repository
+- `git init`
+- create the repo on github, get repository link
+- `git remote add origin <repository>`
+- git push origin main
+
+#### vercel
+- import the repository
+- note with environment variables, you can choose to set environment variables on the vercel project page BUT because this was already set up in `next.config.js` you can leave the environment variables part of the project empty on vercel.
+
+#### CI/CD
+- vercel picks up updates in the repository and redeploys
+- NOTE: mongodb you need to add the ipaddress of the remote server OR `allow access from anywhere`
+this allows all ipaddresses to connect to ensure deployed app can also access the db
+
+
+## 390. Using the "export" Feature
+
+- FIX -> To enable a static export, change the output mode inside next.config.js:
+- whenever you have a project with no server side code, use this method
+
+```js
+//next.config.js
+
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
+  output: 'export',
+ 
+  // Optional: Change links `/me` -> `/me/` and emit `/me.html` -> `/me/index.html`
+  // trailingSlash: true,
+ 
+  // Optional: Prevent automatic `/me` -> `/me/`, instead preserve `href`
+  // skipTrailingSlashRedirect: true,
+ 
+  // Optional: Change the output directory `out` -> `dist`
+  // distDir: 'dist',
+}
+ 
+module.exports = nextConfig
+```
+
+- NOTE: below is DEPRECATED
+- add to package.json under scripts `"export": "next export"`
+
+### static deploy steps
+1. `pnpm run build`
+2. `pnpm run export`  -> DEPRECATED -> this creates an `out` folder which you can deploy that on static host
+
 ---
 
 
