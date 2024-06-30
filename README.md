@@ -7873,7 +7873,7 @@ pnpm i bcryptjs
 //pages/api/auth/signup.js
 
   //...
-  
+
   //check if user already exists
   const existingUser = db.collection('users').findOne({email: email});
   if(existingUser){
@@ -7884,6 +7884,97 @@ pnpm i bcryptjs
   }
 
 ```
+## 401. 'Adding credentials Auth Provider' and user login logic
+- this part is server side
+- finding out (client-side (visually) + serverside (api routes)) if user is logged in 
+- managing token creation and storage
+- TODO: create catch-all api route `api/auth/[...nextauth].js` to manage login 
+- api route will connect to database to check if user exists and if password is correct
+- its a catch-all route for routes starting with `api/auth/` because next-auth will expose multiple routes (login, log out etc) to handle requests automatically
+- see [official docs next/auth rest-api](https://next-auth.js.org/getting-started/rest-api)
+- our own routes should not clash with the official next/auth routes
+- to use next-auth in api/auth route -> `import NextAuth from 'next-auth';`
+- NOTE: the export from `[...nextauth].js` is a function `export default NextAuth({});`
+- the export is a handler function is created by calling NextAuth()
+- you pass a configuration object to NextAuth({}) see [next-auth documentation - Options](https://next-auth.js.org/configuration/options)
+- set providers (Providers.Credentials -> we use our own credentials)
+- Providers.Credentials takes a config object { } 
+- setting credentials key -> with :{email, password} to let next/auth generate a login form for you.
+- setting `async authorize()` which is an async method nextjs will call for you when it receives an incoming login request
+- as an argument you get the credentials that were submitted (eg. email, password etc)
+- in authorize() you have to 
+1.  create own authorization logic, 
+2.  check if credentials are valid and 
+3.  do own error handling
+- v4, the credentials object is required as part of CredentialsProvider 's type definition.  it is supposed to generate a form but we dont have to use it. we can override it but in here -> we just pass in email and password as empty objects so that authorize() can detect it.
+
+```js
+//pages/api/auth/[...nextauth].js
+import NextAuth from 'next-auth';
+import Providers from 'next-auth/providers';
+
+import { verifyPassword } from '../../../helpers/auth';
+import { connectDatabase } from '../../../helpers/db-util';
+
+export default NextAuth({
+  session:{
+    jwt: true   //use jwt
+  },
+  providers: [
+    //next-auth v3
+    // Providers.Credentials({
+    //   async authorize(credentials){
+    //     const client = await connectDatabase(process.env.mongodb_database);
+
+    //     const usersCollection = client.db().collection('users');
+
+    //     const user = await usersCollection.findOne({email: credentials.email});
+        
+    //     if(!user){
+    //       client.close();
+    //       throw new Error('no user found!');
+    //     }
+
+    //     const isValid = await verifyPassword(credentials.password, user.password);
+        
+    //     if(!isValid){
+    //       throw new Error('could not log you in');
+    //     }
+    //     client.close();
+    //     return {email: user.email}  //you dont want to return whole user object because it contains the hashed password
+
+    //   }
+    // })
+
+    //---------------------------------------------------------------------
+    //next-auth v4
+    CredentialProvider({
+      name: 'credentials',
+      authorize: async (credentials) => {
+        const client = await connectDatabase(process.env.mongodb_database);
+        const usersCollection = client.db().collection('users');
+        const user = await usersCollection.findOne({email: credentials.email});
+
+        if(!user){
+          client.close();
+          throw new Error('no user found!');
+        }
+
+        const isValid = await verifyPassword(credentials.password, user.password);
+        
+        if(!isValid){
+          throw new Error('could not log you in');
+        }
+
+        client.close();
+        return {email: user.email};  //you dont want to return whole user object because it contains the hashed password
+      },
+
+    })
+  ]
+});
+```
+
 ---
 
 # Section 22 - Optional Nextjs Summary
