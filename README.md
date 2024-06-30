@@ -7975,6 +7975,41 @@ export default NextAuth({
 });
 ```
 
+## 402. sending 'signin' request from frontend
+- (see code above)
+- components/auth/auth-form.js
+- here to login, you dont need to send your own http request (fetch())
+- `import {signIn} from 'next-auth/client';` //next-auth v3
+- `import {signIn} from 'next-auth/react';` //next-auth v4
+- to use signIn, you list the provider you want to use..
+- the 2nd argument is a configuration object configure sign-in process.
+- NOTE: remember when next-auth is used on backend in `pages/api/auth/[...nextauth].js` if you throw an error, by default nextjs will redirect to error page.
+- to avoid redirect, set `redirect` to false in sign-in configuration object
+- NOTE: this 2nd param (config object) is what is received by authorize in `[...nextauth].js` 
+- eg. authorize: async (credentials) => {}
+- the result of calling signIn() is either error or success data.
+
+```js
+// components/auth/auth-form.js
+
+// import {signIn} from 'next-auth/client';  //next-auth v3
+import {signIn} from 'next-auth/react'; //next-auth v4
+
+//...
+const enteredEmail = emailInputRef.current.value;
+const enteredPassword = passwordInputRef.current.value;
+
+if(isLogin){
+  const result = await signIn('credentials', {
+    redirect: false,
+    email: enteredEmail,
+    password: enteredPassword
+  });
+
+}
+
+```
+
 ---
 
 # Section 22 - Optional Nextjs Summary

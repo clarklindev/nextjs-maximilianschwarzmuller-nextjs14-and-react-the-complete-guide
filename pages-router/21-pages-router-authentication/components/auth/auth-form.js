@@ -40,6 +40,14 @@ function AuthForm() {
 
     if(isLogin){
       //login user
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: enteredEmail,
+        password: enteredPassword
+      });
+
+      console.log(result);
+
     }
     else{
       //create user
