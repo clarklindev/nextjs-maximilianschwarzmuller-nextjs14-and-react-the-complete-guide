@@ -7771,11 +7771,64 @@ module.exports = nextConfig
 
 # Section 21 - Adding Authentication
 [back (table of contents)](#table-of-contents)
+- 22 lessons
+- 2hrs 16min
+
+## 393. module introduction
+- authentication
+- authentication deals with signup, signin, logout
+- page access (authorization)
 
 ## 394. Starting Project
 - clone starting project: `git clone -b 12-auth-starting-project https://github.com/mschwarzmueller/nextjs-course-code.git`
 
-- project folder: `21-authentication/`
+- project folder: `21-pages-router-authentication/`
+
+## 395. how does authentication work?
+- once user registered, details and hashed password is stored on server
+- user wants to login... sends login credential via a form to server
+- validation occurs
+- response from server -> credentials correct or not correct?
+
+### proof that user is authenticated
+#### server side sessions 
+- store unique id on server and send this to client, further request for server resources need to include this unique id
+- this response is stored in localstorage or a cookie
+- and everytime any further requests are sent to server, this cookie is attached to the header of httprequest
+- server is able to extract identifier from incoming request and do validation against server stored credentials
+- ssl connection prevents identifier being stolen in transit
+- stored client-side in cookie (configured so it cant be accessed via js -> prevent cross site scripting (XSS) attacks) 
+- only readable by server
+
+#### authentication tokens
+- server does NOT store anything
+- server creates "permission" token on server and sends this token to client
+- client then can save this token and attach to server requests
+- server is able to verify if it created token or not
+
+#### nextjs uses tokens
+- with spa/nextjs app we use this token method...
+- this is because a lot of pages are pregenerated and therefore many requests are not sent to server
+- clients should get information that allows them to prove they are authenticated
+- JWT (jason web tokens)
+
+#### building blocks of JWT
+1. issuer data 
+2. custom data
+3. secret key (this is stored on server)
+
+### create the token
+- using all the above data -> 3rd party package used to create a Json web token (string)
+- the signed token is not encrypted..it can be parsed and read by anyone
+- the key is not included in the token 
+- this token is stored by client
+- the token is attached to server requests to protected api routes
+- the server verifies incoming token data by taking incoming token's data and the secret key and see if the same token can be created.
+- compares the 2 data see if they same.
+
+## 396. next-auth
+- course uses next-auth version 3.
+- there is [next-auth v4](https://next-auth.js.org/getting-started/upgrade-v4)
 
 ---
 
