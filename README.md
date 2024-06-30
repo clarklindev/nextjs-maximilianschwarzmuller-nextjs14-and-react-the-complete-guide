@@ -7830,6 +7830,36 @@ module.exports = nextConfig
 - course uses next-auth version 3.
 - there is [next-auth v4](https://next-auth.js.org/getting-started/upgrade-v4)
 
+## 397. Next-auth library
+- [next-auth](https://next-auth.js.org/)
+- email/password
+- social logins [(authentication providers)](https://next-auth.js.org/providers/)
+- has serverside and clientside capabilities
+- helps generate auth tokens
+- DOES NOT HELP WITH USER CREATION -> need our own signup routes /authentication logic
+
+#### install next-auth
+```
+pnpm i next-auth
+
+```
+
+## 398. adding user signup API route
+- here we will use mongodb to store user accounts
+
+```
+pnpm i mongodb
+``` 
+- added helpers/db-util.js
+- has connect to database function
+- on mongodb create project -> create cluster -> get connection string
+- see `api/auth/signup.js`
+- note: when storing the user credentials the password should be hashed and when logining in compare the hashed versions of the password
+- install bcryptjs to encrypt passwords sent from user
+
+```
+pnpm i bcryptjs
+```
 ---
 
 # Section 22 - Optional Nextjs Summary
