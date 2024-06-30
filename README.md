@@ -7860,6 +7860,12 @@ pnpm i mongodb
 ```
 pnpm i bcryptjs
 ```
+
+## 399. sending signup requests from frontend
+- previous lesson we added 'signup' api
+- NOTE: api folder should be in pages eg. pages/api
+- signup -> `components/auth/auth-form.js`
+
 ---
 
 # Section 22 - Optional Nextjs Summary
