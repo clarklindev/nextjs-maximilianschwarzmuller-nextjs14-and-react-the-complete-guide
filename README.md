@@ -7866,6 +7866,24 @@ pnpm i bcryptjs
 - NOTE: api folder should be in pages eg. pages/api
 - signup -> `components/auth/auth-form.js`
 
+## 400. unique email addresses
+- pages/api/auth/signup.js before signup user, check if user already exists
+
+```js
+//pages/api/auth/signup.js
+
+  //...
+  
+  //check if user already exists
+  const existingUser = db.collection('users').findOne({email: email});
+  if(existingUser){
+    //user already exists
+    res.status(422).json({message: 'user already exists'});
+    client.close();
+    return;
+  }
+
+```
 ---
 
 # Section 22 - Optional Nextjs Summary
