@@ -7773,6 +7773,7 @@ module.exports = nextConfig
 [back (table of contents)](#table-of-contents)
 - 22 lessons
 - 2hrs 16min
+- NOTE: think its best to follow official documentation -> [next-auth @4](https://next-auth.js.org/)
 
 ## 393. module introduction
 - authentication
@@ -7979,7 +7980,7 @@ export default NextAuth({
 - (see code above)
 - components/auth/auth-form.js
 - here to login, you dont need to send your own http request (fetch())
-- `import {signIn} from 'next-auth/client';` //next-auth v3
+<!-- - `import {signIn} from 'next-auth/client';` //next-auth v3 -->
 - `import {signIn} from 'next-auth/react';` //next-auth v4
 - to use signIn, you list the provider you want to use..
 - the 2nd argument is a configuration object configure sign-in process.
@@ -7993,7 +7994,7 @@ export default NextAuth({
 // components/auth/auth-form.js
 
 // import {signIn} from 'next-auth/client';  //next-auth v3
-import {signIn} from 'next-auth/react'; //next-auth v4
+import {signIn} from 'next-auth/react'; //next-auth v4  -> Client Side: Yes / Server Side: No
 
 //...
 const enteredEmail = emailInputRef.current.value;
@@ -8010,6 +8011,75 @@ if(isLogin){
 
 ```
 
+## 403. managing active session (on frontend)
+- TODO -> header buttons should change depending on if authenticated (eg. show logout button)
+- after login, nextjs sets a cookie: browser devtools (F12) -> application -> cookies -> select domain
+- uses token when there are requests for protected resources 
+
+### next-auth v4
+- NOTE: with next-auth @^4 code is different...
+- [upgrade to next-auth @4](https://next-auth.js.org/getting-started/upgrade-v4)
+- https://next-auth.js.org/getting-started/client#sessionprovider
+- Component and pageProps are extracted from props object.
+- `pageProps` contains several properties. The syntax `{session, ...pageProps}` destructures the pageProps object.
+- `import { SessionProvider } from "next-auth/react"`
+
+```js
+//pages/_app.js
+import { SessionProvider } from "next-auth/react";
+
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
+  return (
+    <SessionProvider session={session}>
+      <Component {...pageProps} />
+    </SessionProvider>
+  )
+}
+```
+- useSession hook returns `data` and `status`
+-   const { data: session, status} = useSession();  //note here `data` is renamed `session`
+
+```js
+//components/layout/main-navigation.js
+import {useSession} from 'next-auth/react'; //v4
+const {data:session, status} = useSession(); //v4 returns an object
+//...
+{
+  {!session && status !== 'loading' && (
+    <li>
+      <Link href="/auth">Login</Link>
+    </li>
+  )}
+  {session && (
+    <li>
+      <Link href="/profile">Profile</Link>
+    </li>
+  )}
+}
+```
+### next-auth v3
+- next/auth has a useSession() hook which returns an `ARRAY` with `session` object (describing current session) and `loading` (loading refers to whether nextjs is still figuring out if you are logged-in)
+- in the session object you have the data you encoded into the token and an expiration date `expires` for the token -> eg. `{user:{}, expires: "2022-03-30T09:45:50.300"}`
+- session automatically prolonged if user is active
+- TODO: show `profile` navigation link only if logged in you can test if `session` exists 
+
+```js
+//components/layout/main-navigation.js
+import {useSession} from 'next-auth/client';
+const [session, loading] = useSession();//v3 returns an array
+//...
+  {
+    session && <li>
+      <Link href="/profile">Profile</Link>
+    </li>
+  }
+  
+//...
+
+```
 ---
 
 # Section 22 - Optional Nextjs Summary
