@@ -6,7 +6,7 @@ import CredentialProvider from "next-auth/providers/credentials"; //v4
 import { verifyPassword } from "../../../helpers/auth";
 import { connectDatabase } from "../../../helpers/db-util";
 
-export default NextAuth({
+export const authOptions = {
   session: {
     //jwt: true   //v3
     strategy: "jwt", //v4
@@ -61,4 +61,12 @@ export default NextAuth({
       },
     }),
   ],
-});
+  callbacks: {
+    async session({ session, token }) {
+      session.user = { email: token.email };
+      return session;
+    },
+  },
+};
+
+export default NextAuth(authOptions);

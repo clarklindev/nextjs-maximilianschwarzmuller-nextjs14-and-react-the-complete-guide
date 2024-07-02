@@ -8556,6 +8556,82 @@ export default NextAuth({
 });
 ```
 
+## 406. server-side page guards
+
+- learn when to use which (client-side vs server-side)
+- determining whether user is authenticated when visiting a page can happen on server
+
+### client-side
+
+- when not yet authenticated -> if you check if authenticated (from frontend code) there will be a slight pause (client reaches to server to check if authenticated)
+
+### server-side
+
+- pages/profile.js -> components/profile->user-profile.js
+- the authentication check can happen on server before client page loads and return different page content depending on if user is authenticated
+- NOTE: `getStaticProps()` runs at build time and not for every incoming request
+- `getServerSideProps(context)` -> run for every incoming request as every request we need to know if user is logged-in. this is what we need to use.
+- https://next-auth.js.org/getting-started/client#sessionprovider
+- https://next-auth.js.org/configuration/nextjs#in-getserversideprops
+- Don't use `getSession()` on server side! `getServerSession()` should be used instead
+- On the server side, this is still available to use, however, we recommend using `getServerSession()` going forward -> The idea behind this is to avoid an additional unnecessary fetch
+- with getServerSideProps() implemented, it passes props on page request to profile page component as props
+- ie. `components/profile/user-profile.js` -> `user-profile` component will only show if profile page getServerSideProps() returns a session (authenticated)
+
+### JWT_SESSION_ERROR
+
+- note you need to add NEXTAUTH_SECRET= to .env.local
+
+```js
+//pages/profile.js
+
+//...
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./api/auth/[...nextauth]";
+
+//...
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
+```
+
+## 407. protecting the auth page
+
+- so user clicks 'login' button on navbar and gets redirected to `pages/auth.js`
+- which loads `import AuthForm from '../components/auth/auth-form';`
+- once you fill in the login details correctly and login, you may want to redirect the user
+
+```js
+//components/auth/auth-form'
+import { useRouter } from "next/router";
+
+function AuthForm() {
+  //...
+  const router = useRouter();
+  //...
+  async function submitHandler(event) {
+    if (!result.error) {
+      //redirect
+      router.replace("/profile");
+    }
+  }
+
+  //...
+}
+```
+
 ---
 
 # Section 22 - Optional Nextjs Summary
