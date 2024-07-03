@@ -14,14 +14,14 @@ export async function getServerSideProps(context) {
   if (!session) {
     return {
       redirect: {
-        destination: "/",
+        destination: "/auth",
         permanent: false, //whether permanently always redirect to / -> false because its only this time when user not logged-in
       },
     };
   }
 
   return {
-    props: { value: JSON.parse(JSON.stringify(session)) }, //note: `value` is used instead of `session` (protected keyword)
+    props: { session: JSON.parse(JSON.stringify(session)) }, //note: `value` is used instead of `session` (protected keyword)
   };
 }
 

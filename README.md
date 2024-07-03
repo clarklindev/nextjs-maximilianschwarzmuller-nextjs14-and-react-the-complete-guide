@@ -8609,6 +8609,8 @@ export async function getServerSideProps(context) {
 
 ## 407. protecting the auth page
 
+### redirect after successful login
+
 - so user clicks 'login' button on navbar and gets redirected to `pages/auth.js`
 - which loads `import AuthForm from '../components/auth/auth-form';`
 - once you fill in the login details correctly and login, you may want to redirect the user
@@ -8629,6 +8631,32 @@ function AuthForm() {
   }
 
   //...
+}
+```
+
+### ensure you cannot go to login page if already logged-in
+
+- pages/auth.js
+- client-side workaround to not be able to go to /pages/auth.js if already logged-in -> redirect user
+
+```js
+//pages/auth.js
+function AuthPage() {
+  const { data: session, status } = useSession(); //v4 returns an object
+
+  const router = useRouter();
+
+  if (session) {
+    //redirect if already authenticated
+    router.replace("/");
+  }
+
+  if (status === "loading") {
+    console.log("loading...");
+    return <p>loading...</p>;
+  }
+
+  return <AuthForm />;
 }
 ```
 

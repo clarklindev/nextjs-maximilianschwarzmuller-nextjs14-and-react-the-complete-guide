@@ -43,29 +43,36 @@ function AuthForm() {
     //optional: add validation
 
     if (isLogin) {
-      //login user
-      const result = await signIn(
-        "credentials", //provider
-        {
-          redirect: false,
-          email: enteredEmail,
-          password: enteredPassword,
+      try {
+        //login user
+        const result = await signIn(
+          "credentials", //provider
+          {
+            redirect: false,
+            email: enteredEmail,
+            password: enteredPassword,
+          }
+        );
+
+        console.log("sign-in result: ", result); //result is always a promise, content will differ depending on if its error or data
+
+        if (!result.error) {
+          console.log("redirecting...");
+          //redirect
+          router.replace("/profile");
+        } else {
+          console.error("Sign-in error:", result.error);
         }
-      );
-
-      console.log("result: ", result); //result is always a promise, content will differ depending on if its error or data
-
-      if (!result.error) {
-        //redirect
-        router.replace("/profile");
+      } catch (error) {
+        console.error("Sign-in error:", error);
       }
     } else {
       //create user
       try {
         const result = await createUser(enteredEmail, enteredPassword);
-        console.log(result);
+        console.log("createUser result:", result);
       } catch (error) {
-        console.log(error);
+        console.error("Create user error:", error);
       }
     }
   }
