@@ -8685,6 +8685,62 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 export default MyApp;
 ```
 
+## 409. authentication requirements
+
+- protecting api routes
+- only allowing logged-in users to access certain api's from frontend
+- api's verify if access is from authenticated user
+
+## 410. protecting api routes
+
+- eg changing password should require authenticated user to only change their own password.
+- pages/api/user/change-password
+
+### step1 - extract change password form data
+
+- frontend needs to send PATCH request as backend api is looking for PATCH
+- the function should extract the old and new password from changepassword form
+
+### step2 - check if update is coming from authenticated user
+
+- pages/api/user/change-password
+- add getServerSideProps()
+- deny if not authenticated
+
+### step3 - look into db to see
+
+- get email of authenticated user,
+- look in db and find user by email
+- see if oldpassword entered in form matches current password in db
+- only update if its a PATCH request sent from frontend
+- replace old password with new password
+
+```js
+//api/user/change-password
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./api/auth/[...nextauth]";
+
+function handler(req, res) {
+  //extract change password form details
+
+  if (req.method !== "PATCH") {
+    return;
+  }
+}
+
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  //validate if request is authenticated
+  if (!session) {
+    res.status(401).json({ message: "not authenticated" });
+    return;
+  }
+}
+
+export default handler;
+```
+
 ---
 
 # Section 22 - Optional Nextjs Summary
