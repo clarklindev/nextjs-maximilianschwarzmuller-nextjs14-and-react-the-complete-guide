@@ -57,13 +57,13 @@ export const authOptions = {
         }
 
         client.close();
-        return { email: user.email }; //you dont want to return whole user object because it contains the hashed password
+        return { email: user.email }; //object merged with actual token -> you dont want to return whole user object because it contains the hashed password
       },
     }),
   ],
   callbacks: {
     async session({ session, token }) {
-      session.user = { email: token.email };
+      session.user = { email: token.email }; //added to the session -> this would override session.user
       return session;
     },
   },

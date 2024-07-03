@@ -7375,23 +7375,22 @@ return <ReactMarkdown></ReactMarkdown>;
 
 ### project architecture
 
-- NOTE: the naming of the markdown file should be the same as folder named in public/images/posts/_slug_
-- eg. posts/getting-started-with-nextjs.md -> public/images/posts/getting-started-with-nextjs/
+- NOTE: the naming of the markdown file should be the same as folder named in `public/images/posts/[slug]`
+- eg. `posts/getting-started-with-nextjs.md` -> `public/images/posts/getting-started-with-nextjs/`
 
-## \````markdown
-
-title: 'Getting started with nextjs'
-date: '2022-10-15'
-image: 'getting-started-nextjs.png'
-excerpt: nextjs is the react framework for production
+```
+---
+title: "Getting started with nextjs"
+date: "2022-10-15"
+image: "getting-started-nextjs.png"
+excerpt: "nextjs is the react framework for production"
 isFeatured: true
-
 ---
 
 # This is a title
 
 this is some regular text with a [link](https://google.com)
-\````
+```
 
 ### 366. adding functions to read & fetch data from markdown files
 
@@ -7496,7 +7495,6 @@ export function getStaticPaths() {
 - NOTE: latest version is 9.
 
 - https://github.com/remarkjs/react-markdown
--
 
 ## 370. rendering images with the 'Next image' component (from markdown)
 
@@ -8355,6 +8353,13 @@ export default NextAuth({
     //next-auth v4
     CredentialProvider({
       name: "credentials",
+
+      // You need to provide your own logic here that takes the credentials
+      // submitted and returns either a object representing a user or value
+      // that is false/null if the credentials are invalid.
+      // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
+      // You can also use the `req` object to obtain additional parameters
+      // (i.e., the request IP address)
       authorize: async (credentials) => {
         const client = await connectDatabase(process.env.mongodb_database);
         const usersCollection = client.db().collection("users");
@@ -8595,7 +8600,7 @@ export async function getServerSideProps(context) {
   if (!session) {
     return {
       redirect: {
-        destination: "/",
+        destination: "/auth",
         permanent: false,
       },
     };
@@ -8637,6 +8642,9 @@ function AuthForm() {
 ### ensure you cannot go to login page if already logged-in
 
 - pages/auth.js
+
+### OPTION1: client-side route guard
+
 - client-side workaround to not be able to go to /pages/auth.js if already logged-in -> redirect user
 
 ```js
@@ -8660,13 +8668,50 @@ function AuthPage() {
 }
 ```
 
+### OPTION2: server-side route-guard
+
+- server-side check would use getServerSideProps()
+
+```js
+//pages/auth.js
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./api/auth/[...nextauth]";
+import UserProfile from "../components/profile/user-profile";
+
+function ProfilePage(props) {
+  return <UserProfile />;
+}
+
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  console.log("session: ", session);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth",
+        permanent: false, //whether permanently always redirect to / -> false because its only this time when user not logged-in
+      },
+    };
+  }
+
+  return {
+    props: { session: JSON.parse(JSON.stringify(session)) }, //note: `value` is used instead of `session` (protected keyword)
+  };
+}
+
+export default ProfilePage;
+```
+
 ## 408. next-auth Session Provider Component
 
+- https://next-auth.js.org/getting-started/upgrade-v4#sessionprovider
 - its only in this lesson that `SessionProvider` is introduced.
 - if there is a session returned from server as props, it will be passed to the SessionProvider
 
 ```js
-//pages/_api.js
+//pages/_app.js
 import { SessionProvider } from "next-auth/react"; //next-auth @4
 
 import Layout from "../components/layout/layout";
@@ -8744,6 +8789,12 @@ export default handler;
 - CHECKED -> request has right method: PATCH
 - TODO -> use email to find user in db and need old and new password to check if database password same as form password -> then if its correct hash the new password and store it in db
 - NOTE: `api/auth/[...nextauth]` we add `user` to session, and user has an `email` property:
+- [Callbacks](https://next-auth.js.org/configuration/callbacks) are asynchronous functions you can use to control what happens when an action is performed.
+
+### session callback
+
+- [session callback](https://next-auth.js.org/configuration/callbacks#session-callback)
+- The session callback is called whenever a session is checked. By default, only a subset of the token is returned for increased security. If you want to make something available you added to the token you have to explicitly forward it here to make it available to the client.
 
 ```js
 //pages/api/auth/[...nextauth].js
@@ -8760,13 +8811,104 @@ export default handler;
 
 ```js
 //pages/api/user/change-password.js
+import { getServerSession } from "next-auth/next";
+
+import { authOptions } from "./api/auth/[...nextauth]";
+import { connectDatabase } from "../../../helpers/db-util";
+import { hashPassword, verifyPassword } from "../../../helpers/auth";
+
+//api: api/user/change-password
+
 async function handler(req, res) {
-  //...
+  //extract change password form details
+
+  if (req.method !== "PATCH") {
+    return;
+  }
+
+  const session = await getServerSession(req, res, authOptions);
+
+  if (!session) {
+    res.status(401).json({ message: "not authenticated" });
+    return;
+  }
+
   const userEmail = session.user.email;
   const oldPassword = req.body.oldPassword;
   const newPassword = req.body.newPassword;
+
+  const client = await connectDatabase(process.env.mongodb_database);
+  const usersCollection = client.db().collection("users");
+  const user = await usersCollection.findOne({ email: userEmail });
+  if (!user) {
+    res.status(404).json({ message: "user not found" });
+    client.close();
+  }
+
+  const currentPassword = user.password; //the hashed password stored in db
+  const passwordsAreEqual = await verifyPassword(oldPassword, currentPassword);
+
+  if (!passwordsAreEqual) {
+    res.status(403).json({ message: "invalid password" }); //403 - authenticated but not authorized, 422 user input incorrect
+    client.close();
+
+    return;
+  }
+
+  const hashedPassword = await hashPassword(newPassword);
+
+  const result = await usersCollection.updateOne(
+    { email: userEmail },
+    { $set: { password: hashedPassword } }
+  );
+
+  client.close();
+  res.status(200).json({ message: "password updated" });
+}
+
+export default handler;
+```
+
+## 412. sending 'change password' request from frontend
+
+- `components/profile/profile-form.js`
+- dealing with the frontend code
+- extract form data with useRef()
+- ensure that onChangePassword is passed as a prop from `pages/user-profile.js`
+- so `pages/user-profile.js` sends the update password form data to serverside api
+- NOTE: profile-form via user-profile passes {oldPassword, newPassword} for the api to extract
+
+```js
+//components/profile/profile-form.js
+
+//...
+function submitHandler(event) {
+  event.preventDefault();
+  const enteredOldPassword = oldPasswordRef.current.value;
+  const enteredNewPassword = newPasswordRef.current.value;
+
+  //add validation
+
+  //pass 'oldPassword' and 'newPassword'
+  props.onChangePassword({
+    oldPassword: enteredOldPassword,
+    newPassword: enteredNewPassword,
+  });
 }
 ```
+
+```js
+//pages/api/user/change-password.js
+//...
+const oldPassword = req.body.oldPassword;
+const newPassword = req.body.newPassword;
+```
+
+## 413. deploying to production
+
+- when deploying to production -> you should set environment variable `NEXTAUTH_URL`
+- set its value as the domain of host where you will deploy the production build
+- this value can also be injected through hosting provider
 
 ---
 

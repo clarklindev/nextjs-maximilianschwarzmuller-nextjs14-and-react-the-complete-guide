@@ -1,24 +1,26 @@
-import { useSession } from "next-auth/react"; //v4
-import { useRouter } from "next/router";
-
+import { getServerSession } from "next-auth";
 import AuthForm from "../components/auth/auth-form";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 function AuthPage() {
-  const { data: session, status } = useSession(); //v4 returns an object
+  return <AuthForm />;
+}
 
-  const router = useRouter();
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
 
   if (session) {
-    //redirect if already authenticated
-    router.replace("/");
+    return {
+      redirect: {
+        destination: "/",
+        permanent: true, //whether permanently always redirect to /
+      },
+    };
   }
 
-  if (status === "loading") {
-    console.log("loading...");
-    return <p>loading...</p>;
-  }
-
-  return <AuthForm />;
+  return {
+    props: {},
+  };
 }
 
 export default AuthPage;
