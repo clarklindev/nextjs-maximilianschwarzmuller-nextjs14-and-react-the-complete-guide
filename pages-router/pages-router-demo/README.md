@@ -79,3 +79,39 @@ Would you like to use App Router? (recommended) No
 Would you like to customize the default import alias (@/_)? No
 What import alias would you like configured? @/_
 ```
+
+## description
+
+- this project is meant to combine all the previous pages-router modules into a single repository
+
+## project contents
+
+### 11-pages-router-pages-and-file-based-routing
+
+- basic routing
+- dynamic routes `[id]`
+- dynamic routing with catch all route `[...slug]`
+- `import {useRouter} from 'next/router';`
+- `const router = useRouter();`
+- router.pathname
+- router.query
+- router.replace('/clients/max/projecta');
+
+```js
+import Link from "next/link";
+// Link example
+<Link
+  href={{
+    pathname: "/clients/[id]",
+    query: {
+      id, //id:id (client's id)
+    },
+  }}
+>
+  {name}
+</Link>;
+```
+
+- `_app.js`
+- `404.js`
+- cssmodules
