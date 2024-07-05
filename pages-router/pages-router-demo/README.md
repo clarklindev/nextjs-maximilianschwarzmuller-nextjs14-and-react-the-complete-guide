@@ -115,3 +115,43 @@ import Link from "next/link";
 - `_app.js`
 - `404.js`
 - cssmodules
+
+### 12-pages-router-project
+
+- events -> browser and see events in detail
+- 12-pages-router-project merged into this project
+- at this point: `components/layout/layout.js` imports `components/layout/main-header.js` and this is on all pages
+- TODO: use this layout only for the events pages
+- you can define the getLayout function to select the layout based on the current page
+
+```js
+//pages/_app.js
+import Layout from "../components/layout/layout";
+import "@/styles/globals.css";
+
+function App({ Component, pageProps }) {
+  // Determine which layout to use based on the page or default <Layout>
+  const getLayout = Component.getLayout || ((page) => <Layout>{page}</Layout>);
+
+  return getLayout(<Component {...pageProps} />);
+}
+
+export default App;
+```
+
+- If a page component (Component) defines a getLayout static method, it will use that layout.
+  Otherwise, it defaults to MainLayout.
+
+```js
+//pages/events/index.js
+//...
+import EventLayout from "@/components/layout/layout-event";
+
+//...
+function AllEventsPage() {
+  //...
+}
+AllEventsPage.getLayout = (page) => <EventLayout>{page}</EventLayout>;
+
+export default AllEventsPage;
+```

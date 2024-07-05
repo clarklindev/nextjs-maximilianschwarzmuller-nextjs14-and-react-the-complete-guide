@@ -28,6 +28,11 @@ export default function Home() {
                 Clients
               </Link>
             </li>
+            <li>
+              <Link href="/events" replace>
+                Events
+              </Link>
+            </li>
           </ul>
         </div>
       </main>
