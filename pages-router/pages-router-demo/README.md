@@ -173,6 +173,15 @@ export default AllEventsPage;
 
 ### optimizing nextjs
 
+- merging 15-optiziming-nextjs into project
+- continuation of project from Events project in section folder: `14-page-prerendering-and-data-fetching-project`
+- page optimizations -> meta + head tags
+- reusing components ,logic, configurations
+- optimizing images -> using next/image `<Image>` component
+- most changes are updates and optimizations
+- apparently `_document.js` needs to be class-based syntax
+- `pages/events/[eventId].js` changes from useRouter() to get detail page info to getStaticProps() prefetch data
+
 ### api routes (fullstack backend)
 
 ### app-wide state (react context)
