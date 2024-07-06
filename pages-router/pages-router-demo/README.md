@@ -162,9 +162,14 @@ export default AllEventsPage;
 - getStaticProps() reads with path and fs to return props to the ProductsPage
 - import fs from "fs/promises";
 - import path from "path";
-- uses local database from 'data/' to return `products` as a prop to the component
+- uses local database from `data/dummy-backend.json` to return `products` as a prop to the component
 - for each product a Link is component is rendered which links to dynamic page
 - `<Link href={`/products/${product.id}`}>{product.title}</Link>`
+
+- 14-page-prerendering-and-data-fetching-project
+- project `next events` -> listing and browsing event details
+- the point of this is data fetching using nextjs -> instead of dummy data -> data fetch from firebase
+- firebase backend has `events` table
 
 ### optimizing nextjs
 

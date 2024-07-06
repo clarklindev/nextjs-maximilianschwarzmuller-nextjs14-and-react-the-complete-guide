@@ -30,6 +30,9 @@ export default function Home() {
               <Link href="/events">Events</Link>
             </li>
             <li>
+              <Link href="/events-fetch">Events fetch</Link>
+            </li>
+            <li>
               <Link href="/products">Products</Link>
             </li>
           </ul>

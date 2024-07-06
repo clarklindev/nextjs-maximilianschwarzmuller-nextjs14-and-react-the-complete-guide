@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
+import Link from "next/link";
+
 import { getAllEvents, getFeaturedEvents } from "../../dummy-data";
 import EventsSearch from "../../components/events/events-search";
 import EventList from "../../components/events/event-list";
-import EventLayout from "@/components/layout/layout-event";
+import LayoutWithHeader from "@/components/layout/layout-with-header";
 
 function AllEventsPage() {
   const router = useRouter();
@@ -26,6 +28,18 @@ function AllEventsPage() {
   );
 }
 
-AllEventsPage.getLayout = (page) => <EventLayout>{page}</EventLayout>;
+AllEventsPage.getLayout = (page) => (
+  <LayoutWithHeader
+    navigation={
+      <ul>
+        <li>
+          <Link href="/events">Browser all events</Link>
+        </li>
+      </ul>
+    }
+  >
+    {page}
+  </LayoutWithHeader>
+);
 
 export default AllEventsPage;
