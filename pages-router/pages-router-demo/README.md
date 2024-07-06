@@ -184,6 +184,14 @@ export default AllEventsPage;
 
 ### api routes (fullstack backend)
 
+- feedback form
+- api routes to handle form data
+- `http://localhost:3000/feedback`
+- uses file system
+- `import fs from 'fs';`
+- `import path from 'path';`
+- stores form data in .json file
+
 ### app-wide state (react context)
 
 ### building a blog

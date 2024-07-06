@@ -35,6 +35,9 @@ export default function Home() {
             <li>
               <Link href="/products">Products</Link>
             </li>
+            <li>
+              <Link href="/feedback">feedback</Link>
+            </li>
           </ul>
         </div>
       </main>
