@@ -80,14 +80,14 @@ Would you like to customize the default import alias (@/_)? No
 What import alias would you like configured? @/_
 ```
 
-## description
+## project contents - description
 
 - this project is meant to combine all the previous pages-router modules into a single repository
 
-## project contents
+### pages router
 
-### 11-pages-router-pages-and-file-based-routing
-
+- 11 - pages router (file based routing)
+- folder: 11-pages-router-pages-and-file-based-routing
 - basic routing
 - dynamic routes `[id]`
 - dynamic routing with catch all route `[...slug]`
@@ -116,7 +116,7 @@ import Link from "next/link";
 - `404.js`
 - cssmodules
 
-### 12-pages-router-project
+- folder: 12-pages-router-project
 
 - events -> browser and see events in detail
 - 12-pages-router-project merged into this project
@@ -155,3 +155,25 @@ AllEventsPage.getLayout = (page) => <EventLayout>{page}</EventLayout>;
 
 export default AllEventsPage;
 ```
+
+### page prerendering and data-fetching
+
+- 13-page-prerendering-and-data-fetching
+- getStaticProps() reads with path and fs to return props to the ProductsPage
+- import fs from "fs/promises";
+- import path from "path";
+- uses local database from 'data/' to return `products` as a prop to the component
+- for each product a Link is component is rendered which links to dynamic page
+- `<Link href={`/products/${product.id}`}>{product.title}</Link>`
+
+### optimizing nextjs
+
+### api routes (fullstack backend)
+
+### app-wide state (react context)
+
+### building a blog
+
+### deploying nextjs
+
+### authentication

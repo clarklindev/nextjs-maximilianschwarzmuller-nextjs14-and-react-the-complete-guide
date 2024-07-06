@@ -24,14 +24,13 @@ export default function Home() {
               <Link href="/portfolio">Portfolio</Link>
             </li>
             <li>
-              <Link href="/clients" replace>
-                Clients
-              </Link>
+              <Link href="/clients">Clients</Link>
             </li>
             <li>
-              <Link href="/events" replace>
-                Events
-              </Link>
+              <Link href="/events">Events</Link>
+            </li>
+            <li>
+              <Link href="/products">Products</Link>
             </li>
           </ul>
         </div>
