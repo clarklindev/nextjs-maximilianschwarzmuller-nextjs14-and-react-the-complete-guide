@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Head from "next/head";
 
 // import { getAllEvents } from '../../data/dummy-data';    //client-side loading dummy data
 import { getAllEvents, getFeaturedEvents } from "../../helpers/api-util";
@@ -19,11 +20,21 @@ function FetchEventsPage(props) {
 
   return (
     <>
+      <Head>
+        <title>All my events</title>
+      </Head>
+      <Head>
+        <title>All Events</title>
+        <meta
+          name="description"
+          content="Find a lot of great events that allow you to evolve..."
+        />
+      </Head>
       <EventsSearch onSearch={findEventsHandler} />
       <h2>Featured events</h2>
-      {featuredEvents && <EventList items={featuredEvents} />}
+      <EventList items={featuredEvents} />
       <h2>All events</h2>
-      {events && <EventList items={events} />}
+      <EventList items={events} />
     </>
   );
 }

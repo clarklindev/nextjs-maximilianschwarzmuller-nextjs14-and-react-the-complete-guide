@@ -187,10 +187,23 @@ export default AllEventsPage;
 - feedback form
 - api routes to handle form data
 - `http://localhost:3000/feedback`
+- `http://localhost:3000/events-fetch`
+- adjusted `pages/events-fetch`
 - uses file system
+- `pnpm i mongodb`
 - `import fs from 'fs';`
 - `import path from 'path';`
 - stores form data in .json file
+- merge project-folder: 16-fullstack-adding-backend-code-with-api-routes
+- merge project-folder: 17-fullstack-api-routes-project
+- fullstack api routes project takes the events project and adds to it
+  - add newsletter signup
+  - event details have contact form
+  - makes use of environment variables
+- mongodb backend
+- `helpers/db-util.js`
+- UPDATED: `17-fullstack-api-routes-project` db-util to connect to mongodb was adapted to be more dynamic by using .env.local to plug-in mongodb connection string values using environment variables
+- `pages/comments/[eventId].js` commented out fs (node file system) imports and related functions `buildCommentPath()` and `extractComments()` because we are using mongodb.
 
 ### app-wide state (react context)
 

@@ -1,17 +1,21 @@
 // import { useRouter } from 'next/router';
+import Head from "next/head";
+
 // import { getEventById } from '../../data/dummy-data';
+import { getEventById, getFeaturedEvents } from "../../helpers/api-util";
+
 import EventSummary from "../../components/event-detail/event-summary";
 import EventLogistics from "../../components/event-detail/event-logistics";
 import EventContent from "../../components/event-detail/event-content";
 import ErrorAlert from "../../components/ui/error-alert";
-import { getEventById, getAllEvents, getFeaturedEvents } from "../../helpers/api-util";
+import Comments from "../../components/input/comments";
 
 function EventDetailPage(props) {
   // const router = useRouter();
   // const eventId = router.query.eventId;
   // const event = getEventById(eventId);
 
-  const event = props.event;
+  const event = props.selectedEvent;
 
   if (!event) {
     return (
@@ -23,6 +27,10 @@ function EventDetailPage(props) {
 
   return (
     <>
+      <Head>
+        <title>{event.title}</title>
+        <meta name="description" content={event.description} />
+      </Head>
       <EventSummary title={event.title} />
       <EventLogistics
         date={event.date}
@@ -33,6 +41,7 @@ function EventDetailPage(props) {
       <EventContent>
         <p>{event.description}</p>
       </EventContent>
+      <Comments eventId={event.id} />
     </>
   );
 }
@@ -49,7 +58,7 @@ export async function getStaticProps(context) {
 
   return {
     props: {
-      event,
+      selectedEvent: event,
     },
     revalidate: 30, //every 30min updated
   };
@@ -61,7 +70,7 @@ export async function getStaticPaths() {
 
   return {
     paths: paths,
-    fallback: "blocking"
+    fallback: "blocking",
   };
 }
 
