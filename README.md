@@ -7223,11 +7223,11 @@ export default Layout;
 
 Q: As we can access notification context inside layout, so why we cannot access the context inside notification component when it was wrapped inside layout in \_app.js?
 
-A: The reason is that MyApp component is not been wrap by the provider. The components inside the MyApp component are the actual one been wrap. So calling the context value directly in the MyApp component will not work. Only the MyApp component' children can use the context value because they(<Layout>, <Head>, <Component> in this case) are wrap by the provider.
+A: The reason is that MyApp component is not wrapped by the provider. The components inside the MyApp component are the actual one being wrapped. So calling the context value directly in the MyApp component will not work. Only the MyApp component' children can use the context value because they(<Layout>, <Head>, <Component> in this case) are wrap by the provider.
 
 A: The reason is because you cannot call context and use provider wrap in the same file(or component). So he moves the Notifications component into a lower level component (layout).
 
-A: The reason is because we can only use context inside the context provider. since \_app.js isn't wrapped inside the provider, calling context there would result in an error. If u want to call context inside \_app.js then you have to make sure that app.js is inside the provider. You can do that by wrapping the body tag in the \_document file with the provider. then you'd be able to call context inside \_app.js
+A: The reason is because we can only use context inside the context provider. since `app.js` isn't wrapped inside the provider, calling context there would result in an error. If u want to call context inside `_app.js` then you have to make sure that app.js is inside the provider. You can do that by wrapping the body tag in the `_document` file with the provider. then you'd be able to call context inside \_app.js
 
 A: The problem here is, that you can't access the dynamic NotificationContext inside <MyApp> because it isn't wrapped with the <NotificationContext.Provider>.
 
