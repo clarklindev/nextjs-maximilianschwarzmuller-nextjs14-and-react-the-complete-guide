@@ -16,7 +16,9 @@
     "react-dom": "^18",
     "swr": "^2.2.5",
     "react-markdown": "^6",
-    "react-syntax-highlighter": "^15.5.0"
+    "react-syntax-highlighter": "^15.5.0",
+    "bcryptjs": "^2.4.3",
+    "next-auth": "^4.24.7"
   },
   "devDependencies": {
     "eslint": "^8",

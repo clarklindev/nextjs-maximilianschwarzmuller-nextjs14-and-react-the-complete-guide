@@ -247,4 +247,11 @@ export default AllEventsPage;
 
 ### deploying nextjs
 
+- the deploy from lessons deploys to vercel once a git repository has been set-up.
+- it shows CI/CD by making new commits which are pushed to github and this triggers vercel to redeploy latest commit updates.
+- there is no project folder, it deploys `19-fullstack-complete-nextjs-app-building-a-full-blog`
+
 ### authentication
+
+- merging project folder `21-pages-router-authentication`
+- includes authentication related routes

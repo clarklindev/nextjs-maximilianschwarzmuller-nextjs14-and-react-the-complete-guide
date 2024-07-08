@@ -1,10 +1,12 @@
+import { SessionProvider } from "next-auth/react"; //next-auth @4
+
 import Head from "next/head";
 
 import Layout from "../components/layout/layout";
 import "@/styles/globals.css";
 import { NotificationContextProvider } from "../store/notification-context";
 
-function App({ Component, pageProps }) {
+function App({ Component, pageProps: { session, ...pageProps } }) {
   // Determine which layout to use based on the page
   const getLayout =
     Component.getLayout ||
@@ -26,9 +28,11 @@ function App({ Component, pageProps }) {
     ));
 
   return (
-    <NotificationContextProvider>
-      {getLayout(<Component {...pageProps} />)}
-    </NotificationContextProvider>
+    <SessionProvider session={session}>
+      <NotificationContextProvider>
+        {getLayout(<Component {...pageProps} />)}
+      </NotificationContextProvider>
+    </SessionProvider>
   );
 }
 
