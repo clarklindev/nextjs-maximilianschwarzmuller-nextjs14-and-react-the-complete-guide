@@ -145,13 +145,13 @@ export default App;
 ```js
 //pages/events/index.js
 //...
-import EventLayout from "@/components/layout/layout-event";
+import LayoutWithHeader from "@/components/layout/layout-with-header";
 
 //...
 function AllEventsPage() {
   //...
 }
-AllEventsPage.getLayout = (page) => <EventLayout>{page}</EventLayout>;
+AllEventsPage.getLayout = (page) => <LayoutWithHeader>{page}</LayoutWithHeader>;
 
 export default AllEventsPage;
 ```
@@ -222,6 +222,28 @@ export default AllEventsPage;
 - NotificationContext is added to project root `store/` folder
 
 ### building a blog
+
+- merge in project folder: `19-fullstack-complete-nextjs-app-building-a-full-blog`
+- this module practices mostly everything we already did by making a full blog
+
+#### the blog
+
+- mongodb database name: `my-blog`
+- contact form -> uses useState() to keep track of form state and details
+- uses your own api from `pages/api/`
+- `<Image>`
+- uses `_document`: `import Document, {Html, Head, Main, NextScript} from 'next/document';` to be able to create element for react portal.
+- `Notification` for status updates -> component uses portal `ReactDOM.createPortal`
+- post and post detail page
+- `import ReactMarkdown from 'react-markdown';` react-markdown to render markdown
+- `<ReactMarkdown components={customRenderers}>{post.content}</ReactMarkdown>`
+- learn about `<SyntaxHighlighter>`: `import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';`
+- react markdown allows you to define how to render html elements by "overriding" the output jsx to render
+- `lib/posts-util.js`: uses node package `fs` (file system module) `fs.readdirSync` to read directory contents
+- then uses `import matter from 'gray-matter';` to split up
+- contact form data is saved to mongo db with `helpers/db-util.js`
+- site has next meta tags like `<Head>` for seo
+- for `pages/posts/` slug makes use of dynamic route which uses getStaticProps and getStaticPaths.
 
 ### deploying nextjs
 

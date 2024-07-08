@@ -38,6 +38,9 @@ export default function Home() {
             <li>
               <Link href="/feedback">feedback</Link>
             </li>
+            <li>
+              <Link href="/blog">blog</Link>
+            </li>
           </ul>
         </div>
       </main>
