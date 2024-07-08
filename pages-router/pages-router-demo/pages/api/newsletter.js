@@ -5,7 +5,7 @@ async function handler(req, res) {
     const email = req.body.email;
 
     if (!email || !email.includes("@")) {
-      return res.status(422, { message: "invalid email" });
+      return res.status(422).json({ message: "invalid email" });
     }
 
     let client;
@@ -13,16 +13,14 @@ async function handler(req, res) {
     try {
       client = await connectDatabase("events");
     } catch (error) {
-      res.status(500).json({ message: "connecting failed" });
-      return;
+      return res.status(500).json({ message: "connecting failed" });
     }
 
     try {
       await insertDocument(client, "newsletter", { email });
       client.close();
     } catch (error) {
-      res.status(500).json({ message: "inserting data failed" });
-      return;
+      return res.status(500).json({ message: "inserting data failed" });
     }
 
     return res.status(201).json({

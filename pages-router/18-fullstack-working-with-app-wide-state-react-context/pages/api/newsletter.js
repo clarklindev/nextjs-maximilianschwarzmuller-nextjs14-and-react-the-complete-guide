@@ -1,31 +1,31 @@
-import {connectDatabase, insertDocument} from '../../helpers/db-util';
+import { connectDatabase, insertDocument } from "../../helpers/db-util";
 
-async function handler(req, res){
-  if(req.method === "POST"){
+async function handler(req, res) {
+  if (req.method === "POST") {
     const email = req.body.email;
-    
-    
-    if(!email || !email.includes('@')){
-      return res.status(422).json({message: 'invalid email'});
+
+    if (!email || !email.includes("@")) {
+      return res.status(422).json({ message: "invalid email" });
     }
 
-    let client = await connectDatabase();
+    let client;
 
-    // catch(error){
-    //   res.status(500).json({message: "connecting failed"});
-    //   return;
-    // }
+    try {
+      client = await connectDatabase("events");
+    } catch (error) {
+      return res.status(500).json({ message: "connecting failed" });
+    }
 
-    // try{
-      await insertDocument(client, "newsletter", {email: email});
+    try {
+      await insertDocument(client, "newsletter", { email: email });
       client.close();
-    // }
-    // catch(error){
-    //   res.status(500).json({message: "inserting data failed"});
-    //   return;
-    // }
+    } catch (error) {
+      return res.status(500).json({ message: "inserting data failed" });
+    }
 
-    return res.status(201).json({message: 'signedup',props:{email:email}});
+    return res
+      .status(201)
+      .json({ message: "signedup", props: { email: email } });
   }
 }
 

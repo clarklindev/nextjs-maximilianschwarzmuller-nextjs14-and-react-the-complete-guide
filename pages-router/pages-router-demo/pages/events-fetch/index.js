@@ -7,6 +7,7 @@ import { getAllEvents, getFeaturedEvents } from "../../helpers/api-util";
 import EventList from "../../components/events-fetch/event-list";
 import EventsSearch from "../../components/events-fetch/events-search";
 import LayoutWithHeader from "@/components/layout/layout-with-header";
+import NewsletterRegistration from "@/components/input/newsletter-registration";
 
 function FetchEventsPage(props) {
   const { events, featuredEvents } = props;
@@ -30,6 +31,7 @@ function FetchEventsPage(props) {
           content="Find a lot of great events that allow you to evolve..."
         />
       </Head>
+      <NewsletterRegistration />
       <EventsSearch onSearch={findEventsHandler} />
       <h2>Featured events</h2>
       <EventList items={featuredEvents} />

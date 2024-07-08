@@ -2,6 +2,7 @@ import Head from "next/head";
 
 import Layout from "../components/layout/layout";
 import "@/styles/globals.css";
+import { NotificationContextProvider } from "../store/notification-context";
 
 function App({ Component, pageProps }) {
   // Determine which layout to use based on the page
@@ -24,7 +25,11 @@ function App({ Component, pageProps }) {
       </Layout>
     ));
 
-  return getLayout(<Component {...pageProps} />);
+  return (
+    <NotificationContextProvider>
+      {getLayout(<Component {...pageProps} />)}
+    </NotificationContextProvider>
+  );
 }
 
 export default App;

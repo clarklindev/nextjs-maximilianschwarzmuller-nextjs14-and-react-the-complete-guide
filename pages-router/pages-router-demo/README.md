@@ -207,6 +207,20 @@ export default AllEventsPage;
 
 ### app-wide state (react context)
 
+- `18-fullstack-working-with-app-wide-state-react-context`
+- taking our progress project and adding app-wide state with react context
+- notification shows when there is status change `pending`, `success` and `error`
+- added notification component `components/ui/notification.js` and css
+- added `store/notification-context.js` -> tracks state and helper functions
+- `pages/_app.js`
+- notification-context provider is added to `_app.js`
+- notification-context is used in `comments.js`
+- notification-context is used in `newsletter-registration.js`
+- notification-context is used in `layout-with-header.js` and `layout.js`
+- notification-context is used in `notification.js`
+- the actual `<Notification>` component is added to `layout-with-header.js` and `layout.js`
+- NotificationContext is added to project root `store/` folder
+
 ### building a blog
 
 ### deploying nextjs
