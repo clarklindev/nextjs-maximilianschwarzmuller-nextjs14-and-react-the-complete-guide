@@ -9,11 +9,7 @@ export default function MealItem({ title, slug, image, summary, creator }) {
       <header>
         <div className={classes.image}>
           {/* <Image src={image} alt={title} fill /> */}
-          <Image
-            src={`https://clarklindev-nextjs-react-the-complete-guide-03-3-foodies.s3.ap-southeast-1.amazonaws.com${image}`}
-            alt={title}
-            fill
-          />
+          <Image src={`https://clarklindev-nextjs-react-the-complete-guide-03-3-foodies.s3.ap-southeast-1.amazonaws.com${image}`} alt={title} fill/>
         </div>
         <div className={classes.headerText}>
           <h2>{title}</h2>

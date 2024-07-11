@@ -38,7 +38,6 @@ export async function saveMeal(meal) {
 
   //local storage
   //storing the image on the local file system
-
   // 1.
   // const stream = fs.createWriteStream(`public/images/foodies/${fileName}`);
 
@@ -47,9 +46,9 @@ export async function saveMeal(meal) {
 
   // 3.
   // use stream to write the file -> convert the arrayBuffer to regular Buffer
-  // stream.write(Buffer.from(bufferedImage), (error) => {
-  //   if (error) {
-  //     throw new Error("save failed");
+  // stream.write(Buffer.from(bufferedImage), (error)=>{
+  //   if(error){
+  //     throw new Error('save failed');
   //   }
   // });
 

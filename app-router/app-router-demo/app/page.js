@@ -7,10 +7,9 @@ export default function Home() {
     <main className={styles.main}>
       <ul>
         <li>
-          <Link href="/foodies">1. practicing routing (foodies app)</Link>
-        </li>
-        <li>
-          <Link href="/foodies">2. image storage using aws s3</Link>
+          <Link href="/foodies">
+            1. practicing routing (foodies app with S3 storage)
+          </Link>
         </li>
       </ul>
     </main>

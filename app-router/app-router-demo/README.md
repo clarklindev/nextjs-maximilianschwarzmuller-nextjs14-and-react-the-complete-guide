@@ -72,7 +72,11 @@ What import alias would you like configured? @/_
 
 - only README.md for this module
 
-## 03-1-nextjs-essentials-app-router
+## 03-nextjs-essentials
+
+- use `<Image>` for optimized images
+
+## 03-nextjs-essentials-1-app-router
 
 - reserved filenames:
 
@@ -96,23 +100,214 @@ export const metadata = {
 };
 ```
 
-## 03-2-foodies
+## 03-nextjs-essentials-2-foodies
 
 - project -> `initdb.js` initializes a `meals.db` database in project root folder.
 - NOTE: in initdb.js you are creating a db and populating it with dummyMeals.
 - NOTE: each meal has an image, the path is relative to `public/` (but as if it were on root folder)
 - to initialize: `pnpm run initdb` command (which is in package.json)
-- `lib/meals.js` is the actual db interfacing file.
+- `lib/meals.js` is the actual db interfacing file -> it uses fs (file system package) to createWriteStream
+- creates an array bufferedImage using arrayBuffer(): `const bufferedImage = await meal.image.arrayBuffer();`
+- use stream to write the file -> convert the arrayBuffer to regular Buffer
+- add image property to meal
+
+```js
+const stream = fs.createWriteStream(`public/images/${fileName}`);
+```
+
+```js
+//lib/meals.js
+//..
+export async function saveMeal(meal) {
+  //create slug
+  meal.slug = slugify(meal.title, { lower: true });
+  meal.instructions = xss(meal.instructions);
+
+  const extension = meal.image.name.split(".").pop();
+  const fileName = `${meal.slug}.${extension}`;
+
+  //1.
+  const stream = fs.createWriteStream(`public/images/${fileName}`);
+
+  //2.
+  const bufferedImage = await meal.image.arrayBuffer();
+
+  //3.
+  //use stream to write the file -> convert the arrayBuffer to regular Buffer
+  stream.write(Buffer.from(bufferedImage), (error) => {
+    if (error) {
+      throw new Error("save failed");
+    }
+  });
+
+  //4.
+  meal.image = `/images/foodies/${fileName}`;
+
+  //5.
+  db.prepare(
+    `
+      INSERT INTO meals 
+        (title, summary, instructions, creator, creator_email, image, slug)
+      VALUES (
+        @title,
+        @summary,
+        @instructions,
+        @creator,
+        @creator_email,
+        @image,
+        @slug
+      )
+    `
+  ).run(meal);
+}
+```
+
 - uses fs (file system) db stored locally
 - `better-sqlite3` to write to sql database
 - `import slugify from "slugify";` to create a slug from a string
 - `import xss from "xss";` using xss to prevent xss attacks
-- note when you are saving a meal -> `createWriteStream()` path includes `public` and the upload image should be stored in the same place as where dummy images are kept `public/images/food/${fileName}`
+- note when you are saving a meal -> `createWriteStream()` path includes `public` and the upload image should be stored in the same place as where dummy images are kept `public/images/foodies/${fileName}`
 - after share submit, user is redirected (lib/action.js) `redirect("/foodies/meals");`
 - note: the path has been adjusted to cater for this demo (combined modules)
 
-## 03-3-foodies-image-storage-using-aws-s3
+## 03-nextjs-essentials-3-foodies-image-storage-using-aws-s3
 
+- delete `/meals.db` to reset db
+- `pnpm run initdb` to initialize db tables and dummy data
+- NOTE: login to aws console -> project: `clarklindev-nextjs-react-the-complete-guide-03-3-foodies`
+- NOTE: although the project can be run locally, the images are fetched from aws. so network connection is required
 - uses aws to store images -> `lib/meals.js`
+- NOTE: prefix for filename (image path eg. `image: "/images/foodies/tomato-salad.jpg"`) in `initdb.js` should match that of `lib/meals.js` where you set meal.image = `/images/foodies/${fileName}`;
+- in lib/meals -> credentials is where the environment variables are used.
+
+```js
+const s3 = new S3({
+  region: "ap-southeast-1",
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+```
+
 - so the db still uses sql to store data and paths but the physical image is stored in aws s3 bucket the path is what is stored in db.
-- aws dependency `@aws-sdk/client-s3`
+- aws dependency `@aws-sdk/client-s3` -> `pnpm i @aws-sdk/client-s3`
+- next.config.js includes settings for aws
+- add environment variables in `.env.local` for aws access keys this will be used later.
+
+```js
+//next.config.js
+/** @type {import('next').NextConfig} */
+
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "<url>.amazonaws.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },
+};
+
+module.exports = nextConfig;
+```
+
+- lib/actions.js has `import { revalidatePath } from 'next/cache';` which is called `revalidatePath('/meals');` after saving data
+- lib/meals.js has updated to support aws
+
+```js
+//lib/meals.js
+
+import { S3 } from "@aws-sdk/client-s3";
+
+const s3 = new S3({
+  region: "ap-southeast-1",
+});
+
+//...
+
+export async function saveMeal(meal) {
+  //create slug
+  meal.slug = slugify(meal.title, { lower: true });
+  meal.instructions = xss(meal.instructions);
+
+  const extension = meal.image.name.split(".").pop();
+  const fileName = `${meal.slug}.${extension}`;
+
+  //local storage
+  //storing the image on the local file system
+  //1.
+  // const stream = fs.createWriteStream(`public/images/${fileName}`);
+
+  // 2.
+  // const bufferedImage = await meal.image.arrayBuffer();
+
+  // 3.
+  // use stream to write the file -> convert the arrayBuffer to regular Buffer
+  // stream.write(Buffer.from(bufferedImage), (error)=>{
+  //   if(error){
+  //     throw new Error('save failed');
+  //   }
+  // });
+
+  //aws s3 cloud
+  const bufferedImage = await meal.image.arrayBuffer();
+  const folder = "images/foodies/";
+
+  s3.putObject({
+    Bucket: "clarklindev-nextjs-react-the-complete-guide-03-3-foodies",
+    Key: folder + fileName,
+    Body: Buffer.from(bufferedImage),
+    ContentType: meal.image.type,
+  });
+
+  //4.
+  meal.image = fileName;
+
+  //5.
+  db.prepare(
+    `
+      INSERT INTO meals 
+        (title, summary, instructions, creator, creator_email, image, slug)
+      VALUES (
+        @title,
+        @summary,
+        @instructions,
+        @creator,
+        @creator_email,
+        @image,
+        @slug
+      )
+    `
+  ).run(meal);
+}
+```
+
+- `/components/meals/meal-item.js` image url path points to aws url
+- `/app/foodies/meals/[slug]/page.js` image url path points to aws url
+
+```js
+//...
+
+/* <Image src={image} alt={title} fill /> */
+
+<Image
+  src={`https://clarklindev-nextjs-react-the-complete-guide-03-3-foodies.s3.ap-southeast-1.amazonaws.com/${image}`}
+  alt={title}
+  fill
+/>
+```
+
+### NOTE
+
+- NOTE: in `lib/meals.js`
+  - `const folder = "images/foodies/"`;
+  - s3.putObject({Key: folder + fileName}) folder value does not prefix with `/` (this is for aws to create the file)
+
+### NOTE
+
+- NOTE: meal.image = `/images/foodies/${fileName}`; does have prefix with `/`
+  - this is used in `/components/meals/meal-item.js` and `/app/foodies/meals/[slug]/page.js` for `<Image>` url as it does not end with `/`

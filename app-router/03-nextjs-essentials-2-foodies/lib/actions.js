@@ -1,7 +1,6 @@
 "use server";
 import { redirect } from "next/navigation";
 import { saveMeal } from "./meals";
-import { revalidatePath } from "next/cache";
 
 export async function shareMeal(prevState, formData) {
   const meal = {
@@ -36,6 +35,5 @@ export async function shareMeal(prevState, formData) {
 
   //console.log(meal);
   await saveMeal(meal);
-  revalidatePath("/foodies/meals");
-  redirect("/foodies/meals");
+  redirect("/meals");
 }

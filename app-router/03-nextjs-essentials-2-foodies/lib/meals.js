@@ -2,15 +2,7 @@ import fs from "node:fs";
 import sql from "better-sqlite3";
 import slugify from "slugify";
 import xss from "xss";
-import { S3 } from "@aws-sdk/client-s3";
 
-const s3 = new S3({
-  region: "ap-southeast-1",
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
 const db = sql("meals.db");
 
 export async function getMeals() {
@@ -36,41 +28,26 @@ export async function saveMeal(meal) {
   const extension = meal.image.name.split(".").pop();
   const fileName = `${meal.slug}.${extension}`;
 
-  //local storage
-  //storing the image on the local file system
+  //1.
+  const stream = fs.createWriteStream(`public/images/foodies/${fileName}`);
 
-  // 1.
-  // const stream = fs.createWriteStream(`public/images/foodies/${fileName}`);
-
-  // 2.
-  // const bufferedImage = await meal.image.arrayBuffer();
-
-  // 3.
-  // use stream to write the file -> convert the arrayBuffer to regular Buffer
-  // stream.write(Buffer.from(bufferedImage), (error) => {
-  //   if (error) {
-  //     throw new Error("save failed");
-  //   }
-  // });
-
-  //aws s3 cloud
+  //2.
   const bufferedImage = await meal.image.arrayBuffer();
-  const folder = "images/foodies/";
 
-  await s3.putObject({
-    Bucket: "clarklindev-nextjs-react-the-complete-guide-03-3-foodies",
-    Key: folder + fileName,
-    Body: Buffer.from(bufferedImage),
-    ContentType: meal.image.type,
+  //3.
+  //use stream to write the file -> convert the arrayBuffer to regular Buffer
+  stream.write(Buffer.from(bufferedImage), (error) => {
+    if (error) {
+      throw new Error("save failed");
+    }
   });
 
   //4.
   meal.image = `/images/foodies/${fileName}`;
 
   //5.
-  await db
-    .prepare(
-      `
+  db.prepare(
+    `
       INSERT INTO meals 
         (title, summary, instructions, creator, creator_email, image, slug)
       VALUES (
@@ -83,6 +60,5 @@ export async function saveMeal(meal) {
         @slug
       )
     `
-    )
-    .run(meal);
+  ).run(meal);
 }
