@@ -18,7 +18,7 @@ const nextConfig = {
       {
         source: "/",
         destination: "/foodies",
-        permanent: true,
+        permanent: false,
       },
     ];
   },

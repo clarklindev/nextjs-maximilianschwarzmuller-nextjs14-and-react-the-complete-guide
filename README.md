@@ -2305,6 +2305,14 @@ export default function MealDetailsPage({ params }) {
 
 # Section 04 - Routing and Page Rendering - Deep Dive
 
+- 22 lessons / 2hrs 2 min
+
+## Route groups
+
+[![route groups](https://img.youtube.com/vi/wEMu9HWKrkk/sddefault.jpg)](https://www.youtube.com/shorts/wEMu9HWKrkk)
+
+- or see `public/route group - lee robinson.mp4`
+
 [back (table of contents)](#table-of-contents)
 
 ## 136,137,138,139 Practice routes / Dynamic routes / using dummy data for dynamic content
