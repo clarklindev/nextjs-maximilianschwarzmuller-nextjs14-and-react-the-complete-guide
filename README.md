@@ -2763,6 +2763,9 @@ export function DELETE(request) {}
 - code in middleware is run for every request with `matcher` property that allows filtering of the requests
 - value can also be an array (to filter multiple routes) etc.
 - MATCHER NOTES: [https://nextjs.org/docs/app/building-your-application/routing/middleware](https://nextjs.org/docs/app/building-your-application/routing/middleware)
+- The first argument (/home) is the relative path to which the redirect points.
+- The second argument (request.url) is the current URL of the request, used as the base URL for resolving the relative path.
+- Together, they construct the full URL (request.url + '/home') that the client will be redirected to.
 
 ### config
 
@@ -2774,11 +2777,12 @@ import { NextResponse } from "next/server";
 
 export function middleware(request) {
   // return NextResponse.redirect();
+  return NextResponse.redirect(new URL("/foodies", request.url));
   return NextResponse.next(); //forwards incoming
 }
 
 export const config = {
-  matcher: "/news",
+  matcher: "/",
 };
 ```
 

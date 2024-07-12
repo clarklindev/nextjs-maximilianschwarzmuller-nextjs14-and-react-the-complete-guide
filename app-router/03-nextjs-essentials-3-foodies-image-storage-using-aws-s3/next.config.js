@@ -12,16 +12,16 @@ const nextConfig = {
       },
     ],
   },
-  async redirects() {
-    return [
-      // Basic redirect
-      {
-        source: "/",
-        destination: "/foodies",
-        permanent: false,
-      },
-    ];
-  },
+  // async redirects() {
+  //   return [
+  //     // Basic redirect
+  //     {
+  //       source: "/",
+  //       destination: "/foodies",
+  //       permanent: false,
+  //     },
+  //   ];
+  // },
 };
 
 module.exports = nextConfig;
