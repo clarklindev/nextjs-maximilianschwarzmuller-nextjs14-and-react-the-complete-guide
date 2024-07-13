@@ -1,0 +1,10 @@
+.posts {
+  width: 80%;
+  max-width: 60rem;
+  margin: 3rem auto;
+  padding: 2rem;
+  border-radius: 6px;
+  background-color: #1f1b1d;
+  min-height: 85vh;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+}

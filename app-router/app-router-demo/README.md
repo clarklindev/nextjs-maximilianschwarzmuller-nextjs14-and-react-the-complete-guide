@@ -410,3 +410,29 @@ export const config = {
 - `better-sqlite3` to interface with backend sql db
 - `lib/news-sql.js` functions to manipulate db
 - `lib/news.js` - dummy data functions
+
+- note: with the like toggle-button, should look like below (pseudo code) and the state check for isLiked is moved from the `<form>` to the `<LikeButton isLiked={post.isLiked}/>` button
+
+```css
+.liked.like-button {
+  /* styles for elements with both classA and classB */
+}
+```
+
+```js
+import styles from "./styles.module.css";
+
+const MyComponent = () => {
+  return (
+    <div
+      className={
+        isLiked
+          ? `${classes.liked} ${classes["like-button"]}`
+          : `${classes["like-button"]}`
+      }
+    >
+      {/* content */}
+    </div>
+  );
+};
+```
