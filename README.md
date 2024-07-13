@@ -2991,7 +2991,7 @@ export default async function NewsPage() {
 export async function getAllNews() {
   // return DUMMY_NEWS;
   const news = db.prepare("SELECT * FROM news").all();
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 2000)); //SIMULATE SLOWER LOAD
   return news;
 }
 ```

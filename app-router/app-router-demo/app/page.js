@@ -8,7 +8,13 @@ export default function Home() {
       <ul>
         <li>
           <Link href="/foodies">
-            1. practicing routing (foodies app with S3 storage)
+            3. nextjs essentials - practicing routing (foodies app with S3
+            storage)
+          </Link>
+        </li>
+        <li>
+          <Link href="/home">
+            4-5 deep dive - routing and rendering / data fetching
           </Link>
         </li>
       </ul>

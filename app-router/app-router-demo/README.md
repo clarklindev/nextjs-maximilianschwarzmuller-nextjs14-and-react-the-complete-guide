@@ -310,4 +310,103 @@ export async function saveMeal(meal) {
 ### NOTE
 
 - NOTE: meal.image = `/images/foodies/${fileName}`; does have prefix with `/`
-  - this is used in `/components/meals/meal-item.js` and `/app/foodies/meals/[slug]/page.js` for `<Image>` url as it does not end with `/`
+
+- this is used in `/components/meals/meal-item.js` and `/app/foodies/meals/[slug]/page.js` for `<Image>` url as it does not end with `/`
+
+### NOTE
+
+- `next.config.js` has commented out code for redirecting as you can use [`middleware.js`](#middleware-to-redirect) for redirecting
+
+```js
+/** @type {import('next').NextConfig} */
+
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname:
+          "clarklindev-nextjs-react-the-complete-guide-03-3-foodies.s3.ap-southeast-1.amazonaws.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },
+  // async redirects() {
+  //   return [
+  //     // Basic redirect
+  //     {
+  //       source: "/",
+  //       destination: "/foodies",
+  //       permanent: false,
+  //     },
+  //   ];
+  // },
+};
+
+module.exports = nextConfig;
+```
+
+## 04-deep-dive-routing-and-rendering
+
+- this module introduces group routes (sharing layout)
+- you create folder with () syntax and it has layout which is shared by the pages within that group
+- introduction to api: `app/api`
+
+```js
+export function GET(request) {
+  console.log(request);
+  return new Response("hello");
+}
+// export function POST(request){}
+// export function PATCH(request){}
+// export function PUT(request){}
+// export function DELETE(request){}
+```
+
+- learn to use intercepting routes () with dots `.` inside the round brackets for each level up that it should go to intercept from.
+- parallel routes with @ folder name syntax eg. folder `@archive` and `@latest` on same level
+
+```js
+export default function ArchiveLayout({ archive, latest }) {
+  return (
+    <div>
+      <h1>News archive</h1>
+      <section id="archive-filter">{archive}</section>
+      <section id="archive-latest">{latest}</section>
+    </div>
+  );
+}
+```
+
+### middleware to redirect
+
+- the use of `middleware.js` to redirect incoming request
+- `matcher` allows you to filter Middleware to run on specific paths.
+- If request.url is https://example.com/foodies, then `new URL('/home', request.url)` would result in https://example.com/home
+
+```js
+//middleware.js
+import { NextResponse } from "next/server";
+
+export function middleware(request) {
+  // return NextResponse.redirect();
+  return NextResponse.redirect(new URL("/foodies", request.url));
+  return NextResponse.next(); //forwards incoming
+}
+
+export const config = {
+  matcher: "/",
+};
+```
+
+## 05-deep-dive-data-fetching
+
+- continuation of `04-deep-dive-routing-and-rendering` but adjusted for data-fetching
+- note: `backend/` folder initializes db table `\data.db` automatically on start only if it doesnt already exist
+- BUT the express server part is not used. we use nextjs `lib/news-sql.js` to directly interact with db (note this is because we are hosting our database)
+- AND there is no need to hit the nextjs `api/` to get to endpoint to get data because we can access db via server component directly in `lib/news-sql.js`
+
+- `better-sqlite3` to interface with backend sql db
+- `lib/news-sql.js` functions to manipulate db
+- `lib/news.js` - dummy data functions
