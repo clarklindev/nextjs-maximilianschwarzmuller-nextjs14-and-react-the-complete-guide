@@ -5,7 +5,7 @@ import {
   connectDatabase,
   getAllDocuments,
   insertDocument,
-} from "../../../helpers/db-util";
+} from "@/helpers/db-util";
 
 // export function buildCommentPath() {
 //   return path.join(process.cwd(), "data", "comments.json");

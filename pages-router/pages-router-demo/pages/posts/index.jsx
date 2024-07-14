@@ -1,7 +1,7 @@
 import Head from "next/head";
 
-import AllPosts from "../../components/posts/all-posts";
-import { getAllPosts } from "../../lib/posts-util";
+import AllPosts from "@/components/posts/all-posts";
+import { getAllPosts } from "@/lib/posts-util";
 import Layout from "@/components/layout/layout-blog";
 
 function AllPostsPage(props) {

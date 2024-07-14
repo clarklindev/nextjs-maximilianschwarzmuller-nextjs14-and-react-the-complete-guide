@@ -6,7 +6,6 @@ import AddressIcon from "../icons/address-icon";
 import ArrowRightIcon from "../icons/arrow-right-icon";
 import classes from "./event-item.module.css";
 
-
 function EventItem(props) {
   const { title, image, date, location, id } = props;
 
@@ -17,11 +16,20 @@ function EventItem(props) {
     day: "numeric",
   });
 
-  const formattedAddress = location.replace(", ", "\n");
+  const formattedAddress = location.replace(",", "\n");
   const exploreLink = `/events-fetch/${id}`;
+
+  console.log("image events-fetch: ", image);
+
   return (
     <li className={classes.item}>
-      <Image src={'/' + image} alt={title} width={250} height={160} className={classes.fill}/>
+      <Image
+        src={image} //data from firebase db
+        alt={title}
+        width={250}
+        height={160}
+        className={classes.fill}
+      />
       <div className={classes.content}>
         <div className={classes.summary}>
           <h2>{title}</h2>

@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth/next";
 
-import { authOptions } from "../auth/[...nextauth]";
-import { connectDatabase } from "../../../helpers/db-util";
-import { hashPassword, verifyPassword } from "../../../helpers/auth";
+import { authOptions } from "@/api/auth/[...nextauth]";
+import { connectDatabase } from "@/helpers/db-util";
+import { hashPassword, verifyPassword } from "@/helpers/auth";
 
 //api: api/user/change-password
 

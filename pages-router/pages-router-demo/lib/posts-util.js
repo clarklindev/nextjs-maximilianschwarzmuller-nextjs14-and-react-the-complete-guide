@@ -1,44 +1,45 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
 
-const postsDirectory = path.join(process.cwd(), 'posts');
+const postsDirectory = path.join(process.cwd(), "posts");
 
-export function getPostsFiles(){
-  return fs.readdirSync(postsDirectory);  //read all contents of directory synchronously
-} 
+export function getPostsFiles() {
+  return fs.readdirSync(postsDirectory); //read all contents of directory synchronously
+}
 
-export function getPostData(postIdentifier){
-  const postSlug = postIdentifier.replace(/\.md$/, ''); //removes file extension
+export function getPostData(postIdentifier) {
+  const postSlug = postIdentifier.replace(/\.md$/, ""); //removes file extension
 
   const filePath = path.join(postsDirectory, `${postSlug}.md`);
-  const fileContent = fs.readFileSync(filePath, 'utf-8');
-  const {data, content} = matter(fileContent);
+  const fileContent = fs.readFileSync(filePath, "utf-8");
+  const { data, content } = matter(fileContent);
 
   const postData = {
-    slug : postSlug, 
+    slug: postSlug,
     ...data,
-    content
+    content,
   };
 
   return postData;
 }
 
-export function getAllPosts(){
+export function getAllPosts() {
   const postFiles = getPostsFiles();
 
-  const allPosts = postFiles.map(postFile=>{
+  const allPosts = postFiles.map((postFile) => {
     return getPostData(postFile);
   });
 
-  const sortedPosts = allPosts.sort((postA, postB)=> postA.date > postB.date ? -1: 1);
+  const sortedPosts = allPosts.sort((postA, postB) =>
+    postA.date > postB.date ? -1 : 1
+  );
   return sortedPosts;
 }
 
-export function getFeaturedPosts(){
+export function getFeaturedPosts() {
   const allPosts = getAllPosts();
 
-  const featuredPosts = allPosts.filter(post => post.isFeatured);
+  const featuredPosts = allPosts.filter((post) => post.isFeatured);
   return featuredPosts;
-
 }

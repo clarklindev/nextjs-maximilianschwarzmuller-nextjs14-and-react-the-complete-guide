@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 
-import { buildFeedbackPath, extractFeedback } from "../api/feedback";
+import { buildFeedbackPath, extractFeedback } from "@/pages/api/feedback";
 
 function FeedbackPage(props) {
   const emailRef = useRef();

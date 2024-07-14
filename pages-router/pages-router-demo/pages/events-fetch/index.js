@@ -3,9 +3,9 @@ import Link from "next/link";
 import Head from "next/head";
 
 // import { getAllEvents } from '../../data/dummy-data';    //client-side loading dummy data
-import { getAllEvents, getFeaturedEvents } from "../../helpers/api-util";
-import EventList from "../../components/events-fetch/event-list";
-import EventsSearch from "../../components/events-fetch/events-search";
+import { getAllEvents, getFeaturedEvents } from "@/helpers/api-util"; //fetching data from firebase
+import EventList from "@/components/events-fetch/event-list";
+import EventsSearch from "@/components/events-fetch/events-search";
 import LayoutWithHeader from "@/components/layout/layout-with-header";
 import NewsletterRegistration from "@/components/input/newsletter-registration";
 
@@ -22,9 +22,6 @@ function FetchEventsPage(props) {
   return (
     <>
       <Head>
-        <title>All my events</title>
-      </Head>
-      <Head>
         <title>All Events</title>
         <meta
           name="description"
@@ -35,8 +32,8 @@ function FetchEventsPage(props) {
       <EventsSearch onSearch={findEventsHandler} />
       <h2>Featured events</h2>
       <EventList items={featuredEvents} />
-      <h2>All events</h2>
-      <EventList items={events} />
+      {/* <h2>All events</h2>
+      <EventList items={events} /> */}
     </>
   );
 }

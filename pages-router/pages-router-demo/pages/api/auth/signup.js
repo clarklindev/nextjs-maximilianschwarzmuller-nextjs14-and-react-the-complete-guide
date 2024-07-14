@@ -1,5 +1,5 @@
-import { hashPassword } from "../../../helpers/auth";
-import { connectDatabase } from "../../../helpers/db-util";
+import { hashPassword } from "@/helpers/auth";
+import { connectDatabase } from "@/helpers/db-util";
 
 async function handler(req, res) {
   if (req.method !== "POST") {

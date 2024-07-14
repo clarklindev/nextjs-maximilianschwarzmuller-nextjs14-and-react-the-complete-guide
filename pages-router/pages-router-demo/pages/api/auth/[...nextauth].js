@@ -3,8 +3,8 @@ import NextAuth from "next-auth";
 //import Credential from 'next-auth/providers'; //v3
 import CredentialProvider from "next-auth/providers/credentials"; //v4
 
-import { verifyPassword } from "../../../helpers/auth";
-import { connectDatabase } from "../../../helpers/db-util";
+import { verifyPassword } from "@/helpers/auth";
+import { connectDatabase } from "@/helpers/db-util";
 
 export const authOptions = {
   session: {

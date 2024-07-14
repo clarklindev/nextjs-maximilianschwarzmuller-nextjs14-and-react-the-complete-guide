@@ -1,5 +1,6 @@
 export async function getAllEvents() {
   const response = await fetch(
+    //NOTE: THE FIREBASE DB SHOULD ACTUALLY USE AN SDK TO SET CONFIG. THIS LINK HAS EXPIRY (WHICH IS SET IN FIREBASE CONSOLE UNDER "RULES")
     "https://udemy-nextjs14-maximillian-default-rtdb.asia-southeast1.firebasedatabase.app/events.json"
   );
   const data = await response.json();

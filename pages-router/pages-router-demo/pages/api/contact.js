@@ -1,6 +1,6 @@
 // /api/contact
 
-import { connectDatabase } from "../../helpers/db-util";
+import { connectDatabase } from "@/helpers/db-util";
 
 async function handler(req, res) {
   if (req.method === "POST") {

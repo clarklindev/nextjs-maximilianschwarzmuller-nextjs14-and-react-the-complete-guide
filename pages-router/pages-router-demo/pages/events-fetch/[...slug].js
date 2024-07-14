@@ -3,12 +3,12 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import Head from "next/head";
 
-// import { getFilteredEvents } from '../../data/dummy-data';
-import { getFilteredEvents } from "../../helpers/api-util";
-import EventList from "../../components/events-fetch/event-list";
-import ResultsTitle from "../../components/events-fetch/results-title";
-import Button from "../../components/ui/button";
-import ErrorAlert from "../../components/ui/error-alert";
+// import { getFilteredEvents } from '@/data/dummy-data';
+import { getFilteredEvents } from "@/helpers/api-util";
+import EventList from "@/components/events-fetch/event-list";
+import ResultsTitle from "@/components/events-fetch/results-title";
+import Button from "@/components/ui/button";
+import ErrorAlert from "@/components/ui/error-alert";
 
 function FilteredEventsPage(props) {
   const [loadedEvents, setLoadedEvents] = useState();

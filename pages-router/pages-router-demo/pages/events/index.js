@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-import { getAllEvents, getFeaturedEvents } from "../../data/dummy-data2";
-import EventsSearch from "../../components/events/events-search";
-import EventList from "../../components/events/event-list";
+import { getAllEvents, getFeaturedEvents } from "@/data/dummy-data2";
+import EventsSearch from "@/components/events/events-search";
+import EventList from "@/components/events/event-list";
 import LayoutWithHeader from "@/components/layout/layout-with-header";
 
 function AllEventsPage() {

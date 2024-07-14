@@ -2,9 +2,9 @@ import { SessionProvider } from "next-auth/react"; //next-auth @4
 
 import Head from "next/head";
 
-import Layout from "../components/layout/layout";
+import Layout from "@/components/layout/layout";
 import "@/styles/globals.css";
-import { NotificationContextProvider } from "../store/notification-context";
+import { NotificationContextProvider } from "@/store/notification-context";
 
 function App({ Component, pageProps: { session, ...pageProps } }) {
   // Determine which layout to use based on the page
