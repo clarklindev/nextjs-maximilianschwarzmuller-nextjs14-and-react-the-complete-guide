@@ -11,7 +11,8 @@ export const authOptions = {
     //jwt: true   //v3
     strategy: "jwt", //v4
   },
-  // secret: "",
+  secret: process.env.NEXTAUTH_SECRET,
+
   providers: [
     //next-auth v3 method
     // Providers.Credentials({

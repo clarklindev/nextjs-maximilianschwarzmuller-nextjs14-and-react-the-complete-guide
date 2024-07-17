@@ -8576,6 +8576,9 @@ export default MyApp;
 
 ### generate random secret
 
+- NOTE: THIS IS REQUIRED FOR PRODUCTION
+- in production if the secret is not there, next/auth will throw an error if usng v4 and that is why NEXTAUTH_SECRET is included in .env.local
+
 ```
 $ openssl rand -base64 32
 ```
