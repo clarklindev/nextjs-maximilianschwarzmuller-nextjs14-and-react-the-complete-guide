@@ -1,0 +1,23 @@
+.like-button {
+  background-color: transparent;
+  border: none;
+}
+
+.like-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: transparent;
+  stroke: #e32195;
+}
+
+.like-button:hover svg {
+  fill: #e32195;
+}
+
+.liked.like-button svg {
+  fill: #e32195;
+}
+
+.liked.like-button:hover svg {
+  fill: transparent;
+}

@@ -2189,7 +2189,7 @@ s3.putObject({
 
 ```js
 //BEFORE
-meal.image = `/images/${fileName}`;
+meal.image = `/images/foodies/${fileName}`;
 
 //AFTER
 meal.image = fileName;
@@ -2213,7 +2213,7 @@ meal.image = fileName;
 
 - NOTE: .env.local is excluded from the git commit in the .gitignore but will be required
 - you need to create this file in root of project called: `.env.local`
-- you can rename: `template-.env.local` to `.env.local` and add aws access key details.
+- you can rename: `.env.local.template` to `.env.local` and add aws access key details.
 - https://nextjs.org/docs/app/building-your-application/configuring/environment-variables
 - file will automatically be read by NextJS and the environment variables configured in there will be made available to the backend (!) part of your app.
 - get access key details from aws
@@ -2228,6 +2228,23 @@ AWS_SECRET_ACCESS_KEY=<your aws secret access key>
 - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html
 - You get those access keys from inside the AWS console (in the browser). You can get them by clicking on your account name (in the top right corner of the AWS console) and then "Security Credentials".
 - Scroll down to the "Access Keys" area and create a new Access Key. Copy & paste the values into your .env.local file and never share these keys with anyone! Don't commit them to Git or anything like that!
+
+### setting up AWS s3 credentials
+
+- your access keys should be inside .env.local
+
+```js
+//lib/meals.js
+import { S3 } from "@aws-sdk/client-s3";
+
+const s3 = new S3({
+  region: "ap-southeast-1",
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+```
 
 ## 132. adding static metadata
 
@@ -2288,6 +2305,14 @@ export default function MealDetailsPage({ params }) {
 
 # Section 04 - Routing and Page Rendering - Deep Dive
 
+- 22 lessons / 2hrs 2 min
+
+## Route groups
+
+[![route groups](https://img.youtube.com/vi/wEMu9HWKrkk/sddefault.jpg)](https://www.youtube.com/shorts/wEMu9HWKrkk)
+
+- or see `public/route group - lee robinson.mp4`
+
 [back (table of contents)](#table-of-contents)
 
 ## 136,137,138,139 Practice routes / Dynamic routes / using dummy data for dynamic content
@@ -2310,7 +2335,7 @@ export default function MealDetailsPage({ params }) {
 - usually the layout.js receives the children prop eg. `export default function RootLayout({ children }) {}` HOWEVER, when you have parralel routes, instead of just "children" prop...the layout receives one prop per parallel "@" route
 - with the name you chose after the @ as a prop name eg. if parallel routes are `archive/@archive` and `archive/@latest`
 - note: you visit the `http://localhost:3000/archive` layout route
-
+- root layout.js requires `<html>` and `<body>`
 - REQUIRED:
   1. layout.js -> add `app/archive/layout.js`
   2. one subfolder (starts with @) -> for each parallel route (`app/archive/@archive/page.js`) and (`app/archive/@latest/page.js`)
@@ -2673,6 +2698,7 @@ export default function ModalDefaultPage() {
 - `import {useRouter} from 'next/navigation';`
 - useRouter gives useful methods to navigate eg. back()
 - useRouter only works inside client components
+- The useRouter hook should be imported from `next/navigation` and not `next/router` when using the App Router
 
 ```js
 //app/news/[slug]/@modal/(.)image/page.js
@@ -2737,6 +2763,9 @@ export function DELETE(request) {}
 - code in middleware is run for every request with `matcher` property that allows filtering of the requests
 - value can also be an array (to filter multiple routes) etc.
 - MATCHER NOTES: [https://nextjs.org/docs/app/building-your-application/routing/middleware](https://nextjs.org/docs/app/building-your-application/routing/middleware)
+- The first argument (/home) is the relative path to which the redirect points.
+- The second argument (request.url) is the current URL of the request, used as the base URL for resolving the relative path.
+- Together, they construct the full URL (request.url + '/home') that the client will be redirected to.
 
 ### config
 
@@ -2748,11 +2777,12 @@ import { NextResponse } from "next/server";
 
 export function middleware(request) {
   // return NextResponse.redirect();
+  return NextResponse.redirect(new URL("/foodies", request.url));
   return NextResponse.next(); //forwards incoming
 }
 
 export const config = {
-  matcher: "/news",
+  matcher: "/",
 };
 ```
 
@@ -2961,7 +2991,7 @@ export default async function NewsPage() {
 export async function getAllNews() {
   // return DUMMY_NEWS;
   const news = db.prepare("SELECT * FROM news").all();
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 2000)); //SIMULATE SLOWER LOAD
   return news;
 }
 ```
@@ -3938,7 +3968,7 @@ export default function Page() {
 - dont know size in advance
 - NOTE: if you set `width` and `height` props on `<Image>`, you can set a string path on `src` instead of 'next/image' object
 - NOTE: but if you dont know the width and height, you can use `fill` prop
-- ERROR: you may be an error because -> setting a src that loads from an external image hosting site requires additional setup
+- ERROR: you may be getting an error because -> setting a src that loads from an external image hosting site requires additional setup
 
 <img src="./app-router/08-nextjs-app-optimization/public/loading-unknown-images-error.jpg" alt="loading-unknown-images-error"/>
 
