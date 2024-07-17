@@ -19,6 +19,9 @@ export default function Home() {
         <li>
           <Link href="/posts">6. deep dive - mutating data</Link>
         </li>
+        <li>
+          <Link href="/caching">7. caching</Link>
+        </li>
       </ul>
     </main>
   );

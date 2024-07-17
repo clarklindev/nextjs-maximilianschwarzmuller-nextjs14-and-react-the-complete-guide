@@ -1,0 +1,32 @@
+.main-header {
+  width: 80%;
+  max-width: 60rem;
+  margin: 2rem auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-header #logo a {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f9f6f1;
+  text-decoration: none;
+}
+
+.main-header ul {
+  display: flex;
+  gap: 1rem;
+}
+
+.main-header ul a {
+  color: #eee7ea;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  font-size: 1.5rem;
+  border-radius: 4px;
+}
+
+.main-header ul a:hover {
+  background-color: #5f5a5c;
+}
