@@ -22,7 +22,14 @@ export default function Home() {
         <li>
           <Link href="/caching">7. caching</Link>
         </li>
-        <li>8. optimising nextjs app </li>
+        <li>
+          8. optimising nextjs app - using `6. deep dive - mutating data`
+          project files but with nextjs "Image" component and adding metadata to
+          layout
+        </li>
+        <li>
+          <Link href="/auth">9. user authentication</Link>
+        </li>
       </ul>
     </main>
   );

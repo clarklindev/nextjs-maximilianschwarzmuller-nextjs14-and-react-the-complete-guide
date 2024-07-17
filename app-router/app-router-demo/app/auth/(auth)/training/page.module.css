@@ -1,0 +1,45 @@
+.training-sessions {
+  max-width: 40rem;
+  margin: 2rem auto;
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+}
+
+.training-sessions li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+  border-radius: 4px;
+  background-color: #0a0a0a;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+}
+
+.training-sessions li img {
+  width: 100%;
+}
+
+.training-sessions li h2 {
+  margin: 1rem 0 0 0;
+  padding: 0 1rem;
+  color: #d0cfd6;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.training-sessions li div {
+  text-align: center;
+}
+
+.training-sessions li p {
+  margin: 1rem;
+  color: #7c7a80;
+}
+
+.main {
+  max-width: 50rem;
+  margin: 2rem auto;
+}
