@@ -22,6 +22,7 @@ export default function Home() {
         <li>
           <Link href="/caching">7. caching</Link>
         </li>
+        <li>8. optimising nextjs app </li>
       </ul>
     </main>
   );

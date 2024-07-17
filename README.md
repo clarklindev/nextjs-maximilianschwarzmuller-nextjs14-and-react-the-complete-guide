@@ -3968,7 +3968,7 @@ export default function Page() {
 - dont know size in advance
 - NOTE: if you set `width` and `height` props on `<Image>`, you can set a string path on `src` instead of 'next/image' object
 - NOTE: but if you dont know the width and height, you can use `fill` prop
-- ERROR: you may be an error because -> setting a src that loads from an external image hosting site requires additional setup
+- ERROR: you may be getting an error because -> setting a src that loads from an external image hosting site requires additional setup
 
 <img src="./app-router/08-nextjs-app-optimization/public/loading-unknown-images-error.jpg" alt="loading-unknown-images-error"/>
 

@@ -436,3 +436,5 @@ const MyComponent = () => {
   );
 };
 ```
+
+## 06-deep-dive-mutating-data
