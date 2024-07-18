@@ -1,14 +1,15 @@
 import sql from "better-sqlite3";
 
-const db = sql("data/news.db");
+const dbPath = "data/news.db"; // Adjust based on your directory structure
+const db = sql(dbPath);
 
-export async function getAllNews() {
+export function getAllNews() {
   const news = db.prepare("SELECT * FROM news").all();
   // await new Promise((resolve) => setTimeout(resolve, 2000)); //SIMULATE SLOW CONNECTION
   return news;
 }
 
-export async function getNewsItem(slug) {
+export function getNewsItem(slug) {
   const newsItem = db.prepare("SELECT * FROM news WHERE slug = ?").get(slug);
 
   // await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -16,7 +17,7 @@ export async function getNewsItem(slug) {
   return newsItem;
 }
 
-export async function getLatestNews() {
+export function getLatestNews() {
   const latestNews = db
     .prepare("SELECT * FROM news ORDER BY date DESC LIMIT 3")
     .all();
@@ -24,7 +25,7 @@ export async function getLatestNews() {
   return latestNews;
 }
 
-export async function getAvailableNewsYears() {
+export function getAvailableNewsYears() {
   const years = db
     .prepare("SELECT DISTINCT strftime('%Y', date) as year FROM news")
     .all()
@@ -44,7 +45,7 @@ export function getAvailableNewsMonths(year) {
     .map((month) => month.month);
 }
 
-export async function getNewsForYear(year) {
+export function getNewsForYear(year) {
   const news = db
     .prepare(
       "SELECT * FROM news WHERE strftime('%Y', date) = ? ORDER BY date DESC"
@@ -56,7 +57,7 @@ export async function getNewsForYear(year) {
   return news;
 }
 
-export async function getNewsForYearAndMonth(year, month) {
+export function getNewsForYearAndMonth(year, month) {
   const news = db
     .prepare(
       "SELECT * FROM news WHERE strftime('%Y', date) = ? AND strftime('%m', date) = ? ORDER BY date DESC"

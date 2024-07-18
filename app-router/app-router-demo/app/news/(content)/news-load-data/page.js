@@ -1,7 +1,7 @@
+import { getAllNews } from "@/lib/news/news-sql";
 import NewsList from "@/components/news/news-list";
-import { getAllNews } from "@/lib/news/news.js";
 
-export default async function NewsPage() {
+async function NewsPage() {
   const news = await getAllNews();
 
   return (
@@ -11,3 +11,5 @@ export default async function NewsPage() {
     </>
   );
 }
+
+export default NewsPage;

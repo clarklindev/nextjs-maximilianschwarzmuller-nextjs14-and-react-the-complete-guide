@@ -4,8 +4,11 @@ import { notFound } from "next/navigation";
 import classes from "./page.module.css";
 import { getMeal } from "@/lib/foodies/meals";
 
-export default function MealDetailsPage({ params }) {
-  const meal = getMeal(params.slug);
+export default async function MealDetailsPage({ params }) {
+  console.log("params.slug: ", params.slug);
+
+  const meal = await getMeal(params.slug);
+  console.log("meal: ", meal);
 
   if (!meal) {
     notFound();

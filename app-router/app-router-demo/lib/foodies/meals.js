@@ -2,6 +2,7 @@ import fs from "node:fs";
 import sql from "better-sqlite3";
 import slugify from "slugify";
 import xss from "xss";
+
 import { S3 } from "@aws-sdk/client-s3";
 
 const s3 = new S3({
@@ -11,9 +12,11 @@ const s3 = new S3({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
 });
-const db = sql("data/meals.db");
 
-export async function getMeals() {
+const dbPath = "data/meals.db";
+const db = sql(dbPath);
+
+export function getMeals() {
   //simulate delay
   //await new Promise((resolve)=> setTimeout(resolve, 2000));
 
@@ -65,12 +68,11 @@ export async function saveMeal(meal) {
   });
 
   //4.
-  meal.image = `/images/foodies/${fileName}`;
+  meal.image = `/${folder}${fileName}`;
 
   //5.
-  await db
-    .prepare(
-      `
+  db.prepare(
+    `
       INSERT INTO meals 
         (title, summary, instructions, creator, creator_email, image, slug)
       VALUES (
@@ -83,6 +85,5 @@ export async function saveMeal(meal) {
         @slug
       )
     `
-    )
-    .run(meal);
+  ).run(meal);
 }
