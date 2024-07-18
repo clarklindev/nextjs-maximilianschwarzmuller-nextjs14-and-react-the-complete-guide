@@ -5,12 +5,10 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname:
-          "clarklindev-nextjs-react-the-complete-guide-03-3-foodies.s3.ap-southeast-1.amazonaws.com",
-        port: "",
+        hostname: "**.amazonaws.com",
         pathname: "/**",
       },
-      { hostname: "res.cloudinary.com" },
+      { hostname: "res.cloudinary.com", pathname: "/**" },
     ],
   },
 };
