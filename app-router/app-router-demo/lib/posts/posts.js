@@ -1,6 +1,9 @@
 import sql from "better-sqlite3";
+import path from "path";
 
-const db = new sql("data/posts.db");
+// Assuming .db is in the /data directory relative to the root of your application
+const dbPath = path.join(process.cwd(), "data", "posts.db");
+const db = new sql(dbPath);
 
 function initDb() {
   db.exec(`

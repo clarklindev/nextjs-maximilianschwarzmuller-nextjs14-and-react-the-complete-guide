@@ -1,6 +1,9 @@
 import sql from "better-sqlite3";
+import path from "path";
 
-const dbPath = "data/news.db"; // Adjust based on your directory structure
+// Assuming news.db is in the /data directory relative to the root of your application
+const dbPath = path.join(process.cwd(), "data", "news.db");
+
 const db = sql(dbPath);
 
 export function getAllNews() {

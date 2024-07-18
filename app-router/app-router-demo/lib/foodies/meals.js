@@ -2,6 +2,7 @@ import fs from "node:fs";
 import sql from "better-sqlite3";
 import slugify from "slugify";
 import xss from "xss";
+import path from "path";
 
 import { S3 } from "@aws-sdk/client-s3";
 
@@ -13,7 +14,9 @@ const s3 = new S3({
   },
 });
 
-const dbPath = "data/meals.db";
+// Assuming meals.db is in the /data directory relative to the root of your application
+const dbPath = path.join(process.cwd(), "data", "meals.db");
+
 const db = sql(dbPath);
 
 export function getMeals() {

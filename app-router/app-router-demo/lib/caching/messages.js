@@ -1,8 +1,11 @@
 import sql from "better-sqlite3";
 import { cache } from "react";
 import { unstable_cache as nextCache } from "next/cache";
+import path from "path";
 
-const db = new sql("data/messages.db");
+// Assuming .db is in the /data directory relative to the root of your application
+const dbPath = path.join(process.cwd(), "data", "messages.db");
+const db = new sql(dbPath);
 
 function initDb() {
   db.exec(`

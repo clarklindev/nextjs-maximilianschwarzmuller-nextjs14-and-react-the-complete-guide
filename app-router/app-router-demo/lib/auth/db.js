@@ -1,6 +1,9 @@
 import sql from "better-sqlite3";
+import path from "path";
 
-const db = sql("data/training.db");
+// Assuming .db is in the /data directory relative to the root of your application
+const dbPath = path.join(process.cwd(), "data", "training.db");
+const db = sql(dbPath);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
