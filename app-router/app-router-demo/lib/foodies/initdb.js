@@ -1,5 +1,9 @@
 const sql = require("better-sqlite3");
-const db = sql("data/meals.db");
+import path from "path";
+
+// Assuming .db is in the /data directory relative to the root of your application
+const dbPath = path.join(process.cwd(), "data", "meals.db");
+const db = sql(dbPath);
 
 const dummyMeals = [
   {

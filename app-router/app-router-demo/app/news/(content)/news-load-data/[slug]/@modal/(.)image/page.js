@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
+
 import ModalBackdrop from "@/components/news/modal-backdrop";
-import { getNewsItem } from "@/lib/news/news-sql";
+import { getNewsItem } from "@/lib/news/actions";
 
 export default async function InterceptedImagePage({ params }) {
   const newsItemSlug = params.slug;

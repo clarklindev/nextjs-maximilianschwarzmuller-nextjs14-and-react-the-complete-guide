@@ -1,5 +1,5 @@
-import logo from "@/assets/logo.jpg";
 import Link from "next/link";
+import logo from "@/assets/logo.jpg";
 
 export default function HomePage() {
   return (

@@ -1,5 +1,5 @@
 import NewsList from "@/components/news/news-list";
-import { getLatestNews } from "@/lib/news/news-sql";
+import { getLatestNews } from "@/lib/news/actions";
 
 export default async function LatestNewsPage() {
   const latestNews = await getLatestNews();

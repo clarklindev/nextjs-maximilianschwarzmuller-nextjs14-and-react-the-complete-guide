@@ -1,5 +1,5 @@
 import Posts from "@/components/posts/posts";
-import { getPosts } from "@/lib/posts/posts";
+import { getPosts } from "@/lib/posts/actions";
 
 export default async function FeedPage() {
   const posts = await getPosts();

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useFormState } from "react-dom";
 
-import { auth } from "@/lib/auth/auth-actions";
+import { auth } from "@/lib/auth/actions";
 import classes from "./auth-form.module.css";
 
 export default function AuthForm({ mode }) {

@@ -6,7 +6,7 @@ import {
   getAvailableNewsYears,
   getAvailableNewsMonths,
   getNewsForYearAndMonth,
-} from "@/lib/news/news-sql";
+} from "@/lib/news/actions";
 import NewsList from "@/components/news/news-list";
 
 async function FilterHeader({ year, month }) {

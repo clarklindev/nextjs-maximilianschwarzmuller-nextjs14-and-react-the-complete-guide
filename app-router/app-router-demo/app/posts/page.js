@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
 import Posts from "@/components/posts/posts";
-import { getPosts } from "@/lib/posts/posts";
+import { getPosts } from "@/lib/posts/actions";
 import classes from "./page.module.css";
 
 async function LatestPosts() {

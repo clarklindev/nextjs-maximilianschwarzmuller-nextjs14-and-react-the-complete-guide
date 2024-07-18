@@ -1,4 +1,4 @@
-import { getAllNews } from "@/lib/news/news-sql";
+import { getAllNews } from "@/lib/news/actions";
 import NewsList from "@/components/news/news-list";
 
 async function NewsPage() {

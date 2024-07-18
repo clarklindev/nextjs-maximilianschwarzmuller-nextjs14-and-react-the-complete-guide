@@ -1,5 +1,6 @@
-import { getNewsItem } from "@/lib/news/news-sql";
 import { notFound } from "next/navigation";
+
+import { getNewsItem } from "@/lib/news/actions";
 
 export default async function ImagePage({ params }) {
   const newsItemSlug = params.slug;

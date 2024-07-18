@@ -1,4 +1,4 @@
-import { logout } from "@/lib/auth/auth-actions";
+import { logout } from "@/lib/auth/actions";
 import classes from "./layout.module.css";
 
 export const metadata = {
