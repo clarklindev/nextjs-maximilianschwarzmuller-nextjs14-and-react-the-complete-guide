@@ -4,6 +4,138 @@
   - https://github.com/mschwarzmueller/nextjs-complete-guide-course-resources
 
 - NOTE: this is the 2024 next14 update
+- NOTE: Vercel does not support SQLite because of the "serverless" way it runs a NextJS server.
+- NOTE: vercel does offer [vercel-postgres](https://vercel.com/docs/storage/vercel-postgres)
+
+### SSR / database write
+
+- NOTE: app-page-router in this course uses SSR in nextjs but in production its giving error regarding database is readonly
+
+- When using Server-Side Rendering (SSR) in Next.js and encountering errors related to read-only file system access, it typically stems from the fact that serverless environments like Vercel restrict direct write access to the file system.
+
+- NOTE: this means deploying on vercel -> whole app router section which uses better-sqlite3 should be refactored to use something like mongodb or use next app/api
+
+- otherwise, it will only work on localhost or for db readonly actions when deployed for production.
+
+#### WHAT CHATGPT SAYS:
+
+- Here are some insights and solutions to address this issue:
+
+- Understanding the Issue
+
+- Serverless Environment Limitations: Vercel's deployment environment is designed to be stateless and scalable, which means it often restricts write access to the file system to maintain these properties.
+
+- SSR and File System Access: SSR in Next.js might attempt to write files to the file system, which can cause errors due to the read-only nature of the environment.
+
+- Solutions and Workarounds
+
+- Avoid File System Writes: Refactor your application to minimize or eliminate direct file system writes during SSR. Instead, consider using external storage solutions like cloud databases (MongoDB Atlas, PostgreSQL), object storage (AWS S3, Google Cloud Storage), or serverless APIs (AWS Lambda functions, Vercel serverless functions) to handle data persistence.
+
+- In a serverless environment, this central single permanent storage is not available because storage is ephemeral with serverless functions. As a function receives more concurrent traffic, the serverless environment will create new instances of the function and each instance will not be able to share the same storage.
+
+- Serverless Functions for Write Operations: If your application requires write operations (like saving user data), use serverless functions (API routes in Next.js) instead of direct file writes. Serverless functions can interact with databases or external services where write operations are allowed.
+
+```js
+//pages/api/saveData.js
+export default function handler(req, res) {
+  // Example: Save data to a database
+
+  const data = req.body;
+  // Save data logic...
+  res.status(200).json({ message: "Data saved successfully" });
+}
+```
+
+- You can then call this API route from your Next.js application to handle write operations securely.
+
+### Conclusion
+
+- When using SSR in Next.js on platforms like Vercel, understanding the limitations of serverless environments regarding file system access is crucial. By leveraging serverless functions for write operations and adopting cloud-based storage solutions, you can ensure your application functions correctly and securely in such environments. Always prioritize security and scalability considerations when designing and deploying SSR applications in serverless environments.
+
+### Vercel Postgres
+
+- [Vercel postgres](https://vercel.com/docs/storage/vercel-postgres/quickstart) is the serverless solution to storing data in cloud (follow vercel postgres quickstart)
+- required: An existing Vercel Project
+- installation (below)
+
+#### Outcomes
+
+- Create a Postgres database that's connected to one of your projects
+- Create and manage the database in your dashboard on Vercel
+- Populate the database using Vercel's Postgres SDK
+- Send the contents of a PostgreSQL table as a response when someone visits one of your API routes
+
+## Steps to convert db to vercel postgresql
+
+prep:
+
+```
+pnpm i @vercel/postgres
+pnpm i -g vercel@latest
+```
+
+### 1. create postgres database
+
+- this is done on vercel which automatically creates:
+
+- db name eg: nextjs-maximilianschwar-postgres
+- endpoint eg: ep-shiny-river-a1tnd6ry-pooler.ap-southeast-1.aws.neon.tech
+
+### 2. Environment variables
+
+project -> vercel project is linked to db
+linking project to db sets up environment variables on vercel -> credentials are generated and made available as environment variables
+
+```
+POSTGRES_URL
+POSTGRES_PRISMA_URL
+POSTGRES_URL_NON_POOLING
+POSTGRES_USER
+POSTGRES_HOST
+POSTGRES_PASSWORD
+POSTGRES_DATABASE
+```
+
+### 3. prepare local project
+
+- pull environment variables (to local) :
+
+`vercel env pull .env.development.local`
+
+fix error:
+cannot be loaded because running scripts is disabled on this system.
+powershell: `Get-ExecutionPolicy -List`
+powershell: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+
+Error: Your codebase isn’t linked to a project on Vercel. Run `vercel link` to begin
+
+GO INTO PROJECT FOLDER
+
+- from project repository (local) `vercel link` to link vercel project to repository
+
+- creates .vercel folder in project root (auto added to .gitignore)
+
+- try again: `vercel env pull .env.development.local` -> creates `.env.development.local` by pulling env variables from project setup on vercel.
+
+### 4. create api route
+
+- create your Pets table by visiting the API route we've just created
+- run `next dev`
+- visit `http://localhost:3000/api/create-pets-table`
+- you should be able to see changes on vercel as well -> select table from drop-down
+
+### 5. add data to table
+
+- this following route:
+
+1. Adds a new row to your PostgreSQL database with both the ownerName and petName fields taken from the query string in the URL when the route is visited
+2. Returns the contents of the entire table
+
+visit the api: `localhost:3000/api/add-pet?petName=ben&ownerName=tom`
+
+this should also show up on your vercel dashboard
+
+---
 
 ## Table of contents
 

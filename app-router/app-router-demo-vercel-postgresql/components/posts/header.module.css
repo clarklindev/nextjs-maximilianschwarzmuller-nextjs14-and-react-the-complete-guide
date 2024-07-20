@@ -1,0 +1,42 @@
+.mainheader {
+  width: 80%;
+  max-width: 60rem;
+  margin: 2rem auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mainheader img {
+  width: 5rem;
+  height: 5rem;
+  filter: drop-shadow(0 0 3px #000);
+}
+
+.mainheader ul {
+  display: flex;
+  gap: 1rem;
+}
+
+.mainheader ul a {
+  color: #eee7ea;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  font-size: 1.5rem;
+  border-radius: 4px;
+}
+
+.mainheader ul a:hover {
+  background-color: #5f5a5c;
+}
+
+.mainheader ul .cta-link {
+  background-color: #e32195;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #eee7ea;
+}
+
+.mainheader ul .cta-link:hover {
+  background-color: #c321e3;
+}
