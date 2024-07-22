@@ -1,4 +1,4 @@
-export const DUMMY_NEWS = [
+export const DUMMY_DATA = [
   {
     id: "n1",
     slug: "will-ai-replace-humans",

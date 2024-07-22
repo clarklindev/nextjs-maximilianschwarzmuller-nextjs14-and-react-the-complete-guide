@@ -1,9 +1,9 @@
-import { DUMMY_NEWS } from "@/data/dummy-news";
+import { DUMMY_DATA } from "@/lib/news/dummydata";
 import { notFound } from "next/navigation";
 
 export default function ImagePage({ params }) {
   const newsItemSlug = params.slug;
-  const newsItem = DUMMY_NEWS.find(
+  const newsItem = DUMMY_DATA.find(
     (newsItem) => newsItem.slug === newsItemSlug
   );
 

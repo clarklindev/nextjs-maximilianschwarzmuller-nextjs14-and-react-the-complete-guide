@@ -1,6 +1,6 @@
 const sql = require("better-sqlite3");
 import path from "path";
-import { DUMMY_NEWS } from "@/data/dummy-news";
+import { DUMMY_DATA } from "@/lib/news/dummydata";
 
 // Assuming .db is in the /data directory relative to the root of your application
 const dbPath = path.join(process.cwd(), "data", "news.db");
@@ -18,7 +18,7 @@ function initDb() {
       "INSERT INTO news (slug, title, content, date, image) VALUES (?, ?, ?, ?, ?)"
     );
 
-    DUMMY_NEWS.forEach((news) => {
+    DUMMY_DATA.forEach((news) => {
       insert.run(news.slug, news.title, news.content, news.date, news.image);
     });
   }

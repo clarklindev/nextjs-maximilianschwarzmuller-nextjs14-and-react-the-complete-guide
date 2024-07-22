@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { DUMMY_NEWS } from "@/data/dummy-news";
+import { DUMMY_DATA } from "@/lib/news/dummydata";
 
 export default function NewsDetailPage({ params }) {
   const newsSlug = params.slug;
-  const newsItem = DUMMY_NEWS.find((newsItem) => newsItem.slug === newsSlug);
+  const newsItem = DUMMY_DATA.find((newsItem) => newsItem.slug === newsSlug);
 
   if (!newsItem) {
     notFound();

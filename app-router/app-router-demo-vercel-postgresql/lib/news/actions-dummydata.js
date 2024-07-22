@@ -1,15 +1,15 @@
-import { DUMMY_NEWS } from "@/data/dummy-news";
+import { DUMMY_DATA } from "@/lib/news/dummydata";
 
 export function getAllNews() {
-  return DUMMY_NEWS;
+  return DUMMY_DATA;
 }
 
 export function getLatestNews() {
-  return DUMMY_NEWS.slice(0, 3);
+  return DUMMY_DATA.slice(0, 3);
 }
 
 export function getAvailableNewsYears() {
-  return DUMMY_NEWS.reduce((years, news) => {
+  return DUMMY_DATA.reduce((years, news) => {
     const year = new Date(news.date).getFullYear();
     if (!years.includes(year)) {
       years.push(year);
@@ -19,7 +19,7 @@ export function getAvailableNewsYears() {
 }
 
 export function getAvailableNewsMonths(year) {
-  return DUMMY_NEWS.reduce((months, news) => {
+  return DUMMY_DATA.reduce((months, news) => {
     const newsYear = new Date(news.date).getFullYear();
     if (newsYear === +year) {
       const month = new Date(news.date).getMonth();
@@ -32,13 +32,13 @@ export function getAvailableNewsMonths(year) {
 }
 
 export function getNewsForYear(year) {
-  return DUMMY_NEWS.filter(
+  return DUMMY_DATA.filter(
     (news) => new Date(news.date).getFullYear() === +year
   );
 }
 
 export function getNewsForYearAndMonth(year, month) {
-  return DUMMY_NEWS.filter((news) => {
+  return DUMMY_DATA.filter((news) => {
     const newsYear = new Date(news.date).getFullYear();
     const newsMonth = new Date(news.date).getMonth() + 1;
     return newsYear === +year && newsMonth === +month;
