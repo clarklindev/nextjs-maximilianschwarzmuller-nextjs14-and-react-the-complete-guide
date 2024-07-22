@@ -1,4 +1,5 @@
-import db from "./initdb";
+import {getDb} from "@/lib/auth/db";
+const db = getDb();
 
 export function createUser(email, password) {
   const result = db

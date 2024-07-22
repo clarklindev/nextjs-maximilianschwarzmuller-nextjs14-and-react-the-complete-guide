@@ -11,7 +11,8 @@ export default async function TrainingPage() {
     return redirect("/auth");
   }
 
-  const trainingSessions = getTrainings();
+  const trainingSessions = await getTrainings();
+  const imageBasePath = process.env.AUTH_TRAINING_IMAGE_BASE_PATH;
 
   return (
     <main className={classes.main}>
@@ -20,7 +21,7 @@ export default async function TrainingPage() {
         {trainingSessions.map((training) => (
           <li key={training.id}>
             <img
-              src={`/images/trainings/${training.image}`}
+              src={`${imageBasePath}${training.image}`}
               alt={training.title}
             />
             <div>

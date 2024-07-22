@@ -2,8 +2,10 @@ import { Lucia } from "lucia";
 import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
 import { cookies } from "next/headers";
 
-import db from "./initdb";
-const adapter = new BetterSqlite3Adapter(db, {
+import {getDb} from "@/lib/auth/db";
+const db = getDb();
+
+const adapter = new BetterSqlite3Adapter( db, {
   user: "users",
   session: "sessions",
 });
