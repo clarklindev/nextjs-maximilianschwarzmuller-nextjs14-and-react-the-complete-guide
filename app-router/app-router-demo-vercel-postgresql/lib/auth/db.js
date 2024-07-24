@@ -1,70 +1,61 @@
-import sql from "better-sqlite3";
-import path from "path";
-import fs from "node:fs";
+// import sql from "better-sqlite3";
+// import path from "path";
+// import fs from "node:fs";
+import { sql } from "@vercel/postgres";
 
 import { DUMMY_DATA } from "./dummydata.js"; //for node only initialization
 
-let db;
-const dbPath = path.join(process.cwd(), "data", "training.db");
+export async function deleteTables() {
+  try {
+    // Construct the query string dynamically and execute it
+    await sql`DROP TABLE IF EXISTS sessions CASCADE`;
+    await sql`DROP TABLE IF EXISTS users CASCADE`;
+    await sql`DROP TABLE IF EXISTS trainings CASCADE`;
 
-export async function getDb() {
-  if (!db) {
-    // Create the directory if it doesn't exist
-    const dirPath = path.dirname(dbPath);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
-
-    // Assuming .db is in the /data directory relative to the root of your application
-    db = sql(dbPath);
-    initializeDb(db);
+    console.log("Table deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting table:", error);
   }
-  return db;
 }
 
-function initializeDb(db) {
+export async function initializeDb() {
   //initialize tables if necessary
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY,
-      email TEXT UNIQUE,
-      password TEXT
-    );
-  `);
 
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS sessions (
-      id TEXT NOT NULL PRIMARY KEY,
-      expires_at INTEGER NOT NULL,
-      user_id TEXT NOT NULL,
-      FOREIGN KEY (user_id) REFERENCES users(id)
-    );
-  `);
+  await sql`CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
+  );`;
 
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS trainings (
-      id INTEGER PRIMARY KEY,
-      title TEXT,
-      image TEXT,
-      description TEXT
-    );
-  `);
+  await sql`CREATE TABLE IF NOT EXISTS sessions (
+    id SERIAL PRIMARY KEY,
+    expires_at INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  );`;
 
-  //if the trainings table is empty...
-  const hasTrainings =
-    db.prepare("SELECT COUNT(*) as count FROM trainings").get().count > 0;
+  await sql`CREATE TABLE IF NOT EXISTS trainings (
+    id SERIAL PRIMARY KEY,
+    title TEXT,
+    image TEXT,
+    description TEXT
+  );`;
 
-  if (!hasTrainings) {
-    const stmt = db.prepare(`
-      INSERT INTO trainings (title, image, description) VALUES (
-        @title,
-        @image,
-        @description
-      );
-    `);
+  const result = await sql`SELECT COUNT(*) as count FROM trainings`;
 
-    for (const trainingmethod of DUMMY_DATA) {
-      stmt.run(trainingmethod);
+  const [{ count }] = result.rows;
+  const countValue = parseInt(count, 10); // Convert to number
+
+  if (countValue === 0) {
+    for (const { title, image, description } of DUMMY_DATA) {
+      await sql`
+        INSERT INTO trainings (title, image, description) VALUES (${title}, ${image}, ${description})
+      `;
     }
+
+    console.log('Data inserted successfully.');
+  }
+  else {
+    console.log('Trainings table is not empty.');
   }
 }

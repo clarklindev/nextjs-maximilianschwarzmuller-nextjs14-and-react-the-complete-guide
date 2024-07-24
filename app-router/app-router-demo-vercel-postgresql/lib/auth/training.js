@@ -1,7 +1,6 @@
-import {getDb} from "@/lib/auth/db";
-const db = getDb();
+import { sql } from "@vercel/postgres";
 
-export function getTrainings() {
-  const stmt = db.prepare("SELECT * FROM trainings");
-  return stmt.all();
+export async function getTrainings() {
+  const result = await sql`SELECT * FROM trainings`;
+  return result;
 }

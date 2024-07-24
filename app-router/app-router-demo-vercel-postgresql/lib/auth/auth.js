@@ -1,16 +1,14 @@
 import { Lucia } from "lucia";
-import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
+import { NeonHTTPAdapter } from "@lucia-auth/adapter-postgresql";
+import { neon } from "@neondatabase/serverless";
 import { cookies } from "next/headers";
 
-import {getDb} from "@/lib/auth/db";
-const db = getDb();
-
-const adapter = new BetterSqlite3Adapter( db, {
-  user: "users",
-  session: "sessions",
+const sql = neon();
+const adapter = new NeonHTTPAdapter(sql, {
+  user: "auth_users",
+	session: "user_sessions"
 });
 
-//SQLite adapter
 const lucia = new Lucia(adapter, {
   sessionCookie: {
     expires: false,

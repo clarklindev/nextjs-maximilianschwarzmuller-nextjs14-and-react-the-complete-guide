@@ -1,14 +1,26 @@
-import {getDb} from "@/lib/auth/db";
-const db = getDb();
+import { sql } from "@vercel/postgres";
 
-export function createUser(email, password) {
-  const result = db
-    .prepare("INSERT INTO users (email, password) VALUES (?, ?)")
-    .run(email, password);
-  return result.lastInsertRowid;
+export async function createUser(email, password) {
+  try{
+    const result = await sql` INSERT INTO users (email, password) VALUES (${email}, ${password})`;
+    console.log('createUser: ', result);
+    return result.lastInsertRowid;
+  }
+  catch(error){
+    console.error('Error creating user:', error);
+    throw error;
+  }
 }
 
 //returns {id, email, hashed-password}
-export function getUserByEmail(email) {
-  return db.prepare("SELECT * FROM users WHERE email = ?").get(email);
+export async function getUserByEmail(email) {
+  try{
+    const result = await sql`SELECT * FROM users WHERE email = ${email}`;
+    console.log('getUserByEmail: ', result);
+    return result;
+  }
+  catch(error){
+    console.error('Error fetching user by email:', error);
+    throw error;
+  }
 }
