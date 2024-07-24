@@ -2,21 +2,27 @@ import { Lucia } from "lucia";
 import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
 import { cookies } from "next/headers";
 
-import db from "./initdb";
-const adapter = new BetterSqlite3Adapter(db, {
-  user: "users",
-  session: "sessions",
-});
+import { getDb } from "./db";
 
-//SQLite adapter
-const lucia = new Lucia(adapter, {
-  sessionCookie: {
-    expires: false,
-    attributes: {
-      secure: process.env.NODE_ENV === "production",
+async function initialize() {
+  const db = await getDb();
+
+  const adapter = new BetterSqlite3Adapter(db, {
+    user: "users",
+    session: "sessions",
+  });
+
+  //SQLite adapter
+  const lucia = new Lucia(adapter, {
+    sessionCookie: {
+      expires: false,
+      attributes: {
+        secure: process.env.NODE_ENV === "production",
+      },
     },
-  },
-});
+  });
+}
+initialize().catch(console.error);
 
 //create session and session cookie
 
