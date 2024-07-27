@@ -1,18 +1,16 @@
 import AuthForm from "@/components/auth/auth-form";
 
-import { initializeDb, deleteTables } from "@/lib/auth/db";
+import { createTables, populateTables } from "@/lib/auth/db";
 
 async function Home({searchParams}) {
-
-  async function cleanup(){
-    await deleteTables();
-  }
-  // cleanup();
 
   const formMode = searchParams.mode || "login";
 
   //calling directly (because its server-side)
-  await initializeDb();
+  await createTables();
+
+  //add data to tables
+  await populateTables();
 
   return <AuthForm mode={formMode} />;
 }

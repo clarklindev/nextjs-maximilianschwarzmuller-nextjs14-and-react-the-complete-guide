@@ -1,15 +1,17 @@
 import { Lucia } from "lucia";
 import { NeonHTTPAdapter } from "@lucia-auth/adapter-postgresql";
 import { neon } from "@neondatabase/serverless";
+
 import { cookies } from "next/headers";
 
-const sql = neon();
+const sql = neon(process.env.DATABASE_URL);
+
 const adapter = new NeonHTTPAdapter(sql, {
-  user: "auth_users",
-	session: "user_sessions"
+	user: "users",
+	session: "sessions"
 });
 
-const lucia = new Lucia(adapter, {
+export const lucia = new Lucia(adapter, {
   sessionCookie: {
     expires: false,
     attributes: {
@@ -21,17 +23,26 @@ const lucia = new Lucia(adapter, {
 //create session and session cookie
 
 export async function createAuthSession(userId) {
+  console.log('FUNCTION createAuthSession');
+  console.log('userId: ', userId);
+
   const session = await lucia.createSession(userId, {});
-  const sessionCookieData = lucia.createSessionCookie(session.id);
+  const sessionCookie = await lucia.createSessionCookie(session.id);
+  console.log('sessionCookie:', sessionCookie);
+    
+  //Set cookie using Next.js headers utility
   cookies().set(
-    sessionCookieData.name,
-    sessionCookieData.value,
-    sessionCookieData.attributes
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes
   );
+
+  console.log('ok');
+
 }
 
 export async function verifyAuth() {
-  const sessionCookie = cookies().get(lucia.sessionCookieName);
+  const sessionCookie = await cookies().get(lucia.sessionCookieName);
 
   //if there is no session cookie
   if (!sessionCookie) {
@@ -56,7 +67,7 @@ export async function verifyAuth() {
   //refresh cookie -> session cookie and still valid
   try {
     if (result.session && result.session.fresh) {
-      const sessionCookieData = lucia.createSessionCookie(result.session.id);
+      const sessionCookieData = await lucia.createSessionCookie(result.session.id);
       cookies().set(
         sessionCookieData.name,
         sessionCookieData.value,
@@ -66,7 +77,7 @@ export async function verifyAuth() {
 
     //invalid session
     if (!result.session) {
-      const sessionCookieData = lucia.createBlankSessionCookie();
+      const sessionCookieData = await lucia.createBlankSessionCookie();
       cookies().set(
         sessionCookieData.name,
         sessionCookieData.value,
@@ -89,7 +100,7 @@ export async function destroySession() {
 
   await lucia.invalidateSession(session.id);
 
-  const sessionCookieData = lucia.createBlankSessionCookie();
+  const sessionCookieData = await lucia.createBlankSessionCookie();
   cookies().set(
     sessionCookieData.name,
     sessionCookieData.value,

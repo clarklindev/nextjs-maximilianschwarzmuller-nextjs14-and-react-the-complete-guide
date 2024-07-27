@@ -25,18 +25,24 @@ export async function signup(prevState, formData) {
   }
 
   //check if user already exists
-  const existingUser = getUserByEmail(email);
-  if (existingUser) {
+  const existingUser = await getUserByEmail(email);
+  if (existingUser !== null) {
     return { errors: { email: "user already exists" } };
   }
 
   //store in db
   const hashedPassword = hashUserPassword(password);
   try {
-    const id = createUser(email, hashedPassword);
+    const user = await createUser(email, hashedPassword);
     //create auth session
-    await createAuthSession(id);
-    //no errors -> successfully created user
+    try{
+      await createAuthSession(user.id);
+    }
+    catch(error){
+      console.log('error calling createAuthSession: ', error);
+    }
+
+    // no errors -> successfully created user
     redirect("/auth/training");
   } catch (error) {
     if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
@@ -52,7 +58,7 @@ export async function login(prevState, formData) {
   const password = formData.get("password");
 
   //look for existing user with email
-  const existingUser = getUserByEmail(email);
+  const existingUser = await getUserByEmail(email);
   if (!existingUser) {
     return {
       errors: {
@@ -61,7 +67,7 @@ export async function login(prevState, formData) {
     };
   }
 
-  const isValidPassword = verifyPassword(existingUser.password, password);
+  const isValidPassword = await verifyPassword(existingUser.password, password);
   if (!isValidPassword) {
     return {
       errors: {

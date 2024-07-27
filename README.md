@@ -107,6 +107,20 @@ cannot be loaded because running scripts is disabled on this system.
 powershell: `Get-ExecutionPolicy -List`
 powershell: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 
+### unlink project
+-  If you want unlink your directory, you can remove the .vercel directory.
+
+### link project
+NOTE: ESIER NOT TO LINK TO VERCEL PROJECT -> EASIER TO USE [NEON INTERFACE](https://console.neon.tech/app/)
+- REASON: separation of concern, no need for central hub for control of data
+- note link creates .vercel folder (delete if already linked)
+
+---
+### SKIP THIS AND USE NEON DIRECTLY
+- skip linking and directly use neon.
+- use lucia neon adapter
+- connect using neon()
+
 Error: Your codebase isn’t linked to a project on Vercel. Run `vercel link` to begin
 
 GO INTO PROJECT FOLDER
@@ -116,6 +130,8 @@ GO INTO PROJECT FOLDER
 - creates .vercel folder in project root (auto added to .gitignore)
 
 - try again: `vercel env pull .env.development.local` -> creates `.env.development.local` by pulling env variables from project setup on vercel.
+
+---
 
 ### 4. create api route
 
@@ -136,6 +152,21 @@ visit the api: `localhost:3000/api/add-pet?petName=ben&ownerName=tom`
 this should also show up on your vercel dashboard
 
 ---
+
+### 6. delete tables
+- externalised to package.json script to delete table (scripts/delete-tables.js)
+- uses dotenv.config(); to read environment variables
+- config aliases (aliases work in nextjs but externally they need a package to also allow aliases for plain node) for externally running node script (nextjs uses jsconfig.json), this is possible with:
+
+```
+pnpm i ts-node tsconfig-paths
+```
+
+```json
+"scripts": {
+  "delete-tables": "ts-node -r tsconfig-paths/register scripts/delete-tables.js",
+}
+```
 
 ## Table of contents
 
