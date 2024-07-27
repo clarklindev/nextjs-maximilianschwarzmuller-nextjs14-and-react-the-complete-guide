@@ -10,7 +10,7 @@ export default function MealItem({ title, slug, image, summary, creator }) {
         <div className={classes.image}>
           {/* <Image src={image} alt={title} fill /> */}
           <Image
-            src={`https://clarklindev-nextjs-react-the-complete-guide-03-3-foodies.s3.ap-southeast-1.amazonaws.com${image}`}
+            src={`https://${process.env.FOODIES_MEALS_BUCKET}${process.env.FOODIES_MEALS_SUBDOMAIN}${image}`}
             alt={title}
             fill
           />

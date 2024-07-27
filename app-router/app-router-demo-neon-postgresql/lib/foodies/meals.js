@@ -1,10 +1,13 @@
-import fs from "node:fs";
-import sql from "better-sqlite3";
+// import fs from "node:fs";
+// import sql from "better-sqlite3";
 import slugify from "slugify";
 import xss from "xss";
-import path from "path";
+// import path from "path";
 
 import { S3 } from "@aws-sdk/client-s3";
+import { neon } from "@neondatabase/serverless";
+
+const sql = neon(process.env.DATABASE_URL);
 
 const s3 = new S3({
   region: "ap-southeast-1",
@@ -15,23 +18,23 @@ const s3 = new S3({
 });
 
 // Assuming meals.db is in the /data directory relative to the root of your application
-const dbPath = path.join(process.cwd(), "data", "meals.db");
+// const dbPath = path.join(process.cwd(), "data", "meals.db");
+// const db = sql(dbPath);
 
-const db = sql(dbPath);
-
-export function getMeals() {
+export async function getMeals() {
   //simulate delay
   //await new Promise((resolve)=> setTimeout(resolve, 2000));
 
   //simulate load error
   // throw new Error('loading meals failed');
 
-  return db.prepare("SELECT * FROM meals").all();
+  return await sql`SELECT * FROM meals`;
 }
 
-export function getMeal(slug) {
+export async function getMeal(slug) {
   // return db.prepare('SELECT * FROM meals WHERE slug = ' + slug);  //insecure
-  return db.prepare("SELECT * FROM meals WHERE slug = ?").get(slug); //secure
+  const result = await sql`SELECT * FROM meals WHERE slug = ${slug}`; //secure
+  return result[0]; 
 }
 
 export async function saveMeal(meal) {
@@ -61,10 +64,10 @@ export async function saveMeal(meal) {
 
   //aws s3 cloud
   const bufferedImage = await meal.image.arrayBuffer();
-  const folder = "images/foodies/";
+  const folder = process.env.FOODIES_MEALS_BUCKET_FOLDER;
 
   await s3.putObject({
-    Bucket: "clarklindev-nextjs-react-the-complete-guide-03-3-foodies",
+    Bucket: process.env.FOODIES_MEALS_BUCKET,
     Key: folder + fileName,
     Body: Buffer.from(bufferedImage),
     ContentType: meal.image.type,
@@ -74,19 +77,18 @@ export async function saveMeal(meal) {
   meal.image = `/${folder}${fileName}`;
 
   //5.
-  db.prepare(
-    `
-      INSERT INTO meals 
-        (title, summary, instructions, creator, creator_email, image, slug)
-      VALUES (
-        @title,
-        @summary,
-        @instructions,
-        @creator,
-        @creator_email,
-        @image,
-        @slug
-      )
-    `
-  ).run(meal);
+  const { title, summary, instructions, creator, creator_email, image, slug } = meal;
+
+  await sql`
+    INSERT INTO meals (title, summary, instructions, creator, creator_email, image, slug)
+    VALUES (
+      ${title},
+      ${summary},
+      ${instructions},
+      ${creator},
+      ${creator_email},
+      ${image},
+      ${slug}
+    );
+  `;
 }
