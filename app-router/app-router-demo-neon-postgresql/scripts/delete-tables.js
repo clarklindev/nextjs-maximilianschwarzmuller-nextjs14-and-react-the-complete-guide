@@ -13,9 +13,10 @@ if (!process.env.DATABASE_URL) {
 export async function deleteTables() {
   const sql = neon(process.env.DATABASE_URL);
   try {
-    // Construct the query string dynamically and execute it
-    await sql`DROP TABLE IF EXISTS sessions CASCADE`;
-    await sql`DROP TABLE IF EXISTS users CASCADE`;
+    
+    //AUTH
+    await sql`DROP TABLE IF EXISTS auth_sessions CASCADE`;
+    await sql`DROP TABLE IF EXISTS auth_users CASCADE`;
     await sql`DROP TABLE IF EXISTS trainings CASCADE`;
 
     //FOOD
@@ -29,7 +30,8 @@ export async function deleteTables() {
     await sql`DROP TABLE IF EXISTS posts CASCADE`;
     await sql`DROP TABLE IF EXISTS posts_likes CASCADE`;
 
-    
+    //CACHING
+    await sql`DROP TABLE IF EXISTS caching_messages CASCADE`;
 
     console.log("Table deleted successfully.");
   } catch (error) {

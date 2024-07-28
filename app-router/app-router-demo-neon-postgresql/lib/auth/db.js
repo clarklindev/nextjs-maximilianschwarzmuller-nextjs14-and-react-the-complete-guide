@@ -1,26 +1,26 @@
 // import sql from "better-sqlite3";
 // import path from "path";
 // import fs from "node:fs";
-import { neon } from "@neondatabase/serverless"; 
 
 import { DUMMY_DATA } from "./dummydata.js"; //for node only initialization
+import { neon } from "@neondatabase/serverless"; 
 
 const sql = neon(process.env.DATABASE_URL);
 
 export async function createTables() {
   //initialize tables if necessary
 
-  await sql`CREATE TABLE IF NOT EXISTS users (
+  await sql`CREATE TABLE IF NOT EXISTS auth_users (
     id SERIAL PRIMARY KEY,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL
   );`;
 
-  await sql`CREATE TABLE IF NOT EXISTS sessions (
+  await sql`CREATE TABLE IF NOT EXISTS auth_sessions (
     id TEXT PRIMARY KEY,
     expires_at TIMESTAMPTZ NOT NULL,
     user_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES auth_users(id)
   );`;
 
   await sql`CREATE TABLE IF NOT EXISTS trainings (

@@ -7,8 +7,8 @@ import { cookies } from "next/headers";
 const sql = neon(process.env.DATABASE_URL);
 
 const adapter = new NeonHTTPAdapter(sql, {
-	user: "users",
-	session: "sessions"
+	user: "auth_users",
+	session: "auth_sessions"
 });
 
 export const lucia = new Lucia(adapter, {
