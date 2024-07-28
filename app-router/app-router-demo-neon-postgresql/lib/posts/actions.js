@@ -4,12 +4,14 @@ import { redirect } from "next/navigation";
 
 import { uploadImage } from "@/lib/posts/cloudinary";
 
-import sql from "better-sqlite3";
-import path from "path";
 
+// import sql from "better-sqlite3";
+// import path from "path";
 // Assuming .db is in the /data directory relative to the root of your application
-const dbPath = path.join(process.cwd(), "data", "posts.db");
-const db = sql(dbPath);
+// const dbPath = path.join(process.cwd(), "data", "posts.db");
+// const db = sql(dbPath);
+import { neon } from "@neondatabase/serverless";
+const sql = neon(process.env.DATABASE_URL);
 
 export async function createPost(prevState, formData) {
   const title = formData.get("title");
@@ -38,73 +40,95 @@ export async function createPost(prevState, formData) {
   let imageUrl;
   try {
     imageUrl = await uploadImage(image);
+    console.log('image uploaded...')
   } catch (error) {
     throw new Error("Image upload failed");
   }
 
-  await storePost({
+  const data = {
     imageUrl: imageUrl,
-    title,
-    content,
+    title: title,
+    content: content,
     userId: 1,
-  });
+  }; 
+
+  console.log('data to store: ', data);
+
+  await storePost(data);
 
   revalidatePath("/posts/", "layout");
   redirect("/posts/feed");
 }
 
 export async function togglePostLikeStatus(postId) {
-  await updatePostLikeStatus(postId, 2);
+  await updatePostLikeStatus(postId, 1);
   revalidatePath("/posts/", "layout");
 }
 
-export async function getPosts(maxNumber) {
-  let limitClause = "";
-
-  if (maxNumber) {
-    limitClause = "LIMIT ?";
-  }
-
-  const stmt = db.prepare(`
-    SELECT posts.id, image_url AS image, title, content, created_at AS createdAt, first_name AS userFirstName, last_name AS userLastName, COUNT(likes.post_id) AS likes, EXISTS(SELECT * FROM likes WHERE likes.post_id = posts.id and likes.user_id = 2) AS isLiked
+export async function getPosts() {
+  const result = await sql`
+    SELECT 
+      posts.id, 
+      image_url AS image, 
+      title, 
+      content, 
+      created_at AS "createdAt", 
+      first_name AS "userFirstName", 
+      last_name AS "userLastName", 
+      COUNT(posts_likes.post_id) AS likes, 
+      EXISTS(SELECT * FROM posts_likes WHERE posts_likes.post_id = posts.id and posts_likes.user_id = 1) AS "isLiked"
     FROM posts
-    INNER JOIN users ON posts.user_id = users.id
-    LEFT JOIN likes ON posts.id = likes.post_id
-    GROUP BY posts.id
-    ORDER BY createdAt DESC
-    ${limitClause}`);
+    INNER JOIN posts_users ON posts.user_id = posts_users.id
+    LEFT JOIN posts_likes ON posts.id = posts_likes.post_id
+    GROUP BY 
+      posts.id, 
+      posts.image_url, 
+      posts.title, 
+      posts.content, 
+      posts.created_at, 
+      posts_users.first_name, 
+      posts_users.last_name
+    ORDER BY posts.created_at DESC
+    `;
 
-  // await new Promise((resolve) => setTimeout(resolve, 1000));
-  return maxNumber ? stmt.all(maxNumber) : stmt.all();
+  console.log('getPosts() result: ', result);
+  return result;
 }
 
 export async function storePost(post) {
-  const stmt = db.prepare(`
-    INSERT INTO posts (image_url, title, content, user_id)
-    VALUES (?, ?, ?, ?)`);
-  // await new Promise((resolve) => setTimeout(resolve, 1000));
-  return stmt.run(post.imageUrl, post.title, post.content, post.userId);
+  const {imageUrl, title, content, userId} = post;
+
+  try{
+    const result = await sql`INSERT INTO posts (image_url, title, content, user_id) 
+      VALUES (${imageUrl}, ${title}, ${content}, ${userId}) 
+      RETURNING id, image_url, title, content, user_id
+    `;
+    console.log('Insert result:', result);
+  }
+  catch(error){
+    console.error('Error inserting data:', error);
+  }
 }
 
 export async function updatePostLikeStatus(postId, userId) {
-  const stmt = db.prepare(`
+  const result = await sql`
     SELECT COUNT(*) AS count
-    FROM likes
-    WHERE user_id = ? AND post_id = ?`);
+    FROM posts_likes
+    WHERE user_id = ${userId} AND post_id = ${postId}`;
 
-  const isLiked = stmt.get(userId, postId).count === 0;
+  const [{ count }] = result;
+  const countValue = parseInt(count, 10); // Convert to number
 
-  if (isLiked) {
-    const stmt = db.prepare(`
-      INSERT INTO likes (user_id, post_id)
-      VALUES (?, ?)`);
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
-    return stmt.run(userId, postId);
+  if (countValue === 0) {
+    const result = await sql`
+      INSERT INTO posts_likes (user_id, post_id)
+      VALUES (${userId}, ${postId}) RETURNING *`;
+    return result;
   } else {
-    const stmt = db.prepare(`
-      DELETE FROM likes
-      WHERE user_id = ? AND post_id = ?`);
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
-    return stmt.run(userId, postId);
+    const result = await sql`
+      DELETE FROM posts_likes
+      WHERE user_id = ${userId} AND post_id = ${postId}
+      RETURNING *`;
+    return result;
   }
 }

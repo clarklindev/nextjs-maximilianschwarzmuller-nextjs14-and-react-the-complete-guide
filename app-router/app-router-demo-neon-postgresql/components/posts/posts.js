@@ -16,6 +16,8 @@ function imageLoader(config) {
 }
 
 function Post({ post, action }) {
+  console.log('FUNCTION Post: ', post);
+
   return (
     <article className={classes.post}>
       <div className={classes["post-image"]}>

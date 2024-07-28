@@ -5,7 +5,7 @@ import { getPosts } from "@/lib/posts/actions";
 import classes from "./page.module.css";
 
 async function LatestPosts() {
-  const latestPosts = await getPosts(2);
+  const latestPosts = await getPosts();
   return <Posts posts={latestPosts} />;
 }
 

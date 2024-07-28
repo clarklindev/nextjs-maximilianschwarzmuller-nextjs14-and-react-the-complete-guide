@@ -17,8 +17,19 @@ export async function deleteTables() {
     await sql`DROP TABLE IF EXISTS sessions CASCADE`;
     await sql`DROP TABLE IF EXISTS users CASCADE`;
     await sql`DROP TABLE IF EXISTS trainings CASCADE`;
+
+    //FOOD
     await sql`DROP TABLE IF EXISTS meals CASCADE`;
+    
+    //NEWS
     await sql`DROP TABLE IF EXISTS news CASCADE`;
+
+    //POSTS
+    await sql`DROP TABLE IF EXISTS posts_users CASCADE`;
+    await sql`DROP TABLE IF EXISTS posts CASCADE`;
+    await sql`DROP TABLE IF EXISTS posts_likes CASCADE`;
+
+    
 
     console.log("Table deleted successfully.");
   } catch (error) {
