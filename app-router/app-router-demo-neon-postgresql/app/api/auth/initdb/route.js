@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { initializeDb} from "@/lib/auth/db";
+import { createTables} from "@/lib/auth/db";
 
 export async function GET(request) {
 
   try {
-    await initializeDb();
+    await createTables();
 
     return NextResponse.json({ message: "success" }, { status: 200 });
   } catch (error) {
