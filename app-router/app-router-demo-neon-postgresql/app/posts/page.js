@@ -3,8 +3,10 @@ import { Suspense } from "react";
 import Posts from "@/components/posts/posts";
 import { getPosts } from "@/lib/posts/actions";
 import classes from "./page.module.css";
+import { initializeDatabase } from "@/lib/posts/db";
 
 async function LatestPosts() {
+  await initializeDatabase();
   const latestPosts = await getPosts();
   return <Posts posts={latestPosts} />;
 }

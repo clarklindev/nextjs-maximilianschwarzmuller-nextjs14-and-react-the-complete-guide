@@ -1,6 +1,5 @@
 import Header from "@/components/posts/header";
 import classes from "./layout.module.css";
-import { initializeDatabase } from "@/lib/posts/db";
 
 export const metadata = {
   title: "NextPosts",
@@ -8,7 +7,6 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  await initializeDatabase();
 
   return (
     <>
