@@ -14,7 +14,7 @@ async function FilterHeader({ year, month }) {
   let links = availableYears; //-> YEARS
   //if year has already been selected -> show month links
   if (year && !month) {
-    links = getAvailableNewsMonths(year); //-> MONTHS
+    links = await getAvailableNewsMonths(year); //-> MONTHS
   }
   //both selectedYear and selectedMonth -> show news with both these filters
   if (year && month) {

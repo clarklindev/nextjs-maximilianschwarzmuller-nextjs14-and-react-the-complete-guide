@@ -5,7 +5,7 @@ export const metadata = {
   description: "Learn how to route to different pages.",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
   return (
     <div id="page">
       <MainHeader />

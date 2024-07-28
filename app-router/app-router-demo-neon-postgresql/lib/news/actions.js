@@ -1,73 +1,83 @@
-import sql from "better-sqlite3";
-import path from "path";
-
+// import sql from "better-sqlite3";
+// import path from "path";
 // Assuming news.db is in the /data directory relative to the root of your application
-const dbPath = path.join(process.cwd(), "data", "news.db");
+// const dbPath = path.join(process.cwd(), "data", "news.db");
+// const db = sql(dbPath);
 
-const db = sql(dbPath);
+import { neon } from "@neondatabase/serverless";
+const sql = neon(process.env.DATABASE_URL);
 
-export function getAllNews() {
-  const news = db.prepare("SELECT * FROM news").all();
-  // await new Promise((resolve) => setTimeout(resolve, 2000)); //SIMULATE SLOW CONNECTION
-  return news;
+export async function getAllNews() {
+  try {
+    const result = await sql`SELECT * FROM news`;
+    return result;
+
+  } catch (error) {
+    console.error('Error executing query:', error);
+  }
+
 }
 
-export function getNewsItem(slug) {
-  const newsItem = db.prepare("SELECT * FROM news WHERE slug = ?").get(slug);
-
-  // await new Promise((resolve) => setTimeout(resolve, 2000));
-
+export async function getNewsItem(slug) {
+  const result = await sql`SELECT * FROM news WHERE slug = ${slug}`;
+  const newsItem = result.length > 0 ? result[0] : null;
   return newsItem;
 }
 
-export function getLatestNews() {
-  const latestNews = db
-    .prepare("SELECT * FROM news ORDER BY date DESC LIMIT 3")
-    .all();
-  // await new Promise((resolve) => setTimeout(resolve, 2000));
+export async function getLatestNews() {
+  const latestNews = await sql`SELECT * FROM news ORDER BY date DESC LIMIT 3`;
   return latestNews;
 }
 
-export function getAvailableNewsYears() {
-  const years = db
-    .prepare("SELECT DISTINCT strftime('%Y', date) as year FROM news")
-    .all()
-    .map((year) => year.year);
-
-  // await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  return years;
+export async function getAvailableNewsYears() {
+  try {
+    const result = await sql`SELECT DISTINCT EXTRACT(YEAR FROM date) AS year FROM news`;
+    const years = result.map((row) => row.year);
+    return years;
+  } catch (error) {
+    console.error('Error executing query:', error);
+    return [];
+  }
 }
 
-export function getAvailableNewsMonths(year) {
-  return db
-    .prepare(
-      "SELECT DISTINCT strftime('%m', date) as month FROM news WHERE strftime('%Y', date) = ?"
-    )
-    .all(year)
-    .map((month) => month.month);
+export async function getAvailableNewsMonths(year) {
+  try {
+      const result = await sql`SELECT DISTINCT EXTRACT(MONTH FROM date) as month FROM news WHERE EXTRACT(YEAR from date) = ${year}`;
+      const months = result.map((row) => row.month);
+      return months;
+  } catch (error) {
+      console.error('Error executing query:', error);
+      return [];
+  }
 }
 
-export function getNewsForYear(year) {
-  const news = db
-    .prepare(
-      "SELECT * FROM news WHERE strftime('%Y', date) = ? ORDER BY date DESC"
-    )
-    .all(year);
-
-  // await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  return news;
+export async function getNewsForYear(year) {
+  try {
+      const news = await sql`
+          SELECT * 
+          FROM news 
+          WHERE EXTRACT(YEAR from date) = ${year} 
+          ORDER BY date DESC
+      `;
+      return news;
+  } catch (error) {
+      console.error('Error executing query:', error);
+      return [];
+  }
 }
 
-export function getNewsForYearAndMonth(year, month) {
-  const news = db
-    .prepare(
-      "SELECT * FROM news WHERE strftime('%Y', date) = ? AND strftime('%m', date) = ? ORDER BY date DESC"
-    )
-    .all(year, month);
-
-  // await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  return news;
+export async function getNewsForYearAndMonth(year, month) {
+  try {
+      const news = await sql`
+          SELECT * 
+          FROM news 
+          WHERE EXTRACT(YEAR from date) = ${year} 
+            AND EXTRACT(MONTH FROM date) = ${month} 
+          ORDER BY date DESC
+      `;
+      return news;
+  } catch (error) {
+      console.error('Error executing query:', error);
+      return [];
+  }
 }
