@@ -17,7 +17,7 @@ export default function MealDetailsPage({params}){
     <header className={classes.header}>
       <div className={classes.image}>
         {/* <Image src={meal.image} alt={meal.title} fill/> */}
-        <Image src={`https://clarklindev-nextjs-react-the-complete-guide-03-3-foodies.s3.ap-southeast-1.amazonaws.com${meal.image}`} alt={meal.title} fill/>
+        <Image src={`https://clarklindev-nextjs-react-the-complete-guide-03-3-foodies.s3.ap-southeast-1.amazonaws.com/images/foodies/${meal.image}`} alt={meal.title} fill/>
       </div>
       <div className={classes.headerText}>
         <h1>{meal.title}</h1>

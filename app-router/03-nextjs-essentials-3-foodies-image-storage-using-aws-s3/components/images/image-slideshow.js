@@ -2,24 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-
-import burgerImg from '@/assets/burger.jpg';
-import curryImg from '@/assets/curry.jpg';
-import dumplingsImg from '@/assets/dumplings.jpg';
-import macncheeseImg from '@/assets/macncheese.jpg';
-import pizzaImg from '@/assets/pizza.jpg';
-import schnitzelImg from '@/assets/schnitzel.jpg';
-import tomatoSaladImg from '@/assets/tomato-salad.jpg';
 import classes from './image-slideshow.module.css';
 
+const url = `https://clarklindev-nextjs-react-the-complete-guide-03-3-foodies.s3.ap-southeast-1.amazonaws.com/images/foodies/`;
+console.log('my url: ', url);
+        
 const images = [
-  { image: burgerImg, alt: 'A delicious, juicy burger' },
-  { image: curryImg, alt: 'A delicious, spicy curry' },
-  { image: dumplingsImg, alt: 'Steamed dumplings' },
-  { image: macncheeseImg, alt: 'Mac and cheese' },
-  { image: pizzaImg, alt: 'A delicious pizza' },
-  { image: schnitzelImg, alt: 'A delicious schnitzel' },
-  { image: tomatoSaladImg, alt: 'A delicious tomato salad' },
+  { image: 'burger.jpg', alt: 'A delicious, juicy burger' },
+  { image: 'curry.jpg', alt: 'A delicious, spicy curry' },
+  { image: 'dumplings.jpg', alt: 'Steamed dumplings' },
+  { image: 'macncheese.jpg', alt: 'Mac and cheese' },
+  { image: 'pizza.jpg', alt: 'A delicious pizza' },
+  { image: 'schnitzel.jpg', alt: 'A delicious schnitzel' },
+  { image: 'tomato-salad.jpg', alt: 'A delicious tomato salad' },
 ];
 
 export default function ImageSlideshow() {
@@ -37,14 +32,20 @@ export default function ImageSlideshow() {
 
   return (
     <div className={classes.slideshow}>
-      {images.map((image, index) => (
-        <Image
+      {images.map((image, index) => {
+
+      const link = `${url}${image.image}`;
+      console.log("link: ", link);
+
+      return (<Image
           key={index}
-          src={image.image}
+          src={link}
           className={index === currentImageIndex ? classes.active : ''}
+          fill
           alt={image.alt}
         />
-      ))}
+      )})
+    }
     </div>
   );
 }

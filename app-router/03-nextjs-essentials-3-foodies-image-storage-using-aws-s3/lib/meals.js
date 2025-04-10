@@ -57,14 +57,14 @@ export async function saveMeal(meal) {
   const folder = "images/foodies/";
 
   await s3.putObject({
-    Bucket: "clarklindev-nextjs-react-the-complete-guide-03-3-foodies",
+    Bucket:  "clarklindev-nextjs-react-the-complete-guide-03-3-foodies",
     Key: folder + fileName,
     Body: Buffer.from(bufferedImage),
     ContentType: meal.image.type,
   });
 
   //4.
-  meal.image = `/images/foodies/${fileName}`;
+  meal.image = `${fileName}`;
 
   //5.
   await db
