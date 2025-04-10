@@ -43,7 +43,7 @@ export async function saveMeal(meal) {
   });
 
   //4.
-  meal.image = `/images/foodies/${fileName}`;
+  meal.image = `${fileName}`;
 
   //5.
   db.prepare(
